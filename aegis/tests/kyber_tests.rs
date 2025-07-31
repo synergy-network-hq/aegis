@@ -11,17 +11,24 @@ fn test_kyber_encaps_and_decaps() {
     let keypair = kyber_keygen();
     let public_key = keypair.public_key();
     let secret_key = keypair.secret_key();
+
     // Encapsulate a shared secret
     let encapsulated = kyber_encapsulate(&public_key).expect("encapsulation should succeed");
     let ciphertext = encapsulated.ciphertext();
     let shared_secret_enc = encapsulated.shared_secret();
+
     // Decapsulate the shared secret
     let shared_secret_dec = kyber_decapsulate(&secret_key, &ciphertext).expect("decapsulation should succeed");
+
     assert_eq!(shared_secret_enc, shared_secret_dec, "Shared secrets should match");
+
     // Tamper with ciphertext
     let mut tampered_ct = ciphertext.clone();
     tampered_ct[0] ^= 0x01;
-    // Decapsulation with tampered ciphertext should still succeed but produce a secret of correct length
-    let tampered_secret = kyber_decapsulate(&secret_key, &tampered_ct).expect("decapsulation should succeed");
-    assert_eq!(tampered_secret.len(), shared_secret_enc.len(), "Shared secret length should remain constant");
+
+    // Decapsulation with tampered ciphertext should still succeed but produce a different secret
+    let tampered_secret_res = kyber_decapsulate(&secret_key, &tampered_ct);
+    assert!(tampered_secret_res.is_ok(), "Decapsulation of tampered ciphertext should not fail");
+    let tampered_secret = tampered_secret_res.unwrap();
+    assert_ne!(shared_secret_enc, tampered_secret, "Decapsulation of tampered ciphertext should produce a different secret");
 }

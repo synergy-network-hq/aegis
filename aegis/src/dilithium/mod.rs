@@ -1,8 +1,13 @@
-use quantum_fips204::ml_dsa_65;
-use quantum_fips204::traits::{Signer, Verifier, SerDes};
-use wasm_bindgen::prelude::*;
-use zeroize::Zeroize;
+//! This module provides the ML-DSA (Dilithium) post-quantum digital signature
+//! algorithm. It uses the `pqcrypto-mldsa` backend for cryptographic
+//! operations and exposes key functions as WebAssembly (WASM) bindings for use
+//! in JavaScript/TypeScript environments.
 
+use wasm_bindgen::prelude::*;
+use pqcrypto_mldsa::mldsa65::*;
+
+/// Represents a Dilithium key pair, containing both the public and secret keys.
+/// These keys are essential for signing messages and verifying signatures.
 #[wasm_bindgen]
 pub struct DilithiumKeyPair {
     pk: Vec<u8>,
@@ -11,52 +16,77 @@ pub struct DilithiumKeyPair {
 
 #[wasm_bindgen]
 impl DilithiumKeyPair {
+    /// Returns the public key component of the Dilithium key pair.
+    /// The public key is used to verify signatures.
     #[wasm_bindgen(getter)]
     pub fn public_key(&self) -> Vec<u8> {
         self.pk.clone()
     }
 
+    /// Returns the secret key component of the Dilithium key pair.
+    /// The secret key is used to sign messages and should be kept confidential.
     #[wasm_bindgen(getter)]
     pub fn secret_key(&self) -> Vec<u8> {
         self.sk.clone()
     }
 }
 
+/// Generates a new Dilithium key pair.
+///
+/// This function uses the `pqcrypto-mldsa` backend to generate a fresh
+/// public and secret key pair for the ML-DSA-65 scheme.
+///
+/// # Returns
+///
+/// A `DilithiumKeyPair` containing the newly generated public and secret keys.
 #[wasm_bindgen]
 pub fn dilithium_keygen() -> DilithiumKeyPair {
-    let (pk, mut sk) = ml_dsa_65::try_keygen().expect("Failed to generate keypair");
-    let keypair = DilithiumKeyPair { pk: pk.into_bytes().to_vec(), sk: sk.clone().into_bytes().to_vec() };
-    sk.zeroize(); // Securely wipe secret key from memory
-    keypair
+    let (pk, sk) = keypair();
+    DilithiumKeyPair {
+        pk: pk.as_bytes().to_vec(),
+        sk: sk.as_bytes().to_vec(),
+    }
 }
 
+/// Signs a message using the provided Dilithium secret key.
+///
+/// # Arguments
+///
+/// * `secret_key` - A byte slice representing the user's Dilithium secret key.
+/// * `message` - The message to be signed.
+///
+/// # Returns
+///
+/// A `Vec<u8>` containing the generated signature. If the secret key is
+/// invalid, this function will panic.
 #[wasm_bindgen]
-pub fn dilithium_sign(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>, JsValue> {
-    if secret_key.len() != ml_dsa_65::SK_LEN {
-        return Err(format!("Invalid secret key length. Expected {}, got {}", ml_dsa_65::SK_LEN, secret_key.len()).into());
-    }
-    let sk_array: [u8; ml_dsa_65::SK_LEN] = secret_key.try_into()
-        .map_err(|_| "Failed to convert secret key to array")?;
-    let mut sk = ml_dsa_65::PrivateKey::try_from_bytes(sk_array)
-        .map_err(|e| format!("Invalid secret key: {}", e))?;
-    let signature = sk.try_sign(message, &[]).map_err(|e| format!("Failed to sign: {}", e))?;
-    sk.zeroize(); // Securely wipe secret key from memory
-    Ok(signature.to_vec())
+pub fn dilithium_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
+    let sk = SecretKey::from_bytes(secret_key).expect("Invalid secret key");
+    let signature = sign(message, &sk);
+    signature.as_bytes().to_vec()
 }
 
+/// Verifies a Dilithium signature.
+///
+/// # Arguments
+///
+/// * `public_key` - A byte slice representing the signer's Dilithium public key.
+/// * `message` - The original message that was signed.
+/// * `signature` - The signature to be verified.
+///
+/// # Returns
+///
+/// `true` if the signature is valid for the given message and public key,
+/// and `false` otherwise.
 #[wasm_bindgen]
-pub fn dilithium_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> Result<bool, JsValue> {
-    if public_key.len() != ml_dsa_65::PK_LEN {
-        return Err(format!("Invalid public key length. Expected {}, got {}", ml_dsa_65::PK_LEN, public_key.len()).into());
-    }
-    if signature.len() != ml_dsa_65::SIG_LEN {
-        return Err(format!("Invalid signature length. Expected {}, got {}", ml_dsa_65::SIG_LEN, signature.len()).into());
-    }
-    let pk_array: [u8; ml_dsa_65::PK_LEN] = public_key.try_into()
-        .map_err(|_| "Failed to convert public key to array")?;
-    let pk = ml_dsa_65::PublicKey::try_from_bytes(pk_array)
-        .map_err(|e| format!("Invalid public key: {}", e))?;
-    let sig_array: [u8; ml_dsa_65::SIG_LEN] = signature.try_into()
-        .map_err(|_| "Failed to convert signature to array")?;
-    Ok(pk.verify(message, &sig_array, &[]))
+pub fn dilithium_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+    let pk = match PublicKey::from_bytes(public_key) {
+        Ok(pk) => pk,
+        Err(_) => return false,
+    };
+    let sig = match Signature::from_bytes(signature) {
+        Ok(sig) => sig,
+        Err(_) => return false,
+    };
+    verify(&sig, message, &pk).is_ok()
 }
