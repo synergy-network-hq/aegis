@@ -1,0 +1,14 @@
+[workspace]
+members = [
+    "aegis",
+    "pqcrypto/pqcrypto",
+    "pqcrypto/pqcrypto-traits",
+    "pqcrypto/pqcrypto-internals",
+    "pqcrypto/pqcrypto-mlkem",
+    "pqcrypto/pqcrypto-classicmceliece",
+    "pqcrypto/pqcrypto-hqc",
+    "pqcrypto/pqcrypto-mldsa",
+    "pqcrypto/pqcrypto-falcon",
+    "pqcrypto/pqcrypto-sphincsplus"
+]
+resolver="2"
