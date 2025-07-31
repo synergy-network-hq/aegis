@@ -1,0 +1,88 @@
+[package]
+name = "aegis_crypto_core"
+version = "0.1.0"
+authors = ["Justin Hutzler <justin@synergy-network.io>"]
+edition = "2021"
+description = "Aegis: Unified WebAssembly, Rust, and Python PQ cryptography core with Kyber, Dilithium, Falcon, HQC, Classic McEliece, and (pending) SPHINCS+ support."
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/synergy-network.hq/aegis"
+homepage = "https://synergy-network.io"
+documentation = "https://docs.rs/aegis_crypto_core"
+keywords = ["post-quantum", "cryptography", "wasm", "rust"]
+categories = ["cryptography", "wasm", "no-std"]
+publish = true
+
+[lib]
+name = "aegis_crypto_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { version = "0.2", optional = true }
+js-sys = "0.3.61"
+zerocopy = "0.8.26"
+# pqcrypto = { path = "./pqcrypto" }  # Uncomment if you want to use the umbrella crate later
+pqcrypto-mlkem = { path = "./pqcrypto/pqcrypto-mlkem", version = "0.1.0", optional = true }
+pqcrypto-mldsa = { path = "./pqcrypto/pqcrypto-mldsa", version = "0.1.1", optional = true }
+pqcrypto-sphincsplus = { path = "./pqcrypto/pqcrypto-sphincsplus", version = "0.7.1", optional = true  }
+pqcrypto-falcon = { path = "./pqcrypto/pqcrypto-falcon", version = "0.4.0", optional = true }
+pqcrypto-hqc = { path = "./pqcrypto/pqcrypto-hqc", version = "0.2.1", optional = true  }
+pqcrypto-classicmceliece = { path = "./pqcrypto/pqcrypto-classicmceliece", version = "0.2.0", optional = true }
+sha3 = "0.10"
+blake3 = "1.5"
+subtle = "2.5"
+zeroize = "1.8"
+getrandom = { version = "0.2", features = ["js"] }
+rand = "0.8"
+hex = "0.4"
+
+[dev-dependencies]
+aegis_crypto_core = { path = "." }
+wasm-bindgen-test = "0.3"
+
+[build-dependencies]
+# Uncomment if you use a build.rs file, e.g. for C code compilation:
+# cc = "1.0"
+
+[features]
+default = ["wasm"]
+wasm = ["dep:wasm-bindgen"]
+python = []
+unstable = []
+kyber = ["dep:pqcrypto-mlkem"]
+dilithium = ["dep:pqcrypto-mldsa"]
+sphincsplus = ["dep:pqcrypto-sphincsplus"]
+falcon = ["dep:pqcrypto-falcon"]
+hqc = ["dep:pqcrypto-hqc"]
+classicmceliece = ["dep:pqcrypto-classicmceliece"]
+
+[profile.dev]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.release]
+opt-level = 3
+lto = true
+debug = false
+panic = "abort"
+
+[badges]
+github-actions = { repository = "synergy-network-hq/aegis", workflow = "CI" }
+
+[package.metadata.docs.rs]
+all-features = true
+targets = ["x86_64-unknown-linux-gnu", "wasm32-unknown-unknown"]
+
+[package.metadata.release]
+no-dev-version = true
+
+# Uncomment and customize for workspace/multi-crate setups:
+# [workspace]
+# members = [
+#     "aegis_crypto_core",
+#     "quantum_fips203",
+#     "quantum_fips204",
+#     "quantum_fips205",
+#     "quantum_fips206",
+# ]

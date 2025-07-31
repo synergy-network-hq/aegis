@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegis Crypto Core Browser Demo</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        textarea { width: 100%; height: 100px; margin-top: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .output { background-color: #f0f0f0; padding: 10px; border-radius: 4px; margin-top: 10px; white-space: pre-wrap; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Aegis Crypto Core Browser Demo</h1>
+        <p>Demonstrates key generation, signing, verification, encapsulation, and decapsulation for various PQC algorithms.</p>
+
+        <h2>SPHINCS+ (SLH-DSA)</h2>
+        <button onclick="runSphincsPlusDemo()">Run SPHINCS+ Demo</button>
+        <div id="sphincsOutput" class="output"></div>
+
+        <h2>Kyber (ML-KEM)</h2>
+        <button onclick="runKyberDemo()">Run Kyber Demo</button>
+        <div id="kyberOutput" class="output"></div>
+
+        <h2>Dilithium (ML-DSA)</h2>
+        <button onclick="runDilithiumDemo()">Run Dilithium Demo</button>
+        <div id="dilithiumOutput" class="output"></div>
+
+        <h2>Falcon (FN-DSA)</h2>
+        <button onclick="runFalconDemo()">Run Falcon Demo</button>
+        <div id="falconOutput" class="output"></div>
+
+        <h2>Hash Functions & Utilities</h2>
+        <button onclick="runHashAndUtilsDemo()">Run Hash & Utilities Demo</button>
+        <div id="hashUtilsOutput" class="output"></div>
+    </div>
+
+    <script type="module" src="./browser_demo.js"></script>
+</body>
+</html>
+
+
