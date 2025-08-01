@@ -69,7 +69,7 @@ pub fn sign_dilithium_js(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
 #[cfg(feature = "dilithium")]
 #[wasm_bindgen(js_name = verifyDilithiumSignature)]
 pub fn verify_dilithium_js(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-    dilithium::dilithium_verify(public_key, message, signature)
+    dilithium::dilithium_verify(public_key, message)
 }
 
 /// Generate a Falcon key pair for digital signatures.
@@ -111,7 +111,7 @@ pub fn sign_sphincsplus_js(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
 #[cfg(feature = "sphincsplus")]
 #[wasm_bindgen(js_name = verifySphincsPlusSignature)]
 pub fn verify_sphincsplus_js(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-    sphincsplus::sphincsplus_verify(public_key, message, signature)
+    sphincsplus::sphincsplus_verify(public_key, message)
 }
 
 /// Generate an HQC key pair (KEM).

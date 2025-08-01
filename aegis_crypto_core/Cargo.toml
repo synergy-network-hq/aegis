@@ -16,7 +16,7 @@ publish = true
 [lib]
 name = "aegis_crypto_core"
 path = "src/lib.rs"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 wasm-bindgen = { version = "0.2", optional = true }

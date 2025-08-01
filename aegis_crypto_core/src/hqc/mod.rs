@@ -3,10 +3,9 @@
 //! operations and exposes key functions as WebAssembly (WASM) bindings for use
 //! in JavaScript/TypeScript environments.
 
-use pqcrypto_hqc::hqc128::{PublicKey, SecretKey, Ciphertext, SharedSecret, encapsulate, decapsulate, keypair};
+use pqcrypto_hqc::hqc128::{PublicKey, SecretKey, Ciphertext, encapsulate, decapsulate, keypair};
 use pqcrypto_traits::kem::{PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _};
 use wasm_bindgen::prelude::*;
-use zeroize::Zeroize;
 
 /// Represents an HQC key pair, containing both the public and secret keys.
 #[wasm_bindgen]
@@ -65,7 +64,7 @@ pub fn hqc_keygen() -> HqcKeyPair {
 #[wasm_bindgen]
 pub fn hqc_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
     let pk = PublicKey::from_bytes(public_key)
-        .map_err(|e| format!("Invalid public key: {:?}", e).into())?;
+        .map_err(|e| format!("Invalid public key: {:?}", e))?;
     let (ss, ct) = encapsulate(&pk);
     Ok(HqcEncapsulated {
         ciphertext: ct.as_bytes().to_vec(),
@@ -77,10 +76,10 @@ pub fn hqc_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
 #[wasm_bindgen]
 pub fn hqc_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
     let mut sk = SecretKey::from_bytes(secret_key)
-        .map_err(|e| format!("Invalid secret key: {:?}", e).into())?;
+        .map_err(|e| format!("Invalid secret key: {:?}", e))?;
     let ct = Ciphertext::from_bytes(ciphertext)
-        .map_err(|e| format!("Invalid ciphertext: {:?}", e).into())?;
+        .map_err(|e| format!("Invalid ciphertext: {:?}", e))?;
     let ss = decapsulate(&ct, &sk);
-    sk.zeroize();
+
     Ok(ss.as_bytes().to_vec())
 }
