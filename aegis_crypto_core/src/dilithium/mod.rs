@@ -3,8 +3,9 @@
 //! operations and exposes key functions as WebAssembly (WASM) bindings for use
 //! in JavaScript/TypeScript environments.
 
+use pqcrypto_falcon::falcon512::{PublicKey, SecretKey, Signature, sign, verify, keypair};
+use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, SignedMessage as _, Signature as _};
 use wasm_bindgen::prelude::*;
-use pqcrypto_mldsa::mldsa65::*;
 
 /// Represents a Dilithium key pair, containing both the public and secret keys.
 /// These keys are essential for signing messages and verifying signatures.
