@@ -1,68 +1,53 @@
-//! This module provides various cryptographic hash functions for use within the Aegis Crypto Core project.
-//! These functions are exposed as WebAssembly (WASM) bindings, allowing them to be used
-//! efficiently in JavaScript and TypeScript environments.
+// This module provides utility functions for common cryptographic operations,
+// such as hexadecimal encoding and decoding. These functions are exposed as
+// WebAssembly (WASM) bindings for convenient use in JavaScript and TypeScript environments.
 
 use wasm_bindgen::prelude::*;
-use sha3::{Digest, Sha3_256, Sha3_512};
-use blake3::Hasher;
 
-/// Computes the SHA3-256 hash of the input data.
+// Import Vec and String for no_std compatibility
+#[cfg(not(feature = "std"))]
+use alloc::{vec::Vec, string::String, format};
+
+#[cfg(feature = "std")]
+use std::{vec::Vec, string::String};
+
+/// Converts a hexadecimal string into a vector of bytes.
 ///
-/// SHA3-256 is a cryptographic hash function that produces a 256-bit (32-byte) hash value.
-/// It is part of the SHA-3 family of standards, designed by NIST.
+/// This function takes a string slice that is expected to contain a valid
+/// hexadecimal representation of binary data and converts it into its raw
+/// byte equivalent. It is useful for processing hexadecimal inputs from
+/// web environments or for displaying byte arrays in a human-readable format.
 ///
 /// # Arguments
 ///
-/// * `data` - A byte slice (`&[u8]`) representing the input data to be hashed.
+/// * `hex_string` - A string slice (`&str`) containing the hexadecimal representation.
 ///
 /// # Returns
 ///
-/// A `Vec<u8>` containing the 32-byte SHA3-256 hash of the input data.
+/// A `Result<Vec<u8>, JsValue>` which is:
+/// - `Ok(Vec<u8>)` containing the decoded bytes if the conversion is successful.
+/// - `Err(JsValue)` if the input string is not a valid hexadecimal string,
+///   providing an error message suitable for JavaScript environments.
 #[wasm_bindgen]
-pub fn sha3_256_hash(data: &[u8]) -> Vec<u8> {
-    let mut hasher = Sha3_256::new();
-    hasher.update(data);
-    hasher.finalize().to_vec()
+pub fn hex_to_bytes(hex_string: &str) -> Result<Vec<u8>, JsValue> {
+    hex::decode(hex_string).map_err(|e| format!("Failed to decode hex string: {}", e).into())
 }
 
-/// Computes the SHA3-512 hash of the input data.
+/// Converts a vector of bytes into a hexadecimal string.
 ///
-/// SHA3-512 is a cryptographic hash function that produces a 512-bit (64-byte) hash value.
-/// It is also part of the SHA-3 family of standards, providing a higher security level
-/// compared to SHA3-256.
+/// This function takes a byte slice and encodes it into a hexadecimal string.
+/// Each byte is represented by two hexadecimal characters (0-9, a-f).
+/// This is commonly used for displaying binary data in a readable format
+/// or for transmitting binary data over text-based protocols.
 ///
 /// # Arguments
 ///
-/// * `data` - A byte slice (`&[u8]`) representing the input data to be hashed.
+/// * `bytes` - A byte slice (`&[u8]`) to be encoded into a hexadecimal string.
 ///
 /// # Returns
 ///
-/// A `Vec<u8>` containing the 64-byte SHA3-512 hash of the input data.
+/// A `String` containing the hexadecimal representation of the input bytes.
 #[wasm_bindgen]
-pub fn sha3_512_hash(data: &[u8]) -> Vec<u8> {
-    let mut hasher = Sha3_512::new();
-    hasher.update(data);
-    hasher.finalize().to_vec()
+pub fn bytes_to_hex(bytes: &[u8]) -> String {
+    hex::encode(bytes)
 }
-
-/// Computes the BLAKE3 hash of the input data.
-///
-/// BLAKE3 is a new, fast, and secure cryptographic hash function. It is designed
-/// to be highly parallelizable and efficient on modern CPUs, making it suitable
-/// for a wide range of applications.
-///
-/// # Arguments
-///
-/// * `data` - A byte slice (`&[u8]`) representing the input data to be hashed.
-///
-/// # Returns
-///
-/// A `Vec<u8>` containing the 32-byte BLAKE3 hash of the input data.
-#[wasm_bindgen]
-pub fn blake3_hash(data: &[u8]) -> Vec<u8> {
-    let mut hasher = Hasher::new();
-    hasher.update(data);
-    hasher.finalize().as_bytes().to_vec()
-}
-
-
