@@ -26,6 +26,8 @@ use serde_big_array::BigArray;
 use crate::ffi;
 use pqcrypto_traits::kem as primitive;
 use pqcrypto_traits::{Error, Result};
+#[cfg(feature = "zeroize")]
+use zeroize::Zeroize;
 
 macro_rules! simple_struct {
     ($type: ident, $size: expr) => {
@@ -95,6 +97,34 @@ simple_struct!(
     ffi::PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_CIPHERTEXTBYTES
 );
 simple_struct!(SharedSecret, ffi::PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_BYTES);
+
+#[cfg(feature = "zeroize")]
+impl Zeroize for SecretKey {
+    fn zeroize(&mut self) {
+        self.0.as_mut().zeroize();
+    }
+}
+
+#[cfg(feature = "zeroize")]
+impl Zeroize for PublicKey {
+    fn zeroize(&mut self) {
+        self.0.as_mut().zeroize();
+    }
+}
+
+#[cfg(feature = "zeroize")]
+impl Zeroize for Ciphertext {
+    fn zeroize(&mut self) {
+        self.0.as_mut().zeroize();
+    }
+}
+
+#[cfg(feature = "zeroize")]
+impl Zeroize for SharedSecret {
+    fn zeroize(&mut self) {
+        self.0.as_mut().zeroize();
+    }
+}
 
 /// Get the number of bytes for a public key
 pub const fn public_key_bytes() -> usize {
