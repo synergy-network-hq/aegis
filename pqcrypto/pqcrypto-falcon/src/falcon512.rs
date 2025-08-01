@@ -20,17 +20,17 @@
 // This file is generated.
 
 #[cfg(feature = "serialization")]
-use serde::{Deserialize, Serialize};
+use serde::{ Deserialize, Serialize };
 #[cfg(feature = "serialization")]
 use serde_big_array::BigArray;
 
 use crate::ffi;
 use alloc::vec::Vec;
 use pqcrypto_traits::sign as primitive;
-use pqcrypto_traits::{Error, Result};
+use pqcrypto_traits::{ Error, Result };
 
 macro_rules! simple_struct {
-    ($type: ident, $size: expr) => {
+    ($type:ident, $size:expr) => {
         #[derive(Clone, Copy)]
         #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
         pub struct $type(
@@ -84,20 +84,16 @@ macro_rules! simple_struct {
     };
 }
 
-simple_struct!(
-    PublicKey,
-    ffi::PQCLEAN_FALCON512_CLEAN_CRYPTO_PUBLICKEYBYTES
-);
-simple_struct!(
-    SecretKey,
-    ffi::PQCLEAN_FALCON512_CLEAN_CRYPTO_SECRETKEYBYTES
-);
+simple_struct!(PublicKey, ffi::PQCLEAN_FALCON512_CLEAN_CRYPTO_PUBLICKEYBYTES);
+simple_struct!(SecretKey, ffi::PQCLEAN_FALCON512_CLEAN_CRYPTO_SECRETKEYBYTES);
 
 #[derive(Clone, Copy)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct DetachedSignature(
-    #[cfg_attr(feature = "serialization", serde(with = "BigArray"))]
-    [u8; ffi::PQCLEAN_FALCON512_CLEAN_CRYPTO_BYTES],
+    #[cfg_attr(feature = "serialization", serde(with = "BigArray"))] [
+        u8;
+        ffi::PQCLEAN_FALCON512_CLEAN_CRYPTO_BYTES
+    ],
     usize,
 );
 
@@ -171,7 +167,8 @@ pub const fn signature_bytes() -> usize {
 }
 
 macro_rules! gen_keypair {
-    ($variant:ident) => {{
+    ($variant:ident) => {
+        {
         let mut pk = PublicKey::new();
         let mut sk = SecretKey::new();
         assert_eq!(
@@ -179,7 +176,8 @@ macro_rules! gen_keypair {
             0
         );
         (pk, sk)
-    }};
+        }
+    };
 }
 
 /// Generate a falcon-512 keypair
@@ -203,7 +201,8 @@ pub fn keypair() -> (PublicKey, SecretKey) {
 }
 
 macro_rules! gen_signature {
-    ($variant:ident, $msg:ident, $sk:ident) => {{
+    ($variant:ident, $msg:ident, $sk:ident) => {
+        {
         let max_len = $msg.len() + signature_bytes();
         let mut signed_msg = Vec::with_capacity(max_len);
         let mut smlen: usize = 0;
@@ -219,7 +218,8 @@ macro_rules! gen_signature {
             signed_msg.set_len(smlen);
         }
         SignedMessage(signed_msg)
-    }};
+        }
+    };
 }
 
 /// Sign the message and return the signed message.
@@ -240,7 +240,8 @@ pub fn sign(msg: &[u8], sk: &SecretKey) -> SignedMessage {
 }
 
 macro_rules! open_signed {
-    ($variant:ident, $sm:ident, $pk:ident) => {{
+    ($variant:ident, $sm:ident, $pk:ident) => {
+        {
         let mut m: Vec<u8> = Vec::with_capacity($sm.len());
         let mut mlen: usize = 0;
         match unsafe {
@@ -259,13 +260,14 @@ macro_rules! open_signed {
             -1 => Err(primitive::VerificationError::InvalidSignature),
             _ => Err(primitive::VerificationError::UnknownVerificationError),
         }
-    }};
+        }
+    };
 }
 
 /// Open the signed message and if verification succeeds return the message
 pub fn open(
     sm: &SignedMessage,
-    pk: &PublicKey,
+    pk: &PublicKey
 ) -> core::result::Result<Vec<u8>, primitive::VerificationError> {
     #[cfg(all(enable_x86_avx2, feature = "avx2"))]
     {
@@ -283,7 +285,8 @@ pub fn open(
 }
 
 macro_rules! detached_signature {
-    ($variant:ident, $msg:ident, $sk:ident) => {{
+    ($variant:ident, $msg:ident, $sk:ident) => {
+        {
         let mut sig = DetachedSignature::new();
         unsafe {
             ffi::$variant(
@@ -295,7 +298,8 @@ macro_rules! detached_signature {
             );
         }
         sig
-    }};
+        }
+    };
 }
 
 /// Create a detached signature on the message
@@ -316,7 +320,8 @@ pub fn detached_sign(msg: &[u8], sk: &SecretKey) -> DetachedSignature {
 }
 
 macro_rules! verify_detached_sig {
-    ($variant:ident, $sig:ident, $msg:ident, $pk:ident) => {{
+    ($variant:ident, $sig:ident, $msg:ident, $pk:ident) => {
+        {
         let res = unsafe {
             ffi::$variant(
                 $sig.0.as_ptr(),
@@ -331,14 +336,15 @@ macro_rules! verify_detached_sig {
             -1 => Err(primitive::VerificationError::InvalidSignature),
             _ => Err(primitive::VerificationError::UnknownVerificationError),
         }
-    }};
+        }
+    };
 }
 
 /// Verify the detached signature
 pub fn verify_detached_signature(
     sig: &DetachedSignature,
     msg: &[u8],
-    pk: &PublicKey,
+    pk: &PublicKey
 ) -> core::result::Result<(), primitive::VerificationError> {
     #[cfg(all(enable_x86_avx2, feature = "avx2"))]
     {
@@ -349,12 +355,7 @@ pub fn verify_detached_signature(
     #[cfg(all(enable_aarch64_neon, feature = "neon"))]
     {
         if true {
-            return verify_detached_sig!(
-                PQCLEAN_FALCON512_AARCH64_crypto_sign_verify,
-                sig,
-                msg,
-                pk
-            );
+            return verify_detached_sig!(PQCLEAN_FALCON512_AARCH64_crypto_sign_verify, sig, msg, pk);
         }
     }
     verify_detached_sig!(PQCLEAN_FALCON512_CLEAN_crypto_sign_verify, sig, msg, pk)
@@ -370,7 +371,7 @@ mod test {
         let mut rng = rand::rng();
         let len: u16 = rng.random();
 
-        let message = (0..len).map(|_| rng.gen::<u8>()).collect::<Vec<_>>();
+        let message = (0..len).map(|_| rng.random::<u8>()).collect::<Vec<_>>();
         let (pk, sk) = keypair();
         let sm = sign(&message, &sk);
         let verifiedmsg = open(&sm, &pk).unwrap();
@@ -381,7 +382,7 @@ mod test {
     pub fn test_sign_detached() {
         let mut rng = rand::rng();
         let len: u16 = rng.random();
-        let message = (0..len).map(|_| rng.gen::<u8>()).collect::<Vec<_>>();
+        let message = (0..len).map(|_| rng.random::<u8>()>()).collect::<Vec<_>>();
 
         let (pk, sk) = keypair();
         let sig = detached_sign(&message, &sk);

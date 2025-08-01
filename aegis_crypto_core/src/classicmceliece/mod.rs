@@ -3,8 +3,9 @@
 //! backend for cryptographic operations and exposes key functions as
 //! WebAssembly (WASM) bindings for use in JavaScript/TypeScript environments.
 
+use pqcrypto_classicmceliece::mceliece348864::{PublicKey, SecretKey, Ciphertext, SharedSecret, encapsulate, decapsulate, keypair};
+use pqcrypto_traits::kem::{PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _};
 use wasm_bindgen::prelude::*;
-use pqcrypto_classicmceliece::mceliece348864::*;
 use zeroize::Zeroize;
 
 /// Represents a Classic McEliece key pair.

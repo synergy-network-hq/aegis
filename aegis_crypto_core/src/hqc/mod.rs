@@ -3,8 +3,9 @@
 //! operations and exposes key functions as WebAssembly (WASM) bindings for use
 //! in JavaScript/TypeScript environments.
 
+use pqcrypto_hqc::hqc128::{PublicKey, SecretKey, Ciphertext, SharedSecret, encapsulate, decapsulate, keypair};
+use pqcrypto_traits::kem::{PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _};
 use wasm_bindgen::prelude::*;
-use pqcrypto_hqc::hqc128::*;
 use zeroize::Zeroize;
 
 /// Represents an HQC key pair, containing both the public and secret keys.

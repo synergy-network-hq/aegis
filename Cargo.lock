@@ -18,6 +18,7 @@ dependencies = [
  "pqcrypto-mldsa",
  "pqcrypto-mlkem",
  "pqcrypto-sphincsplus",
+ "pqcrypto-traits",
  "rand 0.8.5",
  "sha3",
  "subtle",

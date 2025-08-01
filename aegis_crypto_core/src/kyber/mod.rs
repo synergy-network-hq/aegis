@@ -3,8 +3,9 @@
 //! operations and exposes key functions as WebAssembly (WASM) bindings for use
 //! in JavaScript/TypeScript environments.
 
+use pqcrypto_mlkem::mlkem768::{PublicKey, SecretKey, Ciphertext, SharedSecret, encapsulate, decapsulate, keypair};
+use pqcrypto_traits::kem::{PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _};
 use wasm_bindgen::prelude::*;
-use pqcrypto_mlkem::mlkem768::*;
 use zeroize::Zeroize;
 
 /// Represents a Kyber key pair, containing both the public and secret keys.
