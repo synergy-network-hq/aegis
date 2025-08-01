@@ -3,10 +3,9 @@
 //! operations and exposes key functions as WebAssembly (WASM) bindings for use
 //! in JavaScript/TypeScript environments.
 
-use pqcrypto_mlkem::mlkem768::{PublicKey, SecretKey, Ciphertext, SharedSecret, encapsulate, decapsulate, keypair};
+use pqcrypto_mlkem::mlkem768::{PublicKey, SecretKey, Ciphertext, encapsulate, decapsulate, keypair};
 use pqcrypto_traits::kem::{PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _};
 use wasm_bindgen::prelude::*;
-use zeroize::Zeroize;
 
 /// Represents a Kyber key pair, containing both the public and secret keys.
 /// These keys are essential for performing cryptographic operations such as
@@ -94,7 +93,7 @@ pub fn kyber_keygen() -> KyberKeyPair {
 #[wasm_bindgen]
 pub fn kyber_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue> {
     let pk = PublicKey::from_bytes(public_key)
-        .map_err(|e| format!("Invalid public key: {:?}", e).into())?;
+        .map_err(|e| format!("Invalid public key: {:?}", e))?;
     let (ss, ct) = encapsulate(&pk);
     Ok(KyberEncapsulated {
         ciphertext: ct.as_bytes().to_vec(),
@@ -121,10 +120,9 @@ pub fn kyber_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue
 #[wasm_bindgen]
 pub fn kyber_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
     let mut sk = SecretKey::from_bytes(secret_key)
-        .map_err(|e| format!("Invalid secret key: {:?}", e).into())?;
+        .map_err(|e| format!("Invalid secret key: {:?}", e))?;
     let ct = Ciphertext::from_bytes(ciphertext)
-        .map_err(|e| format!("Invalid ciphertext: {:?}", e).into())?;
+        .map_err(|e| format!("Invalid ciphertext: {:?}", e))?;
     let ss = decapsulate(&ct, &sk);
-    sk.zeroize();
     Ok(ss.as_bytes().to_vec())
 }

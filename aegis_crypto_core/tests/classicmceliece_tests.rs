@@ -4,8 +4,8 @@ use aegis_crypto_core::{classicmceliece_keygen, classicmceliece_encapsulate, cla
 
 #[test]
 fn test_classicmceliece_encaps_and_decaps() {
-    // Generate a recipient key pair
-    let keypair = classicmceliece_keygen();
+    // Generate a recipient key pair - move to heap to avoid stack overflow
+    let keypair = Box::new(classicmceliece_keygen());
     let public_key = keypair.public_key();
     let secret_key = keypair.secret_key();
 

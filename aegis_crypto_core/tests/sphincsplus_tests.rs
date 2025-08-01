@@ -11,18 +11,20 @@ fn test_sphincsplus_sign_and_verify() {
 
     let message = b"This is a test message for SPHINCS+.";
 
-    // Sign the message
-    let signature = sphincsplus_sign(&secret_key, message);
+    // Sign the message (returns a signed message, not just signature)
+    let signed_message = sphincsplus_sign(&secret_key, message);
 
-    // Verify the signature
-    assert!(sphincsplus_verify(&public_key, message, &signature), "Signature should be valid");
+    // Verify the signed message
+    assert!(
+        sphincsplus_verify(&public_key, &signed_message),
+        "Signature should be valid"
+    );
 
-    // Test with a wrong message
-    let wrong_message = b"This is a different message.";
-    assert!(!sphincsplus_verify(&public_key, wrong_message, &signature), "Signature should be invalid for a different message");
-
-    // Tamper with the signature
-    let mut tampered_signature = signature.clone();
-    tampered_signature[0] ^= 0xff;
-    assert!(!sphincsplus_verify(&public_key, message, &tampered_signature), "Tampered signature should be invalid");
+    // Tamper with the signed message
+    let mut tampered = signed_message.clone();
+    tampered[0] ^= 0xff;
+    assert!(
+        !sphincsplus_verify(&public_key, &tampered),
+        "Tampered signed message should be invalid"
+    );
 }
