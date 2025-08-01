@@ -3,8 +3,8 @@
 //! operations and exposes key functions as WebAssembly (WASM) bindings for use
 //! in JavaScript/TypeScript environments.
 
-use pqcrypto_falcon::falcon512::{PublicKey, SecretKey, Signature, sign, verify, keypair};
-use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, SignedMessage as _, Signature as _};
+use pqcrypto_falcon::falcon512::{PublicKey, SecretKey, DetachedSignature, detached_sign, verify_detached_signature, keypair};
+use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, DetachedSignature as _};
 use wasm_bindgen::prelude::*;
 
 /// Represents a Falcon key pair, containing both the public and secret keys.
@@ -63,7 +63,7 @@ pub fn falcon_keygen() -> FalconKeyPair {
 #[wasm_bindgen]
 pub fn falcon_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKey::from_bytes(secret_key).expect("Invalid secret key");
-    let signature = sign(message, &sk);
+    let signature = detached_sign(message, &sk);
     signature.as_bytes().to_vec()
 }
 
@@ -85,9 +85,9 @@ pub fn falcon_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> boo
         Ok(pk) => pk,
         Err(_) => return false,
     };
-    let sig = match Signature::from_bytes(signature) {
+    let sig = match DetachedSignature::from_bytes(signature) {
         Ok(sig) => sig,
         Err(_) => return false,
     };
-    verify(&sig, message, &pk).is_ok()
+    verify_detached_signature(&sig, message, &pk).is_ok()
 }

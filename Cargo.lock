@@ -275,6 +275,7 @@ dependencies = [
  "pqcrypto-traits",
  "serde",
  "serde-big-array",
+ "zeroize",
 ]
 
 [[package]]
@@ -302,6 +303,7 @@ dependencies = [
  "pqcrypto-traits",
  "serde",
  "serde-big-array",
+ "zeroize",
 ]
 
 [[package]]
@@ -340,6 +342,7 @@ dependencies = [
  "pqcrypto-traits",
  "serde",
  "serde-big-array",
+ "zeroize",
 ]
 
 [[package]]
