@@ -75,7 +75,7 @@ pub fn hqc_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
 /// Decapsulates a shared secret using the provided HQC secret key and ciphertext.
 #[wasm_bindgen]
 pub fn hqc_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
-    let mut sk = SecretKey::from_bytes(secret_key)
+    let  sk = SecretKey::from_bytes(secret_key)
         .map_err(|e| format!("Invalid secret key: {:?}", e))?;
     let ct = Ciphertext::from_bytes(ciphertext)
         .map_err(|e| format!("Invalid ciphertext: {:?}", e))?;

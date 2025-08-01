@@ -119,7 +119,7 @@ pub fn kyber_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue
 /// - `Err(JsValue)` if the secret key or ciphertext are invalid, or decapsulation fails.
 #[wasm_bindgen]
 pub fn kyber_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
-    let mut sk = SecretKey::from_bytes(secret_key)
+    let sk = SecretKey::from_bytes(secret_key)
         .map_err(|e| format!("Invalid secret key: {:?}", e))?;
     let ct = Ciphertext::from_bytes(ciphertext)
         .map_err(|e| format!("Invalid ciphertext: {:?}", e))?;
