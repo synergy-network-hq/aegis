@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "aegis",
+    "aegis_crypto_core",
     "pqcrypto/pqcrypto",
     "pqcrypto/pqcrypto-traits",
     "pqcrypto/pqcrypto-internals",
