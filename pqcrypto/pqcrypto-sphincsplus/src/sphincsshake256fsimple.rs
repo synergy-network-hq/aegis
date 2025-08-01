@@ -354,8 +354,8 @@ mod test {
 
     #[test]
     pub fn test_sign() {
-        let mut rng = rand::thread_rng();
-        let len: u16 = rng.gen();
+        let mut rng = rand::rng();
+        let len: u16 = rng.random();
 
         let message = (0..len).map(|_| rng.gen::<u8>()).collect::<Vec<_>>();
         let (pk, sk) = keypair();
@@ -366,8 +366,8 @@ mod test {
 
     #[test]
     pub fn test_sign_detached() {
-        let mut rng = rand::thread_rng();
-        let len: u16 = rng.gen();
+        let mut rng = rand::rng();
+        let len: u16 = rng.random();
         let message = (0..len).map(|_| rng.gen::<u8>()).collect::<Vec<_>>();
 
         let (pk, sk) = keypair();
