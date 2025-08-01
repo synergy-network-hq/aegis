@@ -60,17 +60,6 @@ falcon = ["dep:pqcrypto-falcon"]
 hqc = ["dep:pqcrypto-hqc"]
 classicmceliece = ["dep:pqcrypto-classicmceliece"]
 
-[profile.dev]
-opt-level = 0
-debug = true
-overflow-checks = true
-
-[profile.release]
-opt-level = 3
-lto = true
-debug = false
-panic = "abort"
-
 [badges]
 github-actions = { repository = "synergy-network-hq/aegis", workflow = "CI" }
 

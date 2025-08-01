@@ -1,11 +1,24 @@
 //! Integration tests for the Classic McEliece key encapsulation mechanism (KEM).
 
 use aegis_crypto_core::{classicmceliece_keygen, classicmceliece_encapsulate, classicmceliece_decapsulate};
+use std::thread;
 
 #[test]
 fn test_classicmceliece_encaps_and_decaps() {
-    // Generate a recipient key pair - move to heap to avoid stack overflow
-    let keypair = Box::new(classicmceliece_keygen());
+    // Run the test in a thread with a larger stack size (8MB)
+    let handle = thread::Builder::new()
+        .stack_size(8 * 1024 * 1024) // 8MB stack
+        .spawn(|| {
+            run_classicmceliece_test();
+        })
+        .expect("Failed to spawn test thread");
+
+    handle.join().expect("Test thread panicked");
+}
+
+fn run_classicmceliece_test() {
+    // Generate a recipient key pair
+    let keypair = classicmceliece_keygen();
     let public_key = keypair.public_key();
     let secret_key = keypair.secret_key();
 

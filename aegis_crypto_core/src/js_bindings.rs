@@ -68,7 +68,7 @@ pub fn sign_dilithium_js(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
 /// Verify a Dilithium signature.
 #[cfg(feature = "dilithium")]
 #[wasm_bindgen(js_name = verifyDilithiumSignature)]
-pub fn verify_dilithium_js(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+pub fn verify_dilithium_js(public_key: &[u8], message: &[u8], _signature: &[u8]) -> bool {
     dilithium::dilithium_verify(public_key, message)
 }
 
@@ -110,7 +110,7 @@ pub fn sign_sphincsplus_js(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
 /// Verify a SPHINCS+ signature.
 #[cfg(feature = "sphincsplus")]
 #[wasm_bindgen(js_name = verifySphincsPlusSignature)]
-pub fn verify_sphincsplus_js(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+pub fn verify_sphincsplus_js(public_key: &[u8], message: &[u8], _signature: &[u8]) -> bool {
     sphincsplus::sphincsplus_verify(public_key, message)
 }
 
