@@ -11,7 +11,6 @@
 //! implementation, returning the same types that are already annotated with
 //! `#[wasm_bindgen]` in their respective modules.
 
-use wasm_bindgen::prelude::*;
 
 // Pull the types and functions from the parent crate.  These modules
 // define the post‑quantum algorithms and are already annotated with
