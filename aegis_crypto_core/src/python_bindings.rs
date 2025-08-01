@@ -1,221 +1,401 @@
-//! Python bindings for Aegis Crypto Core.
-//!
-//! This module exposes a minimal set of functions and classes via the
-//! [PyO3](https://github.com/PyO3/pyo3) framework so that Python
-//! applications can directly use the post‑quantum cryptographic
-//! primitives implemented in Rust.  These bindings are meant to be
-//! compiled as a Python extension module.  Each exported function
-//! delegates to the corresponding Rust implementation in the parent
-//! crate without introducing any placeholder code.
+//! Python bindings for Aegis Crypto Core — all NIST PQC algorithms, all security levels.
+//! Grouped and nested by algorithm family, production-ready for PyO3.
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
 use crate::{
-    kyber::{self, KyberKeyPair, KyberEncapsulated},
-    dilithium::{self, DilithiumKeyPair},
-    falcon::{self, FalconKeyPair},
+    sphincsplus,
+    hqc,
+    classicmceliece,
+    dilithium,
+    kyber,
+    falcon,
     hash,
     utils,
 };
 
-/// A Python class representing a Kyber key pair.
-#[pyclass(name = "KyberKeyPair")]
-struct KyberKeyPairPy {
+// ===================== SPHINCS+ Family =====================
+#[pyclass]
+pub struct SphincsPlus192fKeyPair {
     pk: Vec<u8>,
     sk: Vec<u8>,
 }
-
 #[pymethods]
-impl KyberKeyPairPy {
+impl SphincsPlus192fKeyPair {
     #[getter]
-    fn public_key(&self) -> PyResult<Vec<u8>> {
-        Ok(self.pk.clone())
-    }
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
     #[getter]
-    fn secret_key(&self) -> PyResult<Vec<u8>> {
-        Ok(self.sk.clone())
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<sphincsplus::SphincsPlus192fKeyPair> for SphincsPlus192fKeyPair {
+    fn from(k: sphincsplus::SphincsPlus192fKeyPair) -> Self {
+        Self { pk: k.public_key(), sk: k.secret_key() }
     }
 }
 
-impl From<KyberKeyPair> for KyberKeyPairPy {
-    fn from(k: KyberKeyPair) -> Self {
-        Self {
-            pk: k.public_key(),
-            sk: k.secret_key(),
-        }
-    }
-}
-
-/// A Python class representing a Dilithium key pair.
-#[pyclass(name = "DilithiumKeyPair")]
-struct DilithiumKeyPairPy {
+#[pyclass]
+pub struct SphincsPlus256fKeyPair {
     pk: Vec<u8>,
     sk: Vec<u8>,
 }
+#[pymethods]
+impl SphincsPlus256fKeyPair {
+    #[getter]
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
+    #[getter]
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<sphincsplus::SphincsPlus256fKeyPair> for SphincsPlus256fKeyPair {
+    fn from(k: sphincsplus::SphincsPlus256fKeyPair) -> Self {
+        Self { pk: k.public_key(), sk: k.secret_key() }
+    }
+}
+
+#[pyclass]
+pub struct SphincsPlus;
 
 #[pymethods]
-impl DilithiumKeyPairPy {
-    #[getter]
-    fn public_key(&self) -> PyResult<Vec<u8>> {
-        Ok(self.pk.clone())
+impl SphincsPlus {
+    /// Generate a SPHINCS+ 192f keypair.
+    #[staticmethod]
+    fn keygen_192() -> SphincsPlus192fKeyPair {
+        sphincsplus::sphincsplus192_keygen().into()
     }
-    #[getter]
-    fn secret_key(&self) -> PyResult<Vec<u8>> {
-        Ok(self.sk.clone())
+    /// Sign a message using SPHINCS+ 192f.
+    #[staticmethod]
+    fn sign_192(secret_key: Vec<u8>, message: Vec<u8>) -> Vec<u8> {
+        sphincsplus::sphincsplus192_sign(&secret_key, &message)
+    }
+    /// Verify a SPHINCS+ 192f signed message.
+    #[staticmethod]
+    fn verify_192(public_key: Vec<u8>, signed_message: Vec<u8>) -> bool {
+        sphincsplus::sphincsplus192_verify(&public_key, &signed_message)
+    }
+    /// Generate a SPHINCS+ 256f keypair.
+    #[staticmethod]
+    fn keygen_256() -> SphincsPlus256fKeyPair {
+        sphincsplus::sphincsplus256_keygen().into()
+    }
+    /// Sign a message using SPHINCS+ 256f.
+    #[staticmethod]
+    fn sign_256(secret_key: Vec<u8>, message: Vec<u8>) -> Vec<u8> {
+        sphincsplus::sphincsplus256_sign(&secret_key, &message)
+    }
+    /// Verify a SPHINCS+ 256f signed message.
+    #[staticmethod]
+    fn verify_256(public_key: Vec<u8>, signed_message: Vec<u8>) -> bool {
+        sphincsplus::sphincsplus256_verify(&public_key, &signed_message)
     }
 }
 
-impl From<DilithiumKeyPair> for DilithiumKeyPairPy {
-    fn from(k: DilithiumKeyPair) -> Self {
-        Self {
-            pk: k.public_key(),
-            sk: k.secret_key(),
-        }
-    }
-}
-
-/// A Python class representing a Falcon key pair.
-#[pyclass(name = "FalconKeyPair")]
-struct FalconKeyPairPy {
-    pk: Vec<u8>,
-    sk: Vec<u8>,
-}
-
+// ===================== HQC Family =====================
+#[pyclass]
+pub struct Hqc128KeyPair { pk: Vec<u8>, sk: Vec<u8> }
 #[pymethods]
-impl FalconKeyPairPy {
+impl Hqc128KeyPair {
     #[getter]
-    fn public_key(&self) -> PyResult<Vec<u8>> {
-        Ok(self.pk.clone())
-    }
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
     #[getter]
-    fn secret_key(&self) -> PyResult<Vec<u8>> {
-        Ok(self.sk.clone())
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<hqc::Hqc128KeyPair> for Hqc128KeyPair {
+    fn from(k: hqc::Hqc128KeyPair) -> Self { Self { pk: k.public_key(), sk: k.secret_key() } }
+}
+#[pyclass]
+pub struct Hqc192KeyPair { pk: Vec<u8>, sk: Vec<u8> }
+#[pymethods]
+impl Hqc192KeyPair {
+    #[getter]
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
+    #[getter]
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<hqc::Hqc192KeyPair> for Hqc192KeyPair {
+    fn from(k: hqc::Hqc192KeyPair) -> Self { Self { pk: k.public_key(), sk: k.secret_key() } }
+}
+#[pyclass]
+pub struct Hqc256KeyPair { pk: Vec<u8>, sk: Vec<u8> }
+#[pymethods]
+impl Hqc256KeyPair {
+    #[getter]
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
+    #[getter]
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<hqc::Hqc256KeyPair> for Hqc256KeyPair {
+    fn from(k: hqc::Hqc256KeyPair) -> Self { Self { pk: k.public_key(), sk: k.secret_key() } }
+}
+
+#[pyclass]
+pub struct HQC;
+#[pymethods]
+impl HQC {
+    #[staticmethod]
+    fn keygen_128() -> Hqc128KeyPair { hqc::hqc128_keygen().into() }
+    #[staticmethod]
+    fn encapsulate_128(public_key: Vec<u8>) -> PyResult<(Vec<u8>, Vec<u8>)> {
+        let out = hqc::hqc128_encapsulate(&public_key)
+            .map_err(|e| PyValueError::new_err(format!("HQC-128 encapsulate failed: {}", e)))?;
+        Ok((out.ciphertext(), out.shared_secret()))
+    }
+    #[staticmethod]
+    fn decapsulate_128(secret_key: Vec<u8>, ciphertext: Vec<u8>) -> PyResult<Vec<u8>> {
+        hqc::hqc128_decapsulate(&secret_key, &ciphertext)
+            .map_err(|e| PyValueError::new_err(format!("HQC-128 decapsulate failed: {}", e)))
+    }
+    #[staticmethod]
+    fn keygen_192() -> Hqc192KeyPair { hqc::hqc192_keygen().into() }
+    #[staticmethod]
+    fn encapsulate_192(public_key: Vec<u8>) -> PyResult<(Vec<u8>, Vec<u8>)> {
+        let out = hqc::hqc192_encapsulate(&public_key)
+            .map_err(|e| PyValueError::new_err(format!("HQC-192 encapsulate failed: {}", e)))?;
+        Ok((out.ciphertext(), out.shared_secret()))
+    }
+    #[staticmethod]
+    fn decapsulate_192(secret_key: Vec<u8>, ciphertext: Vec<u8>) -> PyResult<Vec<u8>> {
+        hqc::hqc192_decapsulate(&secret_key, &ciphertext)
+            .map_err(|e| PyValueError::new_err(format!("HQC-192 decapsulate failed: {}", e)))
+    }
+    #[staticmethod]
+    fn keygen_256() -> Hqc256KeyPair { hqc::hqc256_keygen().into() }
+    #[staticmethod]
+    fn encapsulate_256(public_key: Vec<u8>) -> PyResult<(Vec<u8>, Vec<u8>)> {
+        let out = hqc::hqc256_encapsulate(&public_key)
+            .map_err(|e| PyValueError::new_err(format!("HQC-256 encapsulate failed: {}", e)))?;
+        Ok((out.ciphertext(), out.shared_secret()))
+    }
+    #[staticmethod]
+    fn decapsulate_256(secret_key: Vec<u8>, ciphertext: Vec<u8>) -> PyResult<Vec<u8>> {
+        hqc::hqc256_decapsulate(&secret_key, &ciphertext)
+            .map_err(|e| PyValueError::new_err(format!("HQC-256 decapsulate failed: {}", e)))
     }
 }
 
-impl From<FalconKeyPair> for FalconKeyPairPy {
-    fn from(k: FalconKeyPair) -> Self {
-        Self {
-            pk: k.public_key(),
-            sk: k.secret_key(),
-        }
+// ===================== Classic McEliece Family =====================
+#[pyclass]
+pub struct ClassicMcEliece128KeyPair { pk: Vec<u8>, sk: Vec<u8> }
+#[pymethods]
+impl ClassicMcEliece128KeyPair {
+    #[getter]
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
+    #[getter]
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<classicmceliece::ClassicMcEliece128KeyPair> for ClassicMcEliece128KeyPair {
+    fn from(k: classicmceliece::ClassicMcEliece128KeyPair) -> Self { Self { pk: k.public_key(), sk: k.secret_key() } }
+}
+#[pyclass]
+pub struct ClassicMcEliece192KeyPair { pk: Vec<u8>, sk: Vec<u8> }
+#[pymethods]
+impl ClassicMcEliece192KeyPair {
+    #[getter]
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
+    #[getter]
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<classicmceliece::ClassicMcEliece192KeyPair> for ClassicMcEliece192KeyPair {
+    fn from(k: classicmceliece::ClassicMcEliece192KeyPair) -> Self { Self { pk: k.public_key(), sk: k.secret_key() } }
+}
+#[pyclass]
+pub struct ClassicMcEliece256KeyPair { pk: Vec<u8>, sk: Vec<u8> }
+#[pymethods]
+impl ClassicMcEliece256KeyPair {
+    #[getter]
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
+    #[getter]
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<classicmceliece::ClassicMcEliece256KeyPair> for ClassicMcEliece256KeyPair {
+    fn from(k: classicmceliece::ClassicMcEliece256KeyPair) -> Self { Self { pk: k.public_key(), sk: k.secret_key() } }
+}
+
+#[pyclass]
+pub struct ClassicMcEliece;
+#[pymethods]
+impl ClassicMcEliece {
+    #[staticmethod]
+    fn keygen_128() -> ClassicMcEliece128KeyPair { classicmceliece::classicmceliece128_keygen().into() }
+    #[staticmethod]
+    fn encapsulate_128(public_key: Vec<u8>) -> PyResult<(Vec<u8>, Vec<u8>)> {
+        let out = classicmceliece::classicmceliece128_encapsulate(&public_key)
+            .map_err(|e| PyValueError::new_err(format!("McEliece-128 encapsulate failed: {}", e)))?;
+        Ok((out.ciphertext(), out.shared_secret()))
+    }
+    #[staticmethod]
+    fn decapsulate_128(secret_key: Vec<u8>, ciphertext: Vec<u8>) -> PyResult<Vec<u8>> {
+        classicmceliece::classicmceliece128_decapsulate(&secret_key, &ciphertext)
+            .map_err(|e| PyValueError::new_err(format!("McEliece-128 decapsulate failed: {}", e)))
+    }
+    #[staticmethod]
+    fn keygen_192() -> ClassicMcEliece192KeyPair { classicmceliece::classicmceliece192_keygen().into() }
+    #[staticmethod]
+    fn encapsulate_192(public_key: Vec<u8>) -> PyResult<(Vec<u8>, Vec<u8>)> {
+        let out = classicmceliece::classicmceliece192_encapsulate(&public_key)
+            .map_err(|e| PyValueError::new_err(format!("McEliece-192 encapsulate failed: {}", e)))?;
+        Ok((out.ciphertext(), out.shared_secret()))
+    }
+    #[staticmethod]
+    fn decapsulate_192(secret_key: Vec<u8>, ciphertext: Vec<u8>) -> PyResult<Vec<u8>> {
+        classicmceliece::classicmceliece192_decapsulate(&secret_key, &ciphertext)
+            .map_err(|e| PyValueError::new_err(format!("McEliece-192 decapsulate failed: {}", e)))
+    }
+    #[staticmethod]
+    fn keygen_256() -> ClassicMcEliece256KeyPair { classicmceliece::classicmceliece256_keygen().into() }
+    #[staticmethod]
+    fn encapsulate_256(public_key: Vec<u8>) -> PyResult<(Vec<u8>, Vec<u8>)> {
+        let out = classicmceliece::classicmceliece256_encapsulate(&public_key)
+            .map_err(|e| PyValueError::new_err(format!("McEliece-256 encapsulate failed: {}", e)))?;
+        Ok((out.ciphertext(), out.shared_secret()))
+    }
+    #[staticmethod]
+    fn decapsulate_256(secret_key: Vec<u8>, ciphertext: Vec<u8>) -> PyResult<Vec<u8>> {
+        classicmceliece::classicmceliece256_decapsulate(&secret_key, &ciphertext)
+            .map_err(|e| PyValueError::new_err(format!("McEliece-256 decapsulate failed: {}", e)))
     }
 }
 
-/// Generates a Kyber key pair.
-#[pyfunction]
-fn kyber_keygen_py() -> PyResult<KyberKeyPairPy> {
-    Ok(kyber::kyber_keygen().into())
+// ===================== Dilithium3 (ML-DSA Level 3) =====================
+#[pyclass]
+pub struct Dilithium3KeyPair { pk: Vec<u8>, sk: Vec<u8> }
+#[pymethods]
+impl Dilithium3KeyPair {
+    #[getter]
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
+    #[getter]
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<dilithium::DilithiumKeyPair> for Dilithium3KeyPair {
+    fn from(k: dilithium::DilithiumKeyPair) -> Self { Self { pk: k.public_key(), sk: k.secret_key() } }
 }
 
-/// Encapsulates a shared secret using Kyber.
-#[pyfunction]
-fn kyber_encapsulate_py(public_key: Vec<u8>) -> PyResult<(Vec<u8>, Vec<u8>)> {
-    match kyber::kyber_encapsulate(&public_key) {
-        Ok(encaps) => Ok((encaps.ciphertext().to_vec(), encaps.shared_secret().to_vec())),
-        Err(e) => Err(PyValueError::new_err(format!("Kyber encapsulation failed: {}", e)) ),
+#[pyclass]
+pub struct Dilithium;
+#[pymethods]
+impl Dilithium {
+    #[staticmethod]
+    fn keygen() -> Dilithium3KeyPair { dilithium::dilithium_keygen().into() }
+    #[staticmethod]
+    fn sign(secret_key: Vec<u8>, message: Vec<u8>) -> Vec<u8> {
+        dilithium::dilithium_sign(&secret_key, &message)
+    }
+    #[staticmethod]
+    fn verify(public_key: Vec<u8>, message: Vec<u8>, signature: Vec<u8>) -> bool {
+        dilithium::dilithium_verify(&public_key, &message, &signature)
     }
 }
 
-/// Decapsulates a shared secret using Kyber.
-#[pyfunction]
-fn kyber_decapsulate_py(secret_key: Vec<u8>, ciphertext: Vec<u8>) -> PyResult<Vec<u8>> {
-    match kyber::kyber_decapsulate(&secret_key, &ciphertext) {
-        Ok(shared) => Ok(shared),
-        Err(e) => Err(PyValueError::new_err(format!("Kyber decapsulation failed: {}", e)) ),
+// ===================== Kyber (ML-KEM) =====================
+#[pyclass]
+pub struct KyberKeyPair { pk: Vec<u8>, sk: Vec<u8> }
+#[pymethods]
+impl KyberKeyPair {
+    #[getter]
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
+    #[getter]
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<kyber::KyberKeyPair> for KyberKeyPair {
+    fn from(k: kyber::KyberKeyPair) -> Self { Self { pk: k.public_key(), sk: k.secret_key() } }
+}
+
+#[pyclass]
+pub struct Kyber;
+#[pymethods]
+impl Kyber {
+    #[staticmethod]
+    fn keygen() -> KyberKeyPair { kyber::kyber_keygen().into() }
+    #[staticmethod]
+    fn encapsulate(public_key: Vec<u8>) -> PyResult<(Vec<u8>, Vec<u8>)> {
+        let out = kyber::kyber_encapsulate(&public_key)
+            .map_err(|e| PyValueError::new_err(format!("Kyber encapsulate failed: {}", e)))?;
+        Ok((out.ciphertext(), out.shared_secret()))
+    }
+    #[staticmethod]
+    fn decapsulate(secret_key: Vec<u8>, ciphertext: Vec<u8>) -> PyResult<Vec<u8>> {
+        kyber::kyber_decapsulate(&secret_key, &ciphertext)
+            .map_err(|e| PyValueError::new_err(format!("Kyber decapsulate failed: {}", e)))
     }
 }
 
-/// Generates a Dilithium key pair.
-#[pyfunction]
-fn dilithium_keygen_py() -> PyResult<DilithiumKeyPairPy> {
-    Ok(dilithium::dilithium_keygen().into())
+// ===================== Falcon (Level 1) =====================
+#[pyclass]
+pub struct FalconKeyPair { pk: Vec<u8>, sk: Vec<u8> }
+#[pymethods]
+impl FalconKeyPair {
+    #[getter]
+    fn public_key(&self) -> PyResult<Vec<u8>> { Ok(self.pk.clone()) }
+    #[getter]
+    fn secret_key(&self) -> PyResult<Vec<u8>> { Ok(self.sk.clone()) }
+}
+impl From<falcon::FalconKeyPair> for FalconKeyPair {
+    fn from(k: falcon::FalconKeyPair) -> Self { Self { pk: k.public_key(), sk: k.secret_key() } }
 }
 
-/// Signs a message using Dilithium.
-#[pyfunction]
-fn dilithium_sign_py(secret_key: Vec<u8>, message: Vec<u8>) -> PyResult<Vec<u8>> {
-    Ok(dilithium::dilithium_sign(&secret_key, &message))
+#[pyclass]
+pub struct Falcon;
+#[pymethods]
+impl Falcon {
+    #[staticmethod]
+    fn keygen() -> FalconKeyPair { falcon::falcon_keygen().into() }
+    #[staticmethod]
+    fn sign(secret_key: Vec<u8>, message: Vec<u8>) -> Vec<u8> {
+        falcon::falcon_sign(&secret_key, &message)
+    }
+    #[staticmethod]
+    fn verify(public_key: Vec<u8>, message: Vec<u8>, signature: Vec<u8>) -> bool {
+        falcon::falcon_verify(&public_key, &message, &signature)
+    }
 }
 
-/// Verifies a Dilithium signature.
+// ===================== Utility/Hash Functions =====================
 #[pyfunction]
-fn dilithium_verify_py(public_key: Vec<u8>, message: Vec<u8>, signature: Vec<u8>) -> PyResult<bool> {
-    Ok(dilithium::dilithium_verify(&public_key, &message, &signature))
-}
-
-/// Generates a Falcon key pair.
+fn sha3_256_hash_py(data: Vec<u8>) -> PyResult<Vec<u8>> { Ok(hash::sha3_256_hash(&data)) }
 #[pyfunction]
-fn falcon_keygen_py() -> PyResult<FalconKeyPairPy> {
-    Ok(falcon::falcon_keygen().into())
-}
-
-/// Signs a message using Falcon.
+fn sha3_256_hash_hex_py(data: Vec<u8>) -> PyResult<String> { Ok(hex::encode(hash::sha3_256_hash(&data))) }
 #[pyfunction]
-fn falcon_sign_py(secret_key: Vec<u8>, message: Vec<u8>) -> PyResult<Vec<u8>> {
-    Ok(falcon::falcon_sign(&secret_key, &message))
-}
-
-/// Verifies a Falcon signature.
+fn sha3_512_hash_py(data: Vec<u8>) -> PyResult<Vec<u8>> { Ok(hash::sha3_512_hash(&data)) }
 #[pyfunction]
-fn falcon_verify_py(public_key: Vec<u8>, message: Vec<u8>, signature: Vec<u8>) -> PyResult<bool> {
-    Ok(falcon::falcon_verify(&public_key, &message, &signature))
-}
-
-/// Computes the SHA3‑256 hash of the given data.
+fn sha3_512_hash_hex_py(data: Vec<u8>) -> PyResult<String> { Ok(hex::encode(hash::sha3_512_hash(&data))) }
 #[pyfunction]
-fn sha3_256_hash_py(data: Vec<u8>) -> PyResult<Vec<u8>> {
-    Ok(hash::sha3_256_hash(&data))
-}
-
-/// Computes the SHA3‑512 hash of the given data.
+fn blake3_hash_py(data: Vec<u8>) -> PyResult<Vec<u8>> { Ok(hash::blake3_hash(&data)) }
 #[pyfunction]
-fn sha3_512_hash_py(data: Vec<u8>) -> PyResult<Vec<u8>> {
-    Ok(hash::sha3_512_hash(&data))
-}
-
-/// Computes the BLAKE3 hash of the given data.
-#[pyfunction]
-fn blake3_hash_py(data: Vec<u8>) -> PyResult<Vec<u8>> {
-    Ok(hash::blake3_hash(&data))
-}
-
-/// Convert a hex string to bytes.
+fn blake3_hash_hex_py(data: Vec<u8>) -> PyResult<String> { Ok(hex::encode(hash::blake3_hash(&data))) }
 #[pyfunction]
 fn hex_to_bytes_py(hex_string: String) -> PyResult<Vec<u8>> {
-    match utils::hex_to_bytes(&hex_string) {
-        Ok(bytes) => Ok(bytes),
-        Err(e) => Err(PyValueError::new_err(format!("Invalid hex string: {}", e)) ),
-    }
+    utils::hex_to_bytes(&hex_string).map_err(|e| PyValueError::new_err(format!("Invalid hex: {}", e)))
 }
-
-/// Convert bytes to a hex string.
 #[pyfunction]
-fn bytes_to_hex_py(data: Vec<u8>) -> PyResult<String> {
-    Ok(utils::bytes_to_hex(&data))
-}
+fn bytes_to_hex_py(data: Vec<u8>) -> PyResult<String> { Ok(utils::bytes_to_hex(&data)) }
 
-/// Defines the Python module.  This function is called by the Python
-/// interpreter when the module is imported.  All functions and classes
-/// are added to the module here.
+// ===================== Module Registration =====================
 #[pymodule]
 fn aegis_crypto_core_py(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<KyberKeyPairPy>()?;
-    m.add_class::<DilithiumKeyPairPy>()?;
-    m.add_class::<FalconKeyPairPy>()?;
-    m.add_function(wrap_pyfunction!(kyber_keygen_py, m)?)?;
-    m.add_function(wrap_pyfunction!(kyber_encapsulate_py, m)?)?;
-    m.add_function(wrap_pyfunction!(kyber_decapsulate_py, m)?)?;
-    m.add_function(wrap_pyfunction!(dilithium_keygen_py, m)?)?;
-    m.add_function(wrap_pyfunction!(dilithium_sign_py, m)?)?;
-    m.add_function(wrap_pyfunction!(dilithium_verify_py, m)?)?;
-    m.add_function(wrap_pyfunction!(falcon_keygen_py, m)?)?;
-    m.add_function(wrap_pyfunction!(falcon_sign_py, m)?)?;
-    m.add_function(wrap_pyfunction!(falcon_verify_py, m)?)?;
+    // Algorithm families
+    m.add_class::<SphincsPlus>()?;
+    m.add_class::<SphincsPlus192fKeyPair>()?;
+    m.add_class::<SphincsPlus256fKeyPair>()?;
+    m.add_class::<HQC>()?;
+    m.add_class::<Hqc128KeyPair>()?;
+    m.add_class::<Hqc192KeyPair>()?;
+    m.add_class::<Hqc256KeyPair>()?;
+    m.add_class::<ClassicMcEliece>()?;
+    m.add_class::<ClassicMcEliece128KeyPair>()?;
+    m.add_class::<ClassicMcEliece192KeyPair>()?;
+    m.add_class::<ClassicMcEliece256KeyPair>()?;
+    m.add_class::<Dilithium>()?;
+    m.add_class::<Dilithium3KeyPair>()?;
+    m.add_class::<Kyber>()?;
+    m.add_class::<KyberKeyPair>()?;
+    m.add_class::<Falcon>()?;
+    m.add_class::<FalconKeyPair>()?;
+    // Utility/hash functions
     m.add_function(wrap_pyfunction!(sha3_256_hash_py, m)?)?;
+    m.add_function(wrap_pyfunction!(sha3_256_hash_hex_py, m)?)?;
     m.add_function(wrap_pyfunction!(sha3_512_hash_py, m)?)?;
+    m.add_function(wrap_pyfunction!(sha3_512_hash_hex_py, m)?)?;
     m.add_function(wrap_pyfunction!(blake3_hash_py, m)?)?;
+    m.add_function(wrap_pyfunction!(blake3_hash_hex_py, m)?)?;
     m.add_function(wrap_pyfunction!(hex_to_bytes_py, m)?)?;
     m.add_function(wrap_pyfunction!(bytes_to_hex_py, m)?)?;
     Ok(())

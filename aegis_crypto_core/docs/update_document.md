@@ -80,8 +80,8 @@ All legacy, in-project implementations of the NIST PQC standards (quantum_fips20
 - [x] Review the project structure and existing files.
 
 **Phase 2: Migrate to pqcrypto and Remove Legacy Code**
-- [ ] Remove quantum_fips203, quantum_fips204, quantum_fips205, quantum_fips206 folders and related code.
-- [ ] Integrate all six pqcrypto modules: mlkem (Kyber), mldsa (Dilithium), sphincsplus (SPHINCS+), falcon, hqc, classicmceliece.
+- [x] Remove quantum_fips203, quantum_fips204, quantum_fips205, quantum_fips206 folders and related code.
+- [x] Integrate all six pqcrypto modules: mlkem (Kyber), mldsa (Dilithium), sphincsplus (SPHINCS+), falcon, hqc, classicmceliece.
 - [ ] Refactor all Rust code to use pqcrypto APIs for keygen, sign, verify, encaps, and decaps.
 - [ ] Update Cargo.toml for new dependencies, removing all local/legacy entries.
 
@@ -113,10 +113,9 @@ All legacy, in-project implementations of the NIST PQC standards (quantum_fips20
 - [ ] Provide a summary “What’s Inside” and “Who Should Use This” in the root README.
 - [ ] Add a “Changelog” or “Release Notes” file describing major improvements.
 
-**Phase 8: Prepare and deliver final project package**
-- [ ] Monitor credits and stop if they drop to 100.
+**Phase 8: Prepare final project package**
+- [ ] Ensure all code is clean, well-commented, and follows Rust best practices.
 - [ ] Create an “update document” detailing what’s complete, what’s partial, what’s left, and any issues or decisions.
-- [ ] Package all project files, demos, docs, and the update as a single downloadable zip.
 
 ---
 

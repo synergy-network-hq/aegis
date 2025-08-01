@@ -12,3 +12,15 @@ members = [
     "pqcrypto/pqcrypto-sphincsplus"
 ]
 resolver="2"
+
+
+[profile.dev]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.release]
+opt-level = 3
+lto = true
+debug = false
+panic = "abort"

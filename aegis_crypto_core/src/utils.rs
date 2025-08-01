@@ -1,8 +1,15 @@
-//! This module provides utility functions for common cryptographic operations,
-//! such as hexadecimal encoding and decoding. These functions are exposed as
-//! WebAssembly (WASM) bindings for convenient use in JavaScript and TypeScript environments.
+// This module provides utility functions for common cryptographic operations,
+// such as hexadecimal encoding and decoding. These functions are exposed as
+// WebAssembly (WASM) bindings for convenient use in JavaScript and TypeScript environments.
 
 use wasm_bindgen::prelude::*;
+
+// Import Vec and String for no_std compatibility
+#[cfg(not(feature = "std"))]
+use alloc::{vec::Vec, string::String, format};
+
+#[cfg(feature = "std")]
+use std::{vec::Vec, string::String};
 
 /// Converts a hexadecimal string into a vector of bytes.
 ///
@@ -44,5 +51,3 @@ pub fn hex_to_bytes(hex_string: &str) -> Result<Vec<u8>, JsValue> {
 pub fn bytes_to_hex(bytes: &[u8]) -> String {
     hex::encode(bytes)
 }
-
-
