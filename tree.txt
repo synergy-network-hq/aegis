@@ -25,15 +25,21 @@
 │   ├── README.md
 │   ├── src
 │   │   ├── classicmceliece
+│   │   │   └── mod.rs
 │   │   ├── dilithium
+│   │   │   └── mod.rs
 │   │   ├── falcon
+│   │   │   └── mod.rs
 │   │   ├── hash.rs
 │   │   ├── hqc
+│   │   │   └── mod.rs
 │   │   ├── js_bindings.rs
 │   │   ├── kyber
+│   │   │   └── mod.rs
 │   │   ├── lib.rs
 │   │   ├── python_bindings.rs
 │   │   ├── sphincsplus
+│   │   │   └── mod.rs
 │   │   └── utils.rs
 │   ├── test.js
 │   ├── test_kyber.js
@@ -59,74 +65,233 @@
 │   ├── pqclean
 │   │   ├── BADGES.md
 │   │   ├── common
+│   │   │   ├── aes.c
+│   │   │   ├── aes.h
+│   │   │   ├── compat.h
+│   │   │   ├── crypto_declassify.h
+│   │   │   ├── fips202.c
+│   │   │   ├── fips202.h
+│   │   │   ├── keccak2x
+│   │   │   ├── keccak4x
+│   │   │   ├── nistseedexpander.c
+│   │   │   ├── nistseedexpander.h
+│   │   │   ├── randombytes.c
+│   │   │   ├── randombytes.h
+│   │   │   ├── sha2.c
+│   │   │   ├── sha2.h
+│   │   │   ├── sp800-185.c
+│   │   │   └── sp800-185.h
 │   │   ├── CONTRIBUTING.md
 │   │   ├── crypto_kem
+│   │   │   ├── hqc-128
+│   │   │   ├── hqc-192
+│   │   │   ├── hqc-256
+│   │   │   ├── mceliece348864
+│   │   │   ├── mceliece348864f
+│   │   │   ├── mceliece460896
+│   │   │   ├── mceliece460896f
+│   │   │   ├── mceliece6688128
+│   │   │   ├── mceliece6688128f
+│   │   │   ├── mceliece6960119
+│   │   │   ├── mceliece6960119f
+│   │   │   ├── mceliece8192128
+│   │   │   ├── mceliece8192128f
+│   │   │   ├── ml-kem-1024
+│   │   │   ├── ml-kem-512
+│   │   │   └── ml-kem-768
 │   │   ├── crypto_sign
+│   │   │   ├── falcon-1024
+│   │   │   ├── falcon-512
+│   │   │   ├── falcon-padded-1024
+│   │   │   ├── falcon-padded-512
+│   │   │   ├── ml-dsa-44
+│   │   │   ├── ml-dsa-65
+│   │   │   ├── ml-dsa-87
+│   │   │   ├── sphincs-sha2-128f-simple
+│   │   │   ├── sphincs-sha2-128s-simple
+│   │   │   ├── sphincs-sha2-192f-simple
+│   │   │   ├── sphincs-sha2-192s-simple
+│   │   │   ├── sphincs-sha2-256f-simple
+│   │   │   ├── sphincs-sha2-256s-simple
+│   │   │   ├── sphincs-shake-128f-simple
+│   │   │   ├── sphincs-shake-128s-simple
+│   │   │   ├── sphincs-shake-192f-simple
+│   │   │   ├── sphincs-shake-192s-simple
+│   │   │   ├── sphincs-shake-256f-simple
+│   │   │   └── sphincs-shake-256s-simple
 │   │   ├── README.md
 │   │   ├── requirements.txt
 │   │   ├── SECURITY.md
 │   │   └── test
+│   │       ├── common
+│   │       ├── crypto_kem
+│   │       ├── crypto_sign
+│   │       ├── duplicate_consistency
+│   │       ├── helpers.py
+│   │       ├── Makefile
+│   │       ├── Makefile.Microsoft_nmake
+│   │       ├── pqclean.py
+│   │       ├── pycparser
+│   │       ├── pytest.ini
+│   │       ├── test_api_h.py
+│   │       ├── test_boolean.py
+│   │       ├── test_char.py
+│   │       ├── test_common
+│   │       ├── test_common.py
+│   │       ├── test_compile_lib.py
+│   │       ├── test_duplicate_consistency.py
+│   │       ├── test_dynamic_memory.py
+│   │       ├── test_format.py
+│   │       ├── test_functest.py
+│   │       ├── test_license.py
+│   │       ├── test_linter.py
+│   │       ├── test_makefile_dependencies.py
+│   │       ├── test_makefiles_present.py
+│   │       ├── test_metadata.py
+│   │       ├── test_metadata_sizes.py
+│   │       ├── test_nistkat.py
+│   │       ├── test_no_symlinks.py
+│   │       ├── test_preprocessor.py
+│   │       ├── test_required_symbols.py
+│   │       ├── test_symbol_namespace.py
+│   │       ├── test_testvectors.py
+│   │       ├── test_valgrind.py
+│   │       └── test_workflows.py
 │   ├── pqcrypto
 │   │   ├── Cargo.toml
 │   │   ├── examples
+│   │   │   ├── keygen.rs
+│   │   │   ├── signer.rs
+│   │   │   └── verifier.rs
 │   │   ├── README.md
 │   │   └── src
+│   │       └── lib.rs
 │   ├── pqcrypto-classicmceliece
 │   │   ├── build.rs
 │   │   ├── Cargo.toml
 │   │   ├── pqclean -> ../pqclean
 │   │   ├── README.md
 │   │   └── src
+│   │       ├── ffi.rs
+│   │       ├── lib.rs
+│   │       ├── mceliece348864f.rs
+│   │       ├── mceliece348864.rs
+│   │       ├── mceliece460896f.rs
+│   │       ├── mceliece460896.rs
+│   │       ├── mceliece6688128f.rs
+│   │       ├── mceliece6688128.rs
+│   │       ├── mceliece6960119f.rs
+│   │       ├── mceliece6960119.rs
+│   │       ├── mceliece8192128f.rs
+│   │       └── mceliece8192128.rs
 │   ├── pqcrypto-falcon
 │   │   ├── build.rs
 │   │   ├── Cargo.toml
 │   │   ├── pqclean -> ../pqclean
 │   │   ├── README.md
 │   │   └── src
+│   │       ├── falcon1024.rs
+│   │       ├── falcon512.rs
+│   │       ├── falconpadded1024.rs
+│   │       ├── falconpadded512.rs
+│   │       ├── ffi.rs
+│   │       └── lib.rs
 │   ├── pqcrypto-hqc
 │   │   ├── build.rs
 │   │   ├── Cargo.toml
 │   │   ├── pqclean -> ../pqclean
 │   │   ├── README.md
 │   │   └── src
+│   │       ├── ffi.rs
+│   │       ├── hqc128.rs
+│   │       ├── hqc192.rs
+│   │       ├── hqc256.rs
+│   │       └── lib.rs
 │   ├── pqcrypto-internals
 │   │   ├── build.rs
 │   │   ├── Cargo.toml
 │   │   ├── cfiles
+│   │   │   ├── aes.c
+│   │   │   ├── fips202.c
+│   │   │   ├── keccak2x
+│   │   │   ├── keccak4x
+│   │   │   ├── nistseedexpander.c
+│   │   │   ├── randombytes.c
+│   │   │   ├── sha2.c
+│   │   │   └── sp800-185.c
 │   │   ├── include
+│   │   │   ├── aes.h
+│   │   │   ├── fips202.h
+│   │   │   ├── nistseedexpander.h
+│   │   │   ├── randombytes.h
+│   │   │   ├── sha2.h
+│   │   │   └── sp800-185.h
 │   │   └── src
+│   │       └── lib.rs
 │   ├── pqcrypto-mldsa
 │   │   ├── build.rs
 │   │   ├── Cargo.toml
 │   │   ├── pqclean -> ../pqclean
 │   │   ├── README.md
 │   │   └── src
+│   │       ├── ffi.rs
+│   │       ├── lib.rs
+│   │       ├── mldsa44.rs
+│   │       ├── mldsa65.rs
+│   │       └── mldsa87.rs
 │   ├── pqcrypto-mlkem
 │   │   ├── build.rs
 │   │   ├── Cargo.toml
 │   │   ├── pqclean -> ../pqclean
 │   │   ├── README.md
 │   │   └── src
+│   │       ├── ffi.rs
+│   │       ├── lib.rs
+│   │       ├── mlkem1024.rs
+│   │       ├── mlkem512.rs
+│   │       └── mlkem768.rs
 │   ├── pqcrypto-sphincsplus
 │   │   ├── build.rs
 │   │   ├── Cargo.toml
 │   │   ├── pqclean -> ../pqclean
 │   │   ├── README.md
 │   │   └── src
+│   │       ├── ffi.rs
+│   │       ├── lib.rs
+│   │       ├── sphincssha2128fsimple.rs
+│   │       ├── sphincssha2128ssimple.rs
+│   │       ├── sphincssha2192fsimple.rs
+│   │       ├── sphincssha2192ssimple.rs
+│   │       ├── sphincssha2256fsimple.rs
+│   │       ├── sphincssha2256ssimple.rs
+│   │       ├── sphincsshake128fsimple.rs
+│   │       ├── sphincsshake128ssimple.rs
+│   │       ├── sphincsshake192fsimple.rs
+│   │       ├── sphincsshake192ssimple.rs
+│   │       ├── sphincsshake256fsimple.rs
+│   │       └── sphincsshake256ssimple.rs
 │   ├── pqcrypto-template
 │   │   ├── pqcrypto
+│   │   │   ├── Cargo.toml.j2
+│   │   │   ├── examples
+│   │   │   ├── README.md.j2
+│   │   │   └── src
 │   │   ├── scheme
+│   │   │   ├── build.rs.j2
+│   │   │   ├── Cargo.toml.j2
+│   │   │   ├── README.md.j2
+│   │   │   └── src
 │   │   └── workspace-Cargo.toml.j2
 │   ├── pqcrypto-traits
 │   │   ├── Cargo.toml
 │   │   └── src
+│   │       ├── kem.rs
+│   │       ├── lib.rs
+│   │       └── sign.rs
 │   ├── README.md
 │   ├── release.sh
 │   ├── SECURITY.md
-│   ├── target
-│   │   ├── CACHEDIR.TAG
-│   │   └── debug
 │   └── WASM.md
 └── tree.txt
 
-50 directories, 80 files
+96 directories, 199 files

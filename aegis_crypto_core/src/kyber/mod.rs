@@ -7,6 +7,13 @@ use pqcrypto_mlkem::mlkem768::{PublicKey, SecretKey, Ciphertext, encapsulate, de
 use pqcrypto_traits::kem::{PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _};
 use wasm_bindgen::prelude::*;
 
+// Import Vec and format! for no_std compatibility
+#[cfg(not(feature = "std"))]
+use alloc::{vec::Vec, format};
+
+#[cfg(feature = "std")]
+use std::vec::Vec;
+
 /// Represents a Kyber key pair, containing both the public and secret keys.
 /// These keys are essential for performing cryptographic operations such as
 /// encapsulating and decapsulating shared secrets.

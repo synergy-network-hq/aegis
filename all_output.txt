@@ -1,0 +1,1879 @@
+    Checking pqcrypto v0.18.1 (/home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto)
+    Checking aegis_crypto_core v0.1.0 (/home/hootzluh/Desktop/sphinc/aegis_crypto_core/aegis_crypto_core)
+error[E0432]: unresolved imports `pqcrypto_mldsa::mldsa87::Signature`, `pqcrypto_mldsa::mldsa87::verify`
+ --> aegis_crypto_core/src/dilithium/mod.rs:5:53
+  |
+5 | use pqcrypto_mldsa::mldsa87::{PublicKey, SecretKey, Signature, sign, verify, keypair};
+  |                                                     ^^^^^^^^^        ^^^^^^ no `verify` in `mldsa87`
+  |                                                     |
+  |                                                     no `Signature` in `mldsa87`
+
+error[E0432]: unresolved import `pqcrypto_traits::sign::Signature`
+ --> aegis_crypto_core/src/dilithium/mod.rs:6:61
+  |
+6 | use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, Signature as _};
+  |                                                             ^^^^^^^^^^^^^^ no `Signature` in `sign`
+
+error[E0412]: cannot find type `Vec` in this scope
+  --> aegis_crypto_core/src/dilithium/mod.rs:12:9
+   |
+12 |     pk: Vec<u8>,
+   |         ^^^ not found in this scope
+   |
+help: consider importing one of these structs
+   |
+5  + use crate::Vec;
+   |
+5  + use alloc::vec::Vec;
+   |
+
+error[E0412]: cannot find type `Vec` in this scope
+  --> aegis_crypto_core/src/dilithium/mod.rs:13:9
+   |
+13 |     sk: Vec<u8>,
+   |         ^^^ not found in this scope
+   |
+help: consider importing one of these structs
+   |
+5  + use crate::Vec;
+   |
+5  + use alloc::vec::Vec;
+   |
+
+error[E0412]: cannot find type `Vec` in this scope
+  --> aegis_crypto_core/src/dilithium/mod.rs:20:33
+   |
+20 |     pub fn public_key(&self) -> Vec<u8> {
+   |                                 ^^^ not found in this scope
+   |
+help: consider importing one of these structs
+   |
+5  + use crate::Vec;
+   |
+5  + use alloc::vec::Vec;
+   |
+
+error[E0412]: cannot find type `Vec` in this scope
+  --> aegis_crypto_core/src/dilithium/mod.rs:26:33
+   |
+26 |     pub fn secret_key(&self) -> Vec<u8> {
+   |                                 ^^^ not found in this scope
+   |
+help: consider importing one of these structs
+   |
+5  + use crate::Vec;
+   |
+5  + use alloc::vec::Vec;
+   |
+
+error[E0412]: cannot find type `Vec` in this scope
+  --> aegis_crypto_core/src/dilithium/mod.rs:53:61
+   |
+53 | pub fn dilithium_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
+   |                                                             ^^^ not found in this scope
+   |
+help: consider importing one of these structs
+   |
+5  + use crate::Vec;
+   |
+5  + use alloc::vec::Vec;
+   |
+
+warning: unused imports: `string::String` and `vec::Vec`
+  --> aegis_crypto_core/src/lib.rs:13:13
+   |
+13 | use alloc::{vec::Vec, string::String};
+   |             ^^^^^^^^  ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` on by default
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/falcon/mod.rs:13:20
+   |
+13 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/falcon/mod.rs:15:20
+   |
+15 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:15:20
+   |
+15 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:17:20
+   |
+17 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:23:20
+   |
+23 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:25:20
+   |
+25 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:15:20
+   |
+15 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:17:20
+   |
+17 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:23:20
+   |
+23 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:25:20
+   |
+25 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:31:20
+   |
+31 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:33:20
+   |
+33 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:39:20
+   |
+39 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:41:20
+   |
+41 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:47:20
+   |
+47 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:49:20
+   |
+49 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:55:20
+   |
+55 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/hqc/mod.rs:57:20
+   |
+57 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:15:20
+   |
+15 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:17:20
+   |
+17 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:23:20
+   |
+23 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:25:20
+   |
+25 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:31:20
+   |
+31 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:33:20
+   |
+33 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:39:20
+   |
+39 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:41:20
+   |
+41 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:47:20
+   |
+47 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:49:20
+   |
+49 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:55:20
+   |
+55 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+warning: unused variable: `getter`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:57:20
+   |
+57 |     #[wasm_bindgen(getter)]
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_getter`
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_mldsa::mldsa87::SignedMessage` in the current scope
+  --> aegis_crypto_core/src/dilithium/mod.rs:56:9
+   |
+56 |     sig.as_bytes().to_vec()
+   |         ^^^^^^^^ method not found in `SignedMessage`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:30:8
+   |
+30 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_mldsa::mldsa87::SignedMessage` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SignedMessage` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+5  + use pqcrypto_traits::sign::SignedMessage;
+   |
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/falcon/mod.rs:14:27
+   |
+11 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+14 |     pub public_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_falconkeypair_public_key::assert_copy`
+  --> aegis_crypto_core/src/falcon/mod.rs:11:1
+   |
+11 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/falcon/mod.rs:16:27
+   |
+11 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+16 |     pub secret_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_falconkeypair_secret_key::assert_copy`
+  --> aegis_crypto_core/src/falcon/mod.rs:11:1
+   |
+11 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_falcon::falcon512::PublicKey` in the current scope
+  --> aegis_crypto_core/src/falcon/mod.rs:22:24
+   |
+22 |         public_key: pk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `PublicKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:6:8
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_falcon::falcon512::PublicKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `PublicKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::PublicKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_falcon::falcon512::SecretKey` in the current scope
+  --> aegis_crypto_core/src/falcon/mod.rs:23:24
+   |
+23 |         secret_key: sk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `SecretKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:14:8
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_falcon::falcon512::SecretKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SecretKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::SecretKey;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_falcon::falcon512::SecretKey` in the current scope
+  --> aegis_crypto_core/src/falcon/mod.rs:28:25
+   |
+28 |     let sk = SecretKey::from_bytes(secret_key).expect("Invalid secret key");
+   |                         ^^^^^^^^^^ function or associated item not found in `SecretKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:14:5
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `SecretKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::SecretKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_falcon::falcon512::SignedMessage` in the current scope
+  --> aegis_crypto_core/src/falcon/mod.rs:30:9
+   |
+30 |     sig.as_bytes().to_vec()
+   |         ^^^^^^^^ method not found in `SignedMessage`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:30:8
+   |
+30 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_falcon::falcon512::SignedMessage` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SignedMessage` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::SignedMessage;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_falcon::falcon512::PublicKey` in the current scope
+  --> aegis_crypto_core/src/falcon/mod.rs:34:25
+   |
+34 |     let pk = PublicKey::from_bytes(public_key).ok();
+   |                         ^^^^^^^^^^ function or associated item not found in `PublicKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:6:5
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `PublicKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::PublicKey;
+   |
+
+error[E0433]: failed to resolve: use of undeclared type `Signature`
+  --> aegis_crypto_core/src/falcon/mod.rs:35:15
+   |
+35 |     let sig = Signature::from_bytes(signature).ok();
+   |               ^^^^^^^^^ use of undeclared type `Signature`
+
+error[E0425]: cannot find function `verify` in this scope
+  --> aegis_crypto_core/src/falcon/mod.rs:38:34
+   |
+38 |         (Some(pk), Some(sig)) => verify(message, &sig, &pk).is_ok(),
+   |                                  ^^^^^^ not found in this scope
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:16:27
+   |
+13 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+16 |     pub public_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_sphincsplus192fkeypair_public_key::assert_copy`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:13:1
+   |
+13 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:18:27
+   |
+13 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+18 |     pub secret_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_sphincsplus192fkeypair_secret_key::assert_copy`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:13:1
+   |
+13 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:24:27
+   |
+21 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+24 |     pub public_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_sphincsplus256fkeypair_public_key::assert_copy`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:21:1
+   |
+21 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:26:27
+   |
+21 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+26 |     pub secret_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_sphincsplus256fkeypair_secret_key::assert_copy`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:21:1
+   |
+21 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2192fsimple::PublicKey` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:32:24
+   |
+32 |         public_key: pk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `PublicKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:6:8
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_sphincsplus::sphincssha2192fsimple::PublicKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `PublicKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::PublicKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2192fsimple::SecretKey` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:33:24
+   |
+33 |         secret_key: sk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `SecretKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:14:8
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_sphincsplus::sphincssha2192fsimple::SecretKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SecretKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::SecretKey;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2192fsimple::SecretKey` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:38:25
+   |
+38 |     let sk = SecretKey::from_bytes(secret_key).expect("Invalid secret key");
+   |                         ^^^^^^^^^^ function or associated item not found in `SecretKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:14:5
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `SecretKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::SecretKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2192fsimple::SignedMessage` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:40:9
+   |
+40 |     sig.as_bytes().to_vec()
+   |         ^^^^^^^^ method not found in `SignedMessage`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:30:8
+   |
+30 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_sphincsplus::sphincssha2192fsimple::SignedMessage` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SignedMessage` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::SignedMessage;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2192fsimple::PublicKey` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:46:25
+   |
+46 |     let pk = PublicKey::from_bytes(public_key).ok();
+   |                         ^^^^^^^^^^ function or associated item not found in `PublicKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:6:5
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `PublicKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::PublicKey;
+   |
+
+error[E0433]: failed to resolve: use of undeclared type `Signature`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:47:15
+   |
+47 |     let sig = Signature::from_bytes(signed_message).ok();
+   |               ^^^^^^^^^ use of undeclared type `Signature`
+
+error[E0425]: cannot find function `verify` in this scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:54:13
+   |
+54 |             verify(&[], &sig, &pk).is_ok()
+   |             ^^^^^^ not found in this scope
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2256fsimple::PublicKey` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:65:24
+   |
+65 |         public_key: pk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `PublicKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:6:8
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_sphincsplus::sphincssha2256fsimple::PublicKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `PublicKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::PublicKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2256fsimple::SecretKey` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:66:24
+   |
+66 |         secret_key: sk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `SecretKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:14:8
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_sphincsplus::sphincssha2256fsimple::SecretKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SecretKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::SecretKey;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2256fsimple::SecretKey` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:72:25
+   |
+72 |     let sk = SecretKey::from_bytes(secret_key).expect("Invalid secret key");
+   |                         ^^^^^^^^^^ function or associated item not found in `SecretKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:14:5
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `SecretKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::SecretKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2256fsimple::SignedMessage` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:74:9
+   |
+74 |     sig.as_bytes().to_vec()
+   |         ^^^^^^^^ method not found in `SignedMessage`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:30:8
+   |
+30 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_sphincsplus::sphincssha2256fsimple::SignedMessage` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SignedMessage` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::SignedMessage;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_sphincsplus::sphincssha2256fsimple::PublicKey` in the current scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:79:25
+   |
+79 |     let pk = PublicKey::from_bytes(public_key).ok();
+   |                         ^^^^^^^^^^ function or associated item not found in `PublicKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/sign.rs:6:5
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `PublicKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::sign::PublicKey;
+   |
+
+error[E0433]: failed to resolve: use of undeclared type `Signature`
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:80:15
+   |
+80 |     let sig = Signature::from_bytes(signed_message).ok();
+   |               ^^^^^^^^^ use of undeclared type `Signature`
+
+error[E0425]: cannot find function `verify` in this scope
+  --> aegis_crypto_core/src/sphincsplus/mod.rs:83:34
+   |
+83 |         (Some(pk), Some(sig)) => verify(&[], &sig, &pk).is_ok(),
+   |                                  ^^^^^^ not found in this scope
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:16:27
+   |
+13 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+16 |     pub public_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc128keypair_public_key::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:13:1
+   |
+13 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:18:27
+   |
+13 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+18 |     pub secret_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc128keypair_secret_key::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:13:1
+   |
+13 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:24:27
+   |
+21 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+24 |     pub ciphertext: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc128encapsulated_ciphertext::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:21:1
+   |
+21 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:26:30
+   |
+21 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+26 |     pub shared_secret: Vec<u8>,
+   |                              ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc128encapsulated_shared_secret::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:21:1
+   |
+21 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:32:27
+   |
+29 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+32 |     pub public_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc192keypair_public_key::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:29:1
+   |
+29 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:34:27
+   |
+29 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+34 |     pub secret_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc192keypair_secret_key::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:29:1
+   |
+29 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:40:27
+   |
+37 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+40 |     pub ciphertext: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc192encapsulated_ciphertext::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:37:1
+   |
+37 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:42:30
+   |
+37 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+42 |     pub shared_secret: Vec<u8>,
+   |                              ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc192encapsulated_shared_secret::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:37:1
+   |
+37 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:48:27
+   |
+45 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+48 |     pub public_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc256keypair_public_key::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:45:1
+   |
+45 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:50:27
+   |
+45 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+50 |     pub secret_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc256keypair_secret_key::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:45:1
+   |
+45 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:56:27
+   |
+53 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+56 |     pub ciphertext: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc256encapsulated_ciphertext::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:53:1
+   |
+53 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/hqc/mod.rs:58:30
+   |
+53 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+58 |     pub shared_secret: Vec<u8>,
+   |                              ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_hqc256encapsulated_shared_secret::assert_copy`
+  --> aegis_crypto_core/src/hqc/mod.rs:53:1
+   |
+53 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc128::PublicKey` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:65:24
+   |
+65 |         public_key: pk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `PublicKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:8
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_hqc::hqc128::PublicKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `PublicKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::PublicKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc128::SecretKey` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:66:24
+   |
+66 |         secret_key: sk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `SecretKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:8
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_hqc::hqc128::SecretKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SecretKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SecretKey;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_hqc::hqc128::PublicKey` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:71:25
+   |
+71 |     let pk = PublicKey::from_bytes(public_key)
+   |                         ^^^^^^^^^^ function or associated item not found in `PublicKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:5
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `PublicKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::PublicKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc128::Ciphertext` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:75:24
+   |
+75 |         ciphertext: ct.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `Ciphertext`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:8
+   |
+22 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_hqc::hqc128::Ciphertext` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `Ciphertext` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::Ciphertext;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc128::SharedSecret` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:76:27
+   |
+76 |         shared_secret: ss.as_bytes().to_vec(),
+   |                           ^^^^^^^^ method not found in `SharedSecret`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+   |
+30 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_hqc::hqc128::SharedSecret` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SharedSecret;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_hqc::hqc128::SecretKey` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:81:25
+   |
+81 |     let sk = SecretKey::from_bytes(secret_key)
+   |                         ^^^^^^^^^^ function or associated item not found in `SecretKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:5
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `SecretKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SecretKey;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_hqc::hqc128::Ciphertext` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:83:26
+   |
+83 |     let ct = Ciphertext::from_bytes(ciphertext)
+   |                          ^^^^^^^^^^ function or associated item not found in `Ciphertext`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:5
+   |
+22 |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `Ciphertext` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::Ciphertext;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc128::SharedSecret` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:86:11
+   |
+86 |     Ok(ss.as_bytes().to_vec())
+   |           ^^^^^^^^ method not found in `SharedSecret`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+   |
+30 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_hqc::hqc128::SharedSecret` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SharedSecret;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc192::PublicKey` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:94:24
+   |
+94 |         public_key: pk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `PublicKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:8
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_hqc::hqc192::PublicKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `PublicKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::PublicKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc192::SecretKey` in the current scope
+  --> aegis_crypto_core/src/hqc/mod.rs:95:24
+   |
+95 |         secret_key: sk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `SecretKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:8
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_hqc::hqc192::SecretKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SecretKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SecretKey;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_hqc::hqc192::PublicKey` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:101:25
+    |
+101 |     let pk = PublicKey::from_bytes(public_key)
+    |                         ^^^^^^^^^^ function or associated item not found in `PublicKey`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:5
+    |
+6   |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `PublicKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::PublicKey;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc192::Ciphertext` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:105:24
+    |
+105 |         ciphertext: ct.as_bytes().to_vec(),
+    |                        ^^^^^^^^ method not found in `Ciphertext`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:8
+    |
+22  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_hqc::hqc192::Ciphertext` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `Ciphertext` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::Ciphertext;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc192::SharedSecret` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:106:27
+    |
+106 |         shared_secret: ss.as_bytes().to_vec(),
+    |                           ^^^^^^^^ method not found in `SharedSecret`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+    |
+30  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_hqc::hqc192::SharedSecret` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SharedSecret;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_hqc::hqc192::SecretKey` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:112:25
+    |
+112 |     let sk = SecretKey::from_bytes(secret_key)
+    |                         ^^^^^^^^^^ function or associated item not found in `SecretKey`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:5
+    |
+14  |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `SecretKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SecretKey;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_hqc::hqc192::Ciphertext` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:114:26
+    |
+114 |     let ct = Ciphertext::from_bytes(ciphertext)
+    |                          ^^^^^^^^^^ function or associated item not found in `Ciphertext`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:5
+    |
+22  |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `Ciphertext` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::Ciphertext;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc192::SharedSecret` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:117:11
+    |
+117 |     Ok(ss.as_bytes().to_vec())
+    |           ^^^^^^^^ method not found in `SharedSecret`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+    |
+30  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_hqc::hqc192::SharedSecret` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SharedSecret;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc256::PublicKey` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:125:24
+    |
+125 |         public_key: pk.as_bytes().to_vec(),
+    |                        ^^^^^^^^ method not found in `PublicKey`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:8
+    |
+6   |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_hqc::hqc256::PublicKey` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `PublicKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::PublicKey;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc256::SecretKey` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:126:24
+    |
+126 |         secret_key: sk.as_bytes().to_vec(),
+    |                        ^^^^^^^^ method not found in `SecretKey`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:8
+    |
+14  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_hqc::hqc256::SecretKey` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SecretKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SecretKey;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_hqc::hqc256::PublicKey` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:132:25
+    |
+132 |     let pk = PublicKey::from_bytes(public_key)
+    |                         ^^^^^^^^^^ function or associated item not found in `PublicKey`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:5
+    |
+6   |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `PublicKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::PublicKey;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc256::Ciphertext` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:136:24
+    |
+136 |         ciphertext: ct.as_bytes().to_vec(),
+    |                        ^^^^^^^^ method not found in `Ciphertext`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:8
+    |
+22  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_hqc::hqc256::Ciphertext` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `Ciphertext` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::Ciphertext;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc256::SharedSecret` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:137:27
+    |
+137 |         shared_secret: ss.as_bytes().to_vec(),
+    |                           ^^^^^^^^ method not found in `SharedSecret`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+    |
+30  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_hqc::hqc256::SharedSecret` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SharedSecret;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_hqc::hqc256::SecretKey` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:143:25
+    |
+143 |     let sk = SecretKey::from_bytes(secret_key)
+    |                         ^^^^^^^^^^ function or associated item not found in `SecretKey`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:5
+    |
+14  |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `SecretKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SecretKey;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_hqc::hqc256::Ciphertext` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:145:26
+    |
+145 |     let ct = Ciphertext::from_bytes(ciphertext)
+    |                          ^^^^^^^^^^ function or associated item not found in `Ciphertext`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:5
+    |
+22  |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `Ciphertext` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::Ciphertext;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_hqc::hqc256::SharedSecret` in the current scope
+   --> aegis_crypto_core/src/hqc/mod.rs:148:11
+    |
+148 |     Ok(ss.as_bytes().to_vec())
+    |           ^^^^^^^^ method not found in `SharedSecret`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+    |
+30  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_hqc::hqc256::SharedSecret` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SharedSecret;
+    |
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:16:27
+   |
+13 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+16 |     pub public_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece128keypair_public_key::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:13:1
+   |
+13 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:18:27
+   |
+13 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+18 |     pub secret_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece128keypair_secret_key::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:13:1
+   |
+13 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:24:27
+   |
+21 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+24 |     pub ciphertext: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece128encapsulated_ciphertext::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:21:1
+   |
+21 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:26:30
+   |
+21 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+26 |     pub shared_secret: Vec<u8>,
+   |                              ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece128encapsulated_shared_secret::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:21:1
+   |
+21 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:32:27
+   |
+29 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+32 |     pub public_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece192keypair_public_key::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:29:1
+   |
+29 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:34:27
+   |
+29 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+34 |     pub secret_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece192keypair_secret_key::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:29:1
+   |
+29 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:40:27
+   |
+37 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+40 |     pub ciphertext: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece192encapsulated_ciphertext::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:37:1
+   |
+37 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:42:30
+   |
+37 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+42 |     pub shared_secret: Vec<u8>,
+   |                              ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece192encapsulated_shared_secret::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:37:1
+   |
+37 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:48:27
+   |
+45 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+48 |     pub public_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece256keypair_public_key::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:45:1
+   |
+45 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:50:27
+   |
+45 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+50 |     pub secret_key: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece256keypair_secret_key::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:45:1
+   |
+45 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:56:27
+   |
+53 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+56 |     pub ciphertext: Vec<u8>,
+   |                           ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece256encapsulated_ciphertext::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:53:1
+   |
+53 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Vec<u8>: core::marker::Copy` is not satisfied
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:58:30
+   |
+53 | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+...
+58 |     pub shared_secret: Vec<u8>,
+   |                              ^ the trait `core::marker::Copy` is not implemented for `Vec<u8>`
+   |
+note: required by a bound in `__wbg_get_classicmceliece256encapsulated_shared_secret::assert_copy`
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:53:1
+   |
+53 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_copy`
+   = note: this error originates in the derive macro `wasm_bindgen::__rt::BindgenedStruct` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece348864::PublicKey` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:65:24
+   |
+65 |         public_key: pk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `PublicKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:8
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_classicmceliece::mceliece348864::PublicKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `PublicKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::PublicKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece348864::SecretKey` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:66:24
+   |
+66 |         secret_key: sk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `SecretKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:8
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_classicmceliece::mceliece348864::SecretKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SecretKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SecretKey;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_classicmceliece::mceliece348864::PublicKey` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:71:25
+   |
+71 |     let pk = PublicKey::from_bytes(public_key)
+   |                         ^^^^^^^^^^ function or associated item not found in `PublicKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:5
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `PublicKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::PublicKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece348864::Ciphertext` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:75:24
+   |
+75 |         ciphertext: ct.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `Ciphertext`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:8
+   |
+22 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_classicmceliece::mceliece348864::Ciphertext` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `Ciphertext` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::Ciphertext;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece348864::SharedSecret` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:76:27
+   |
+76 |         shared_secret: ss.as_bytes().to_vec(),
+   |                           ^^^^^^^^ method not found in `SharedSecret`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+   |
+30 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_classicmceliece::mceliece348864::SharedSecret` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SharedSecret;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_classicmceliece::mceliece348864::SecretKey` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:81:25
+   |
+81 |     let sk = SecretKey::from_bytes(secret_key)
+   |                         ^^^^^^^^^^ function or associated item not found in `SecretKey`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:5
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `SecretKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SecretKey;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_classicmceliece::mceliece348864::Ciphertext` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:83:26
+   |
+83 |     let ct = Ciphertext::from_bytes(ciphertext)
+   |                          ^^^^^^^^^^ function or associated item not found in `Ciphertext`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+  --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:5
+   |
+22 |     fn as_bytes(&self) -> &[u8];
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `Ciphertext` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::Ciphertext;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece348864::SharedSecret` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:86:11
+   |
+86 |     Ok(ss.as_bytes().to_vec())
+   |           ^^^^^^^^ method not found in `SharedSecret`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+   |
+30 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_classicmceliece::mceliece348864::SharedSecret` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SharedSecret;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece460896::PublicKey` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:94:24
+   |
+94 |         public_key: pk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `PublicKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:8
+   |
+6  |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_classicmceliece::mceliece460896::PublicKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `PublicKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::PublicKey;
+   |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece460896::SecretKey` in the current scope
+  --> aegis_crypto_core/src/classicmceliece/mod.rs:95:24
+   |
+95 |         secret_key: sk.as_bytes().to_vec(),
+   |                        ^^^^^^^^ method not found in `SecretKey`
+   |
+  ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:8
+   |
+14 |     fn as_bytes(&self) -> &[u8];
+   |        -------- the method is available for `pqcrypto_classicmceliece::mceliece460896::SecretKey` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `SecretKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+   |
+3  + use pqcrypto_traits::kem::SecretKey;
+   |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_classicmceliece::mceliece460896::PublicKey` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:101:25
+    |
+101 |     let pk = PublicKey::from_bytes(public_key)
+    |                         ^^^^^^^^^^ function or associated item not found in `PublicKey`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:5
+    |
+6   |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `PublicKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::PublicKey;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece460896::Ciphertext` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:105:24
+    |
+105 |         ciphertext: ct.as_bytes().to_vec(),
+    |                        ^^^^^^^^ method not found in `Ciphertext`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:8
+    |
+22  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_classicmceliece::mceliece460896::Ciphertext` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `Ciphertext` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::Ciphertext;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece460896::SharedSecret` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:106:27
+    |
+106 |         shared_secret: ss.as_bytes().to_vec(),
+    |                           ^^^^^^^^ method not found in `SharedSecret`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+    |
+30  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_classicmceliece::mceliece460896::SharedSecret` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SharedSecret;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_classicmceliece::mceliece460896::SecretKey` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:112:25
+    |
+112 |     let sk = SecretKey::from_bytes(secret_key)
+    |                         ^^^^^^^^^^ function or associated item not found in `SecretKey`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:5
+    |
+14  |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `SecretKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SecretKey;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_classicmceliece::mceliece460896::Ciphertext` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:114:26
+    |
+114 |     let ct = Ciphertext::from_bytes(ciphertext)
+    |                          ^^^^^^^^^^ function or associated item not found in `Ciphertext`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:5
+    |
+22  |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `Ciphertext` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::Ciphertext;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece460896::SharedSecret` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:117:11
+    |
+117 |     Ok(ss.as_bytes().to_vec())
+    |           ^^^^^^^^ method not found in `SharedSecret`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+    |
+30  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_classicmceliece::mceliece460896::SharedSecret` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SharedSecret;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece6688128::PublicKey` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:125:24
+    |
+125 |         public_key: pk.as_bytes().to_vec(),
+    |                        ^^^^^^^^ method not found in `PublicKey`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:8
+    |
+6   |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_classicmceliece::mceliece6688128::PublicKey` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `PublicKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::PublicKey;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece6688128::SecretKey` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:126:24
+    |
+126 |         secret_key: sk.as_bytes().to_vec(),
+    |                        ^^^^^^^^ method not found in `SecretKey`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:8
+    |
+14  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_classicmceliece::mceliece6688128::SecretKey` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SecretKey` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SecretKey;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_classicmceliece::mceliece6688128::PublicKey` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:132:25
+    |
+132 |     let pk = PublicKey::from_bytes(public_key)
+    |                         ^^^^^^^^^^ function or associated item not found in `PublicKey`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:6:5
+    |
+6   |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `PublicKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::PublicKey;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece6688128::Ciphertext` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:136:24
+    |
+136 |         ciphertext: ct.as_bytes().to_vec(),
+    |                        ^^^^^^^^ method not found in `Ciphertext`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:8
+    |
+22  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_classicmceliece::mceliece6688128::Ciphertext` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `Ciphertext` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::Ciphertext;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece6688128::SharedSecret` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:137:27
+    |
+137 |         shared_secret: ss.as_bytes().to_vec(),
+    |                           ^^^^^^^^ method not found in `SharedSecret`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+    |
+30  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_classicmceliece::mceliece6688128::SharedSecret` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SharedSecret;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_classicmceliece::mceliece6688128::SecretKey` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:143:25
+    |
+143 |     let sk = SecretKey::from_bytes(secret_key)
+    |                         ^^^^^^^^^^ function or associated item not found in `SecretKey`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:14:5
+    |
+14  |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `SecretKey` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SecretKey;
+    |
+
+error[E0599]: no function or associated item named `from_bytes` found for struct `pqcrypto_classicmceliece::mceliece6688128::Ciphertext` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:145:26
+    |
+145 |     let ct = Ciphertext::from_bytes(ciphertext)
+    |                          ^^^^^^^^^^ function or associated item not found in `Ciphertext`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `as_bytes` with a similar name, but with different arguments
+   --> /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:22:5
+    |
+22  |     fn as_bytes(&self) -> &[u8];
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: trait `Ciphertext` which provides `from_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::Ciphertext;
+    |
+
+error[E0599]: no method named `as_bytes` found for struct `pqcrypto_classicmceliece::mceliece6688128::SharedSecret` in the current scope
+   --> aegis_crypto_core/src/classicmceliece/mod.rs:148:11
+    |
+148 |     Ok(ss.as_bytes().to_vec())
+    |           ^^^^^^^^ method not found in `SharedSecret`
+    |
+   ::: /home/hootzluh/Desktop/sphinc/aegis_crypto_core/pqcrypto/pqcrypto-traits/src/kem.rs:30:8
+    |
+30  |     fn as_bytes(&self) -> &[u8];
+    |        -------- the method is available for `pqcrypto_classicmceliece::mceliece6688128::SharedSecret` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `SharedSecret` which provides `as_bytes` is implemented but not in scope; perhaps you want to import it
+    |
+3   + use pqcrypto_traits::kem::SharedSecret;
+    |
+
+Some errors have detailed explanations: E0277, E0412, E0425, E0432, E0433, E0599.
+For more information about an error, try `rustc --explain E0277`.
+warning: `aegis_crypto_core` (lib) generated 31 warnings
+error: could not compile `aegis_crypto_core` (lib) due to 107 previous errors; 31 warnings emitted
