@@ -1,45 +1,11 @@
-// # Aegis Crypto Core
-//
-// A unified post-quantum cryptography library providing WebAssembly, Rust, and Python bindings
-// for NIST-standardized algorithms including Kyber (ML-KEM), Dilithium (ML-DSA), Falcon,
-// SPHINCS+, HQC, and Classic McEliece.
-//
-// ## Features
-//
-// This crate supports multiple post-quantum cryptographic algorithms through feature flags:
-//
-// - `kyber` - ML-KEM (Key Encapsulation Mechanism)
-// - `dilithium` - ML-DSA (Digital Signature Algorithm)
-// - `falcon` - Falcon digital signatures
-// - `sphincsplus` - SPHINCS+ hash-based signatures
-// - `hqc` - HQC (Hamming Quasi-Cyclic) KEM
-// - `classicmceliece` - Classic McEliece KEM
-//
-// ## Example
-//
-// ```rust,ignore
-// use aegis_crypto_core::*;
-//
-// // Generate Kyber keypair
-// let keypair = kyber_keygen();
-// let public_key = keypair.public_key();
-// let secret_key = keypair.secret_key();
-//
-// // Encapsulate a shared secret
-// let encapsulated = kyber_encapsulate(&public_key).unwrap();
-// let ciphertext = encapsulated.ciphertext();
-// let shared_secret = encapsulated.shared_secret();
-//
-// // Decapsulate to recover the shared secret
-// let recovered_secret = kyber_decapsulate(&secret_key, &ciphertext).unwrap();
-// assert_eq!(shared_secret, recovered_secret);
-// ```
+//! Aegis Crypto Core
+//! Unified post-quantum cryptography library: WebAssembly 🡒 Rust 🡒 Python bindings.
+//! Supports Kyber, Dilithium3, Falcon, SPHINCS+ (192f/256f), HQC (128/192/256), Classic McEliece (128/192/256).
 
-// Inner attributes must come first
 #![warn(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
-// Bring in `alloc` crate for no_std environments (e.g. wasm) for Vec, String, and format!
+// In no_std mode, pull in `alloc` for Vec and String.  Otherwise use std.
 #[cfg(not(feature = "std"))]
 extern crate alloc;
 
@@ -49,14 +15,11 @@ use alloc::{vec::Vec, string::String};
 #[cfg(feature = "std")]
 use std::{vec::Vec, string::String};
 
-#[cfg(feature = "std")]
-use std::format;
-
 // ================================================================================================
 // Module Declarations
 // ================================================================================================
 
-/// Cryptographic algorithm modules - conditionally compiled based on features
+/// Core cryptographic algorithm implementations (feature-gated).
 #[cfg(feature = "kyber")]
 pub mod kyber;
 
@@ -75,30 +38,25 @@ pub mod hqc;
 #[cfg(feature = "classicmceliece")]
 pub mod classicmceliece;
 
-/// Cryptographic hash functions and utilities
+/// Cryptographic hashes.
 pub mod hash;
 
-/// Common utilities and helper functions
+/// Utility functions (hex/base64 conversion).
 pub mod utils;
 
-/// JavaScript/WebAssembly bindings
-///
-/// This module provides a JavaScript-friendly API for use with `wasm-pack`.
-/// It is compiled unconditionally when targeting WebAssembly.
+/// JavaScript / WASM bindings (unconditional when wasm target).
+#[cfg(target_arch = "wasm32")]
 pub mod js_bindings;
 
-/// Python bindings via PyO3
-///
-/// Conditionally compiled when the `python-bindings` feature is enabled.
-/// Provides native Python extension functionality.
+/// Python bindings via PyO3 (feature = "python-bindings").
 #[cfg(feature = "python-bindings")]
 pub mod python_bindings;
 
 // ================================================================================================
-// Re-exports for Public API
+// Public API Re-exports
 // ================================================================================================
 
-// Key Encapsulation Mechanisms (KEMs)
+// Key Encapsulation Mechanisms:
 #[cfg(feature = "kyber")]
 pub use kyber::*;
 
@@ -108,7 +66,7 @@ pub use hqc::*;
 #[cfg(feature = "classicmceliece")]
 pub use classicmceliece::*;
 
-// Digital Signature Algorithms
+// Digital Signatures:
 #[cfg(feature = "dilithium")]
 pub use dilithium::*;
 
@@ -119,15 +77,11 @@ pub use falcon::*;
 pub use sphincsplus::*;
 
 // ================================================================================================
-// Algorithm Categories
+// Grouped Submodules
 // ================================================================================================
 
-/// Key Encapsulation Mechanisms
-///
-/// These algorithms are used for securely establishing shared secrets between parties.
+/// KEM algorithms group
 pub mod kem {
-    // Key Encapsulation Mechanism algorithms
-
     #[cfg(feature = "kyber")]
     pub use crate::kyber::*;
 
@@ -138,12 +92,8 @@ pub mod kem {
     pub use crate::classicmceliece::*;
 }
 
-/// Digital Signature Algorithms
-///
-/// These algorithms are used for creating and verifying digital signatures.
+/// Signature algorithms group
 pub mod signature {
-    // Digital signature algorithms
-
     #[cfg(feature = "dilithium")]
     pub use crate::dilithium::*;
 
@@ -155,67 +105,56 @@ pub mod signature {
 }
 
 // ================================================================================================
-// Feature Detection
+// Runtime Feature Detection
 // ================================================================================================
 
-/// Runtime feature detection
+/// Which algorithms are compiled in.
 pub mod features {
+    #[cfg(not(feature = "std"))]
     use alloc::vec::Vec;
+    #[cfg(feature = "std")]
+    use std::vec::Vec;
 
-    /// Returns true if Kyber (ML-KEM) support is compiled in
-    pub const fn has_kyber() -> bool {
-        cfg!(feature = "kyber")
-    }
+    /// Kyber support
+    pub const fn has_kyber() -> bool { cfg!(feature = "kyber") }
 
-    /// Returns true if Dilithium (ML-DSA) support is compiled in
-    pub const fn has_dilithium() -> bool {
-        cfg!(feature = "dilithium")
-    }
+    /// Dilithium3 support
+    pub const fn has_dilithium() -> bool { cfg!(feature = "dilithium") }
 
-    /// Returns true if Falcon support is compiled in
-    pub const fn has_falcon() -> bool {
-        cfg!(feature = "falcon")
-    }
+    /// Falcon support
+    pub const fn has_falcon() -> bool { cfg!(feature = "falcon") }
 
-    /// Returns true if SPHINCS+ support is compiled in
-    pub const fn has_sphincsplus() -> bool {
-        cfg!(feature = "sphincsplus")
-    }
+    /// SPHINCS+ support
+    pub const fn has_sphincsplus() -> bool { cfg!(feature = "sphincsplus") }
 
-    /// Returns true if HQC support is compiled in
-    pub const fn has_hqc() -> bool {
-        cfg!(feature = "hqc")
-    }
+    /// HQC support
+    pub const fn has_hqc() -> bool { cfg!(feature = "hqc") }
 
-    /// Returns true if Classic McEliece support is compiled in
-    pub const fn has_classicmceliece() -> bool {
-        cfg!(feature = "classicmceliece")
-    }
+    /// Classic McEliece support
+    pub const fn has_classicmceliece() -> bool { cfg!(feature = "classicmceliece") }
 
-    /// Returns a list of all available algorithms
+    /// List all available algorithm names
     pub fn available_algorithms() -> Vec<&'static str> {
-        let mut algorithms = Vec::new();
-
-        if has_kyber() { algorithms.push("kyber"); }
-        if has_dilithium() { algorithms.push("dilithium"); }
-        if has_falcon() { algorithms.push("falcon"); }
-        if has_sphincsplus() { algorithms.push("sphincsplus"); }
-        if has_hqc() { algorithms.push("hqc"); }
-        if has_classicmceliece() { algorithms.push("classicmceliece"); }
-
-        algorithms
+        let mut algos = Vec::new();
+        if has_kyber() { algos.push("kyber"); }
+        if has_dilithium() { algos.push("dilithium"); }
+        if has_falcon() { algos.push("falcon"); }
+        if has_sphincsplus() { algos.push("sphincsplus"); }
+        if has_hqc() { algos.push("hqc"); }
+        if has_classicmceliece() { algos.push("classicmceliece"); }
+        algos
     }
 }
 
 // ================================================================================================
-// Version and Metadata
+// Crate Metadata
 // ================================================================================================
 
-/// Library version information
+/// Crate version (from Cargo.toml)
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-/// Library name
+/// Crate name
 pub const NAME: &str = env!("CARGO_PKG_NAME");
 
-/// Library description
+/// Crate description
 pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
