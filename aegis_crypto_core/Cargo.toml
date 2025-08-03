@@ -6,7 +6,7 @@ edition = "2021"
 description = "Aegis: Unified WebAssembly, Rust, and Python PQ cryptography core with Kyber, Dilithium, Falcon, HQC, Classic McEliece, and (pending) SPHINCS+ support."
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/synergy-network.hq/aegis"
+repository = "https://github.com/synergy-network-hq/aegis"
 homepage = "https://synergy-network.io"
 documentation = "https://docs.rs/aegis_crypto_core"
 keywords = ["post-quantum", "cryptography", "wasm", "rust"]
@@ -22,12 +22,14 @@ crate-type = ["cdylib", "rlib"]
 wasm-bindgen = { version = "0.2", optional = true }
 js-sys = "0.3.61"
 zerocopy = "0.8.26"
-pqcrypto-mlkem = { path = "../pqcrypto/pqcrypto-mlkem", version = "0.1.0", optional = true }
-pqcrypto-mldsa = { path = "../pqcrypto/pqcrypto-mldsa", version = "0.1.1", optional = true }
-pqcrypto-sphincsplus = { path = "../pqcrypto/pqcrypto-sphincsplus", version = "0.7.1", optional = true }
-pqcrypto-falcon = { path = "../pqcrypto/pqcrypto-falcon", version = "0.4.0", optional = true }
-pqcrypto-hqc = { path = "../pqcrypto/pqcrypto-hqc", version = "0.2.1", optional = true }
-pqcrypto-classicmceliece = { path = "../pqcrypto/pqcrypto-classicmceliece", version = "0.2.0", optional = true }
+pyo3 = { version = "0.17", optional = true, features = ["extension-module"] }
+pqcrypto-mlkem = { path = "../pqcrypto/pqcrypto-mlkem", optional = true }
+pqcrypto-mldsa = { path = "../pqcrypto/pqcrypto-mldsa", optional = true }
+pqcrypto-sphincsplus = { path = "../pqcrypto/pqcrypto-sphincsplus", optional = true }
+pqcrypto-falcon = { path = "../pqcrypto/pqcrypto-falcon", optional = true }
+pqcrypto-hqc = { path = "../pqcrypto/pqcrypto-hqc", optional = true }
+pqcrypto-classicmceliece = { path = "../pqcrypto/pqcrypto-classicmceliece", optional = true }
+pqcrypto-traits = { path = "../pqcrypto/pqcrypto-traits" }
 sha3 = "0.10"
 blake3 = "1.5"
 subtle = "2.5"
@@ -36,8 +38,6 @@ getrandom = { version = "0.2", features = ["js"] }
 rand = "0.8"
 hex = "0.4"
 base64 = "0.21"
-pqcrypto-traits = { version = "0.3.5", path = "../pqcrypto/pqcrypto-traits" }
-
 
 [dev-dependencies]
 aegis_crypto_core = { path = "." }
@@ -58,17 +58,18 @@ default = [
 ]
 std = []
 wasm = ["dep:wasm-bindgen"]
-python = []
-python-bindings = []
-js-bindings = []
-unstable = []
+js-bindings = ["dep:wasm-bindgen"]
+python-bindings = ["dep:pyo3"]
 kyber = ["dep:pqcrypto-mlkem"]
 dilithium = ["dep:pqcrypto-mldsa"]
-sphincsplus = ["dep:pqcrypto-sphincsplus"]
 falcon = ["dep:pqcrypto-falcon"]
+sphincsplus = ["dep:pqcrypto-sphincsplus"]
 hqc = ["dep:pqcrypto-hqc"]
 classicmceliece = ["dep:pqcrypto-classicmceliece"]
 
+[[bin]]
+name = "runner"
+path = "src/bin/runner.rs"
 
 [badges]
 github-actions = { repository = "synergy-network-hq/aegis", workflow = "CI" }

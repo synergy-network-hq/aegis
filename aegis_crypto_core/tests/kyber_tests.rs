@@ -8,7 +8,7 @@ use aegis_crypto_core::{kyber_keygen, kyber_encapsulate, kyber_decapsulate};
 #[test]
 fn test_kyber_encaps_and_decaps() {
     // Generate a recipient key pair
-    let keypair = kyber_keygen();
+    let keypair = kyber_keygen().expect("Keygen should succeed");
     let public_key = keypair.public_key();
     let secret_key = keypair.secret_key();
 
