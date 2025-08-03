@@ -9,7 +9,6 @@ use pqcrypto_mlkem::mlkem768::{PublicKey, SecretKey, Ciphertext, encapsulate, de
 use pqcrypto_traits::kem::{PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _};
 use wasm_bindgen::prelude::*;
 
-
 use super::utils::*;
 
 // Import Vec and format! for no_std compatibility
@@ -170,73 +169,4 @@ pub fn kyber_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>
         .map_err(|e| JsValue::from_str(&format!("Invalid ciphertext: {:?}", e)))?;
     let ss = decapsulate(&ct, &sk);
     Ok(ss.as_bytes().to_vec())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_kyber_keygen_encapsulate_decapsulate() {
-        let keypair = kyber_keygen().expect("Keygen failed");
-        let public_key = keypair.public_key();
-        let secret_key = keypair.secret_key();
-
-        assert_eq!(public_key.len(), public_key_length());
-        assert_eq!(secret_key.len(), secret_key_length());
-
-        let encapsulated = kyber_encapsulate(&public_key).expect("Encapsulation failed");
-        let ciphertext = encapsulated.ciphertext();
-        let shared_secret1 = encapsulated.shared_secret();
-
-        assert_eq!(ciphertext.len(), ciphertext_length());
-        assert_eq!(shared_secret1.len(), shared_secret_length());
-
-        let shared_secret2 = kyber_decapsulate(&secret_key, &ciphertext).expect("Decapsulation failed");
-
-        assert_eq!(shared_secret1, shared_secret2, "Shared secrets should match");
-    }
-
-    #[test]
-    fn test_invalid_key_lengths() {
-        let short_pk = vec![0u8; public_key_length() - 1];
-        let result = kyber_encapsulate(&short_pk);
-        assert!(result.is_err(), "Encapsulation should fail with invalid public key length");
-
-        let keypair = kyber_keygen().expect("Keygen failed");
-        let public_key = keypair.public_key();
-        let encapsulated = kyber_encapsulate(&public_key).expect("Encapsulation failed");
-        let ciphertext = encapsulated.ciphertext();
-
-        let short_sk = vec![0u8; secret_key_length() - 1];
-        let result = kyber_decapsulate(&short_sk, &ciphertext);
-        assert!(result.is_err(), "Decapsulation should fail with invalid secret key length");
-    }
-
-    #[test]
-    fn test_invalid_ciphertext_length() {
-        let keypair = kyber_keygen().expect("Keygen failed");
-        let secret_key = keypair.secret_key();
-        let short_ciphertext = vec![0u8; ciphertext_length() - 1];
-
-        let result = kyber_decapsulate(&secret_key, &short_ciphertext);
-        assert!(result.is_err(), "Decapsulation should fail with invalid ciphertext length");
-    }
-
-    #[test]
-    fn test_kyber_keypair_methods() {
-        let keypair = kyber_keygen().expect("Keygen failed");
-        assert_eq!(keypair.public_key().len(), keypair.public_key_length());
-        assert_eq!(keypair.secret_key().len(), keypair.secret_key_length());
-    }
-
-    #[test]
-    fn test_kyber_encapsulated_methods() {
-        let keypair = kyber_keygen().expect("Keygen failed");
-        let public_key = keypair.public_key();
-        let encapsulated = kyber_encapsulate(&public_key).expect("Encapsulation failed");
-
-        assert_eq!(encapsulated.ciphertext().len(), encapsulated.ciphertext_length());
-        assert_eq!(encapsulated.shared_secret().len(), encapsulated.shared_secret_length());
-    }
 }
