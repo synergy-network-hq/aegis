@@ -7,13 +7,9 @@
 
 // In no_std mode, pull in `alloc` for Vec and String.  Otherwise use std.
 #[cfg(not(feature = "std"))]
+#[macro_use]
 extern crate alloc;
 
-#[cfg(not(feature = "std"))]
-use alloc::{vec::Vec, string::String};
-
-#[cfg(feature = "std")]
-use std::{vec::Vec, string::String};
 
 // ================================================================================================
 // Module Declarations

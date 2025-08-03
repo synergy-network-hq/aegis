@@ -1,53 +1,68 @@
-// This module provides utility functions for common cryptographic operations,
-// such as hexadecimal encoding and decoding. These functions are exposed as
-// WebAssembly (WASM) bindings for convenient use in JavaScript and TypeScript environments.
-
+// src/hash.rs
+//! Cryptographic hash utilities: SHA3-256, SHA3-512, BLAKE3.
 use wasm_bindgen::prelude::*;
-
-// Import Vec and String for no_std compatibility
+use sha3::{Digest, Sha3_256, Sha3_512};
+use blake3;
+use base64::{Engine as _, engine::general_purpose};
 #[cfg(not(feature = "std"))]
-use alloc::{vec::Vec, string::String, format};
-
+use alloc::{vec::Vec, string::String};
 #[cfg(feature = "std")]
 use std::{vec::Vec, string::String};
 
-/// Converts a hexadecimal string into a vector of bytes.
-///
-/// This function takes a string slice that is expected to contain a valid
-/// hexadecimal representation of binary data and converts it into its raw
-/// byte equivalent. It is useful for processing hexadecimal inputs from
-/// web environments or for displaying byte arrays in a human-readable format.
-///
-/// # Arguments
-///
-/// * `hex_string` - A string slice (`&str`) containing the hexadecimal representation.
-///
-/// # Returns
-///
-/// A `Result<Vec<u8>, JsValue>` which is:
-/// - `Ok(Vec<u8>)` containing the decoded bytes if the conversion is successful.
-/// - `Err(JsValue)` if the input string is not a valid hexadecimal string,
-///   providing an error message suitable for JavaScript environments.
+/// Compute SHA3-256 digest.
 #[wasm_bindgen]
-pub fn hex_to_bytes(hex_string: &str) -> Result<Vec<u8>, JsValue> {
-    hex::decode(hex_string).map_err(|e| format!("Failed to decode hex string: {}", e).into())
+pub fn sha3_256_hash(data: &[u8]) -> Vec<u8> {
+    let mut h = Sha3_256::new();
+    h.update(data);
+    h.finalize().to_vec()
 }
 
-/// Converts a vector of bytes into a hexadecimal string.
-///
-/// This function takes a byte slice and encodes it into a hexadecimal string.
-/// Each byte is represented by two hexadecimal characters (0-9, a-f).
-/// This is commonly used for displaying binary data in a readable format
-/// or for transmitting binary data over text-based protocols.
-///
-/// # Arguments
-///
-/// * `bytes` - A byte slice (`&[u8]`) to be encoded into a hexadecimal string.
-///
-/// # Returns
-///
-/// A `String` containing the hexadecimal representation of the input bytes.
+/// Compute SHA3-256 digest and return hex.
 #[wasm_bindgen]
-pub fn bytes_to_hex(bytes: &[u8]) -> String {
-    hex::encode(bytes)
+pub fn sha3_256_hash_hex(data: &[u8]) -> String {
+    hex::encode(sha3_256_hash(data))
+}
+
+/// Compute SHA3-256 digest and return Base64.
+#[wasm_bindgen]
+pub fn sha3_256_hash_base64(data: &[u8]) -> String {
+    general_purpose::STANDARD.encode(sha3_256_hash(data))
+}
+
+/// Compute SHA3-512 digest.
+#[wasm_bindgen]
+pub fn sha3_512_hash(data: &[u8]) -> Vec<u8> {
+    let mut h = Sha3_512::new();
+    h.update(data);
+    h.finalize().to_vec()
+}
+
+/// Compute SHA3-512 digest and return hex.
+#[wasm_bindgen]
+pub fn sha3_512_hash_hex(data: &[u8]) -> String {
+    hex::encode(sha3_512_hash(data))
+}
+
+/// Compute SHA3-512 digest and return Base64.
+#[wasm_bindgen]
+pub fn sha3_512_hash_base64(data: &[u8]) -> String {
+    general_purpose::STANDARD.encode(sha3_512_hash(data))
+}
+
+/// Compute BLAKE3 digest.
+#[wasm_bindgen]
+pub fn blake3_hash(data: &[u8]) -> Vec<u8> {
+    blake3::hash(data).as_bytes().to_vec()
+}
+
+/// Compute BLAKE3 digest and return hex.
+#[wasm_bindgen]
+pub fn blake3_hash_hex(data: &[u8]) -> String {
+    hex::encode(blake3_hash(data))
+}
+
+/// Compute BLAKE3 digest and return Base64.
+#[wasm_bindgen]
+pub fn blake3_hash_base64(data: &[u8]) -> String {
+    general_purpose::STANDARD.encode(blake3_hash(data))
 }
