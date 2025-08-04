@@ -9,9 +9,9 @@ members = [
     "pqcrypto/pqcrypto-hqc",
     "pqcrypto/pqcrypto-mldsa",
     "pqcrypto/pqcrypto-falcon",
-    "pqcrypto/pqcrypto-sphincsplus"
+    "pqcrypto/pqcrypto-sphincsplus",
 ]
-resolver="2"
+resolver = "2"
 
 
 [profile.dev]

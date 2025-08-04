@@ -13,10 +13,10 @@ use super::utils::*;
 
 // Import Vec and format! for no_std compatibility
 #[cfg(not(feature = "std"))]
-use alloc::{vec::Vec, format};
+use alloc::{vec::Vec, format, string::{String, ToString}};
 
 #[cfg(feature = "std")]
-use std::vec::Vec;
+use std::{vec::Vec, string::{String, ToString}};
 
 /// Represents a Kyber key pair, containing both the public and secret keys.
 /// These keys are essential for performing cryptographic operations such as
@@ -106,12 +106,7 @@ impl KyberEncapsulated {
 /// - `Err(JsValue)` if the key generation process fails.
 #[wasm_bindgen]
 pub fn kyber_keygen() -> Result<KyberKeyPair, JsValue> {
-    let (pk, sk) = keypair();
-    let keypair = KyberKeyPair {
-        pk: pk.as_bytes().to_vec(),
-        sk: sk.as_bytes().to_vec(),
-    };
-    Ok(keypair)
+    kyber_keygen_native().map_err(|e| JsValue::from_str(&e))
 }
 
 /// Encapsulates a shared secret using the provided Kyber public key.
@@ -131,15 +126,7 @@ pub fn kyber_keygen() -> Result<KyberKeyPair, JsValue> {
 /// - `Err(JsValue)` if the public key is invalid or encapsulation fails.
 #[wasm_bindgen]
 pub fn kyber_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue> {
-    validate_public_key_length(public_key).map_err(|e| JsValue::from_str(&e))?;
-
-    let pk = PublicKey::from_bytes(public_key)
-        .map_err(|e| JsValue::from_str(&format!("Invalid public key: {:?}", e)))?;
-    let (ss, ct) = encapsulate(&pk);
-    Ok(KyberEncapsulated {
-        ciphertext: ct.as_bytes().to_vec(),
-        shared_secret: ss.as_bytes().to_vec(),
-    })
+    kyber_encapsulate_native(public_key).map_err(|e| JsValue::from_str(&e))
 }
 
 /// Decapsulates a shared secret using the provided Kyber secret key and ciphertext.
@@ -160,13 +147,69 @@ pub fn kyber_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue
 /// - `Err(JsValue)` if the secret key or ciphertext are invalid, or decapsulation fails.
 #[wasm_bindgen]
 pub fn kyber_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
-    validate_secret_key_length(secret_key).map_err(|e| JsValue::from_str(&e))?;
-    validate_ciphertext_length(ciphertext).map_err(|e| JsValue::from_str(&e))?;
+    kyber_decapsulate_native(secret_key, ciphertext).map_err(|e| JsValue::from_str(&e))
+}
+
+// Native Functions (without wasm_bindgen attributes)
+/// Generates a new Kyber key pair - Native version.
+///
+/// # Returns
+///
+/// A `Result<KyberKeyPair, String>` which is:
+/// - `Ok(KyberKeyPair)` containing the newly generated public and secret keys.
+/// - `Err(String)` if the key generation process fails.
+pub fn kyber_keygen_native() -> Result<KyberKeyPair, String> {
+    let (pk, sk) = keypair();
+    let keypair = KyberKeyPair {
+        pk: pk.as_bytes().to_vec(),
+        sk: sk.as_bytes().to_vec(),
+    };
+    Ok(keypair)
+}
+
+/// Encapsulates a shared secret using the provided Kyber public key - Native version.
+///
+/// # Arguments
+///
+/// * `public_key` - A byte slice representing the recipient's Kyber public key.
+///
+/// # Returns
+///
+/// A `Result<KyberEncapsulated, String>` which is:
+/// - `Ok(KyberEncapsulated)` containing the generated ciphertext and shared secret.
+/// - `Err(String)` if the public key is invalid or encapsulation fails.
+pub fn kyber_encapsulate_native(public_key: &[u8]) -> Result<KyberEncapsulated, String> {
+    validate_public_key_length(public_key)?;
+
+    let pk = PublicKey::from_bytes(public_key)
+        .map_err(|e| format!("Invalid public key: {:?}", e))?;
+    let (ss, ct) = encapsulate(&pk);
+    Ok(KyberEncapsulated {
+        ciphertext: ct.as_bytes().to_vec(),
+        shared_secret: ss.as_bytes().to_vec(),
+    })
+}
+
+/// Decapsulates a shared secret using the provided Kyber secret key and ciphertext - Native version.
+///
+/// # Arguments
+///
+/// * `secret_key` - A byte slice representing the recipient's Kyber secret key.
+/// * `ciphertext` - A byte slice representing the ciphertext received from the sender.
+///
+/// # Returns
+///
+/// A `Result<Vec<u8>, String>` which is:
+/// - `Ok(Vec<u8>)` containing the decapsulated shared secret.
+/// - `Err(String)` if the secret key or ciphertext are invalid, or decapsulation fails.
+pub fn kyber_decapsulate_native(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, String> {
+    validate_secret_key_length(secret_key)?;
+    validate_ciphertext_length(ciphertext)?;
 
     let sk = SecretKey::from_bytes(secret_key)
-        .map_err(|e| JsValue::from_str(&format!("Invalid secret key: {:?}", e)))?;
+        .map_err(|e| format!("Invalid secret key: {:?}", e))?;
     let ct = Ciphertext::from_bytes(ciphertext)
-        .map_err(|e| JsValue::from_str(&format!("Invalid ciphertext: {:?}", e)))?;
+        .map_err(|e| format!("Invalid ciphertext: {:?}", e))?;
     let ss = decapsulate(&ct, &sk);
     Ok(ss.as_bytes().to_vec())
 }

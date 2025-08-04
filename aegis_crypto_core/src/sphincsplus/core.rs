@@ -10,9 +10,9 @@ use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, DetachedSignature as
 use super::utils::*;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{vec::Vec, string::{String, ToString}};
 #[cfg(feature = "std")]
-use std::vec::Vec;
+use std::{vec::Vec, string::{String, ToString}};
 
 /// Represents a SPHINCS+ key pair, containing both the public and secret keys.
 /// These keys are essential for performing cryptographic operations such as
@@ -65,12 +65,7 @@ impl SphincsPlusKeyPair {
 /// - `Err(JsValue)` if the key generation process fails.
 #[wasm_bindgen]
 pub fn sphincsplus_keygen() -> Result<SphincsPlusKeyPair, JsValue> {
-    let (pk, sk) = keypair();
-    let keypair = SphincsPlusKeyPair {
-        pk: pk.as_bytes().to_vec(),
-        sk: sk.as_bytes().to_vec(),
-    };
-    Ok(keypair)
+    sphincsplus_keygen_native().map_err(|e| JsValue::from_str(&e))
 }
 
 /// Signs a message using the provided SPHINCS+ secret key.
@@ -92,12 +87,7 @@ pub fn sphincsplus_keygen() -> Result<SphincsPlusKeyPair, JsValue> {
 ///   or if the signing process fails.
 #[wasm_bindgen]
 pub fn sphincsplus_sign(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>, JsValue> {
-    validate_secret_key_length(secret_key).map_err(|e| JsValue::from_str(&e))?;
-
-    let sk = SecretKey::from_bytes(secret_key)
-        .map_err(|_| JsValue::from_str("Invalid secret key"))?;
-    let signature = detached_sign(message, &sk);
-    Ok(signature.as_bytes().to_vec())
+    sphincsplus_sign_native(secret_key, message).map_err(|e| JsValue::from_str(&e))
 }
 
 /// Verifies a SPHINCS+ signature against a message and a public key.
@@ -117,6 +107,60 @@ pub fn sphincsplus_sign(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>, Js
 /// `true` if the signature is valid, `false` otherwise.
 #[wasm_bindgen]
 pub fn sphincsplus_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+    sphincsplus_verify_native(public_key, message, signature)
+}
+
+// Native Functions (without wasm_bindgen attributes)
+/// Generates a new SPHINCS+ key pair - Native version.
+///
+/// # Returns
+///
+/// A `Result<SphincsPlusKeyPair, String>` which is:
+/// - `Ok(SphincsPlusKeyPair)` containing the newly generated public and secret keys.
+/// - `Err(String)` if the key generation process fails.
+pub fn sphincsplus_keygen_native() -> Result<SphincsPlusKeyPair, String> {
+    let (pk, sk) = keypair();
+    let keypair = SphincsPlusKeyPair {
+        pk: pk.as_bytes().to_vec(),
+        sk: sk.as_bytes().to_vec(),
+    };
+    Ok(keypair)
+}
+
+/// Signs a message using the provided SPHINCS+ secret key - Native version.
+///
+/// # Arguments
+///
+/// * `secret_key` - A byte slice representing the SPHINCS+ secret key.
+/// * `message` - A byte slice representing the message to be signed.
+///
+/// # Returns
+///
+/// A `Result<Vec<u8>, String>` which is:
+/// - `Ok(Vec<u8>)` containing the generated digital signature.
+/// - `Err(String)` if the secret key has an incorrect length or is invalid,
+///   or if the signing process fails.
+pub fn sphincsplus_sign_native(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>, String> {
+    validate_secret_key_length(secret_key)?;
+
+    let sk = SecretKey::from_bytes(secret_key)
+        .map_err(|_| "Invalid secret key".to_string())?;
+    let signature = detached_sign(message, &sk);
+    Ok(signature.as_bytes().to_vec())
+}
+
+/// Verifies a SPHINCS+ signature against a message and a public key - Native version.
+///
+/// # Arguments
+///
+/// * `public_key` - A byte slice representing the SPHINCS+ public key.
+/// * `message` - A byte slice representing the original message.
+/// * `signature` - A byte slice representing the digital signature to verify.
+///
+/// # Returns
+///
+/// `true` if the signature is valid, `false` otherwise.
+pub fn sphincsplus_verify_native(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
     // Validate input lengths
     if validate_public_key_length(public_key).is_err() {
         return false;

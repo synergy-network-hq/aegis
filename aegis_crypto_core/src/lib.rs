@@ -2,8 +2,15 @@
 //! Unified post-quantum cryptography library: WebAssembly 🡒 Rust 🡒 Python bindings.
 //! Supports Kyber, Dilithium3, Falcon, SPHINCS+ (192f/256f), HQC (128/192/256), Classic McEliece (128/192/256).
 
+
+
 #![warn(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
+#[cfg(feature = "std")]
+
+use std::string::String;
+#[cfg(not(feature = "std"))]
+use alloc::string::String;
 
 // In no_std mode, pull in `alloc` for Vec and String.  Otherwise use std.
 #[cfg(not(feature = "std"))]
@@ -31,6 +38,7 @@ pub mod sphincsplus;
 #[cfg(feature = "hqc")]
 pub mod hqc;
 
+// use crate::utils::inner_u32;
 #[cfg(feature = "classicmceliece")]
 pub mod classicmceliece;
 
@@ -54,23 +62,25 @@ pub mod python_bindings;
 
 // Key Encapsulation Mechanisms:
 #[cfg(feature = "kyber")]
-pub use kyber::*;
+pub use kyber::{KyberKeyPair, KyberEncapsulated, kyber_keygen, kyber_encapsulate, kyber_decapsulate};
 
 #[cfg(feature = "hqc")]
-pub use hqc::*;
+pub use hqc::{HqcKeyPair, HqcEncapsulated, hqc128_keygen, hqc128_encapsulate, hqc128_decapsulate, hqc192_keygen, hqc192_encapsulate, hqc192_decapsulate, hqc256_keygen, hqc256_encapsulate, hqc256_decapsulate, hqc_keygen, hqc_encapsulate, hqc_decapsulate};
 
 #[cfg(feature = "classicmceliece")]
-pub use classicmceliece::*;
+pub use classicmceliece::{ClassicMcEliece128KeyPair, ClassicMcEliece128Encapsulated, ClassicMcEliece192KeyPair, ClassicMcEliece192Encapsulated, ClassicMcEliece256KeyPair, ClassicMcEliece256Encapsulated, classicmceliece128_keygen, classicmceliece128_encapsulate, classicmceliece128_decapsulate, classicmceliece192_keygen, classicmceliece192_encapsulate, classicmceliece192_decapsulate, classicmceliece256_keygen, classicmceliece256_encapsulate, classicmceliece256_decapsulate};
 
 // Digital Signatures:
 #[cfg(feature = "dilithium")]
-pub use dilithium::*;
+pub use dilithium::{DilithiumKeyPair, dilithium_keygen, dilithium_sign, dilithium_verify};
 
-#[cfg(feature = "falcon")]
-pub use falcon::*;
+#[cfg(all(feature = "falcon", target_arch = "wasm32"))]
+pub use falcon::{falcon_keygen, falcon_sign, falcon_verify, FalconKeyPair};
+#[cfg(all(feature = "falcon", not(target_arch = "wasm32")))]
+pub use falcon::{falcon_keygen_native as falcon_keygen, falcon_sign_native as falcon_sign, falcon_verify_native as falcon_verify, FalconKeyPair};
 
 #[cfg(feature = "sphincsplus")]
-pub use sphincsplus::*;
+pub use sphincsplus::{SphincsPlusKeyPair, sphincsplus_keygen, sphincsplus_sign, sphincsplus_verify};
 
 // ================================================================================================
 // Grouped Submodules
@@ -79,25 +89,27 @@ pub use sphincsplus::*;
 /// KEM algorithms group
 pub mod kem {
     #[cfg(feature = "kyber")]
-    pub use crate::kyber::*;
+    pub use crate::kyber::{KyberKeyPair, KyberEncapsulated, kyber_keygen, kyber_encapsulate, kyber_decapsulate};
 
     #[cfg(feature = "hqc")]
-    pub use crate::hqc::*;
+    pub use crate::hqc::{HqcKeyPair, HqcEncapsulated, hqc128_keygen, hqc128_encapsulate, hqc128_decapsulate, hqc192_keygen, hqc192_encapsulate, hqc192_decapsulate, hqc256_keygen, hqc256_encapsulate, hqc256_decapsulate, hqc_keygen, hqc_encapsulate, hqc_decapsulate};
 
     #[cfg(feature = "classicmceliece")]
-    pub use crate::classicmceliece::*;
+    pub use crate::classicmceliece::{ClassicMcEliece128KeyPair, ClassicMcEliece128Encapsulated, ClassicMcEliece192KeyPair, ClassicMcEliece192Encapsulated, ClassicMcEliece256KeyPair, ClassicMcEliece256Encapsulated, classicmceliece128_keygen, classicmceliece128_encapsulate, classicmceliece128_decapsulate, classicmceliece192_keygen, classicmceliece192_encapsulate, classicmceliece192_decapsulate, classicmceliece256_keygen, classicmceliece256_encapsulate, classicmceliece256_decapsulate};
 }
 
 /// Signature algorithms group
 pub mod signature {
     #[cfg(feature = "dilithium")]
-    pub use crate::dilithium::*;
+    pub use crate::dilithium::{DilithiumKeyPair, dilithium_keygen, dilithium_sign, dilithium_verify};
 
-    #[cfg(feature = "falcon")]
-    pub use crate::falcon::*;
+    #[cfg(all(feature = "falcon", target_arch = "wasm32"))]
+    pub use crate::falcon::{falcon_keygen, falcon_sign, falcon_verify, FalconKeyPair};
+    #[cfg(all(feature = "falcon", not(target_arch = "wasm32")))]
+    pub use crate::falcon::{falcon_keygen_native as falcon_keygen, falcon_sign_native as falcon_sign, falcon_verify_native as falcon_verify, FalconKeyPair};
 
     #[cfg(feature = "sphincsplus")]
-    pub use crate::sphincsplus::*;
+    pub use crate::sphincsplus::{SphincsPlusKeyPair, sphincsplus_keygen, sphincsplus_sign, sphincsplus_verify};
 }
 
 // ================================================================================================
