@@ -34,10 +34,11 @@ sha3 = "0.10"
 blake3 = "1.5"
 subtle = "2.5"
 zeroize = "1.8"
-getrandom = { version = "0.2", features = ["js"] }
-rand = "0.8"
+getrandom = "0.3.3"
+getrandom_02 = { package = "getrandom", version = "0.2.16", features = ["js"] }
+rand = { version = "0.8", default-features = false, features = ["std", "rand_chacha"] }
 hex = "0.4"
-base64 = "0.21"
+base64 = "0.22.1"
 
 [dev-dependencies]
 aegis_crypto_core = { path = "." }
@@ -45,6 +46,9 @@ wasm-bindgen-test = "0.3"
 
 [build-dependencies]
 cc = "1.0"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
 
 [features]
 default = [
@@ -67,9 +71,8 @@ sphincsplus = ["dep:pqcrypto-sphincsplus"]
 hqc = ["dep:pqcrypto-hqc"]
 classicmceliece = ["dep:pqcrypto-classicmceliece"]
 
-[[bin]]
-name = "runner"
-path = "src/bin/runner.rs"
+
+
 
 [badges]
 github-actions = { repository = "synergy-network-hq/aegis", workflow = "CI" }
@@ -80,3 +83,4 @@ targets = ["x86_64-unknown-linux-gnu", "wasm32-unknown-unknown"]
 
 [package.metadata.release]
 no-dev-version = true
+

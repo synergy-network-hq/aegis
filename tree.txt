@@ -24,33 +24,57 @@
 │   │   └── wallet_integration_demo.html
 │   ├── README.md
 │   ├── src
+│   │   ├── bin
+│   │   │   └── runner.rs
 │   │   ├── classicmceliece
-│   │   │   └── mod.rs
+│   │   │   ├── core.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── utils.rs
+│   │   │   └── wasm_bindings.rs
 │   │   ├── dilithium
-│   │   │   └── mod.rs
+│   │   │   ├── core.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── utils.rs
+│   │   │   └── wasm_bindings.rs
 │   │   ├── falcon
-│   │   │   └── mod.rs
+│   │   │   ├── core.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── utils.rs
+│   │   │   └── wasm_bindings.rs
 │   │   ├── hash.rs
 │   │   ├── hqc
-│   │   │   └── mod.rs
+│   │   │   ├── core.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── utils.rs
+│   │   │   └── wasm_bindings.rs
 │   │   ├── js_bindings.rs
 │   │   ├── kyber
-│   │   │   └── mod.rs
+│   │   │   ├── core.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── utils.rs
+│   │   │   └── wasm_bindings.rs
 │   │   ├── lib.rs
 │   │   ├── python_bindings.rs
 │   │   ├── sphincsplus
-│   │   │   └── mod.rs
+│   │   │   ├── core.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── utils.rs
+│   │   │   └── wasm_bindings.rs
 │   │   └── utils.rs
-│   ├── test.js
-│   ├── test_kyber.js
 │   └── tests
-│       ├── classicmceliece_tests.rs
-│       ├── dilithium_tests.rs
-│       ├── falcon_tests.rs
-│       ├── hqc_tests.rs
-│       ├── kyber_tests.rs
-│       ├── runner.rs
-│       └── sphincsplus_tests.rs
+│       ├── classicmceliece_native_tests.rs
+│       ├── classicmceliece_wasm_tests.rs
+│       ├── dilithium_native_tests.rs
+│       ├── dilithium_wasm_tests.rs
+│       ├── falcon_native_tests.rs
+│       ├── falcon_wasm_tests.rs
+│       ├── hqc_native_tests.rs
+│       ├── hqc_wasm_tests.rs
+│       ├── kyber_native_tests.rs
+│       ├── kyber_wasm_tests.rs
+│       ├── sphincsplus_native_tests.rs
+│       ├── sphincsplus_wasm_tests.rs
+│       └── test.sh
 ├── Cargo.lock
 ├── Cargo.toml
 ├── LICENSE
@@ -294,4 +318,4 @@
 │   └── WASM.md
 └── tree.txt
 
-96 directories, 199 files
+97 directories, 222 files

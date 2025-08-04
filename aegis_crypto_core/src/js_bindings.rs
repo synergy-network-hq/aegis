@@ -24,11 +24,11 @@ mod wasm_bindings {
         sha3_256_hash(data)
     }
     #[wasm_bindgen(js_name = sha3_256_hex)]
-    pub fn sha3_256_hex_js(data: &[u8]) -> String {
+    pub fn sha3_256_hex_js(data: &[u8]) -> alloc::string::String {
         sha3_256_hash_hex(data)
     }
     #[wasm_bindgen(js_name = sha3_256_base64)]
-    pub fn sha3_256_base64_js(data: &[u8]) -> String {
+    pub fn sha3_256_base64_js(data: &[u8]) -> alloc::string::String {
         sha3_256_hash_base64(data)
     }
 
@@ -37,11 +37,11 @@ mod wasm_bindings {
         sha3_512_hash(data)
     }
     #[wasm_bindgen(js_name = sha3_512_hex)]
-    pub fn sha3_512_hex_js(data: &[u8]) -> String {
+    pub fn sha3_512_hex_js(data: &[u8]) -> alloc::string::String {
         sha3_512_hash_hex(data)
     }
     #[wasm_bindgen(js_name = sha3_512_base64)]
-    pub fn sha3_512_base64_js(data: &[u8]) -> String {
+    pub fn sha3_512_base64_js(data: &[u8]) -> alloc::string::String {
         sha3_512_hash_base64(data)
     }
 
@@ -50,11 +50,11 @@ mod wasm_bindings {
         blake3_hash(data)
     }
     #[wasm_bindgen(js_name = blake3_hex)]
-    pub fn blake3_hex_js(data: &[u8]) -> String {
+    pub fn blake3_hex_js(data: &[u8]) -> alloc::string::String {
         blake3_hash_hex(data)
     }
     #[wasm_bindgen(js_name = blake3_base64)]
-    pub fn blake3_base64_js(data: &[u8]) -> String {
+    pub fn blake3_base64_js(data: &[u8]) -> alloc::string::String {
         blake3_hash_base64(data)
     }
 
@@ -64,7 +64,7 @@ mod wasm_bindings {
         hex_to_bytes(hex_str)
     }
     #[wasm_bindgen(js_name = bytesToHex)]
-    pub fn bytes_to_hex_js(bytes: &[u8]) -> String {
+    pub fn bytes_to_hex_js(bytes: &[u8]) -> alloc::string::String {
         bytes_to_hex(bytes)
     }
 }

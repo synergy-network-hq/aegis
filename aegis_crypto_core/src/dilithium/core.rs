@@ -51,7 +51,20 @@ pub fn dilithium_keygen() -> Result<DilithiumKeyPair, JsValue> {
     dilithium_keygen_native().map_err(|e| JsValue::from_str(&e))
 }
 
-// Native function for non-WASM (testing)
+/// Create a Dilithium signature over a message using the provided secret key.
+#[wasm_bindgen]
+pub fn dilithium_sign(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>, JsValue> {
+    dilithium_sign_native(secret_key, message).map_err(|e| JsValue::from_str(&e))
+}
+
+/// Verify a Dilithium signature over a message using the provided public key.
+#[wasm_bindgen]
+pub fn dilithium_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+    dilithium_verify_native(public_key, message, signature)
+}
+
+// Native Functions (without wasm_bindgen attributes)
+/// Generate a new Dilithium keypair (ML-DSA, mldsa87) - Native version.
 pub fn dilithium_keygen_native() -> Result<DilithiumKeyPair, String> {
     let (pk, sk) = keypair();
     let keypair = DilithiumKeyPair {
@@ -61,23 +74,15 @@ pub fn dilithium_keygen_native() -> Result<DilithiumKeyPair, String> {
     Ok(keypair)
 }
 
-#[wasm_bindgen]
-pub fn dilithium_sign(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>, JsValue> {
-    dilithium_sign_native(secret_key, message).map_err(|e| JsValue::from_str(&e))
-}
-
+/// Create a Dilithium signature over a message using the provided secret key - Native version.
 pub fn dilithium_sign_native(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>, String> {
-    validate_secret_key_length(secret_key).map_err(|e| e)?;
+    validate_secret_key_length(secret_key)?;
     let sk = SecretKey::from_bytes(secret_key).map_err(|_| "Invalid secret key".to_string())?;
     let sig = detached_sign(message, &sk);
     Ok(sig.as_bytes().to_vec())
 }
 
-#[wasm_bindgen]
-pub fn dilithium_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-    dilithium_verify_native(public_key, message, signature)
-}
-
+/// Verify a Dilithium signature over a message using the provided public key - Native version.
 pub fn dilithium_verify_native(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
     if validate_public_key_length(public_key).is_err() {
         return false;
