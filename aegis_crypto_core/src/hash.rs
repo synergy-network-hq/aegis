@@ -1,68 +1,68 @@
-//! This module provides various cryptographic hash functions for use within the Aegis Crypto Core project.
-//! These functions are exposed as WebAssembly (WASM) bindings, allowing them to be used
-//! efficiently in JavaScript and TypeScript environments.
-
+// src/hash.rs
+//! Cryptographic hash utilities: SHA3-256, SHA3-512, BLAKE3.
 use wasm_bindgen::prelude::*;
 use sha3::{Digest, Sha3_256, Sha3_512};
-use blake3::Hasher;
+use blake3;
+use base64::{Engine as _, engine::general_purpose};
+#[cfg(not(feature = "std"))]
+use alloc::{vec::Vec, string::String};
+#[cfg(feature = "std")]
+use std::{vec::Vec, string::String};
 
-/// Computes the SHA3-256 hash of the input data.
-///
-/// SHA3-256 is a cryptographic hash function that produces a 256-bit (32-byte) hash value.
-/// It is part of the SHA-3 family of standards, designed by NIST.
-///
-/// # Arguments
-///
-/// * `data` - A byte slice (`&[u8]`) representing the input data to be hashed.
-///
-/// # Returns
-///
-/// A `Vec<u8>` containing the 32-byte SHA3-256 hash of the input data.
+/// Compute SHA3-256 digest.
 #[wasm_bindgen]
 pub fn sha3_256_hash(data: &[u8]) -> Vec<u8> {
-    let mut hasher = Sha3_256::new();
-    hasher.update(data);
-    hasher.finalize().to_vec()
+    let mut h = Sha3_256::new();
+    h.update(data);
+    h.finalize().to_vec()
 }
 
-/// Computes the SHA3-512 hash of the input data.
-///
-/// SHA3-512 is a cryptographic hash function that produces a 512-bit (64-byte) hash value.
-/// It is also part of the SHA-3 family of standards, providing a higher security level
-/// compared to SHA3-256.
-///
-/// # Arguments
-///
-/// * `data` - A byte slice (`&[u8]`) representing the input data to be hashed.
-///
-/// # Returns
-///
-/// A `Vec<u8>` containing the 64-byte SHA3-512 hash of the input data.
+/// Compute SHA3-256 digest and return hex.
+#[wasm_bindgen]
+pub fn sha3_256_hash_hex(data: &[u8]) -> String {
+    hex::encode(sha3_256_hash(data))
+}
+
+/// Compute SHA3-256 digest and return Base64.
+#[wasm_bindgen]
+pub fn sha3_256_hash_base64(data: &[u8]) -> String {
+    general_purpose::STANDARD.encode(sha3_256_hash(data))
+}
+
+/// Compute SHA3-512 digest.
 #[wasm_bindgen]
 pub fn sha3_512_hash(data: &[u8]) -> Vec<u8> {
-    let mut hasher = Sha3_512::new();
-    hasher.update(data);
-    hasher.finalize().to_vec()
+    let mut h = Sha3_512::new();
+    h.update(data);
+    h.finalize().to_vec()
 }
 
-/// Computes the BLAKE3 hash of the input data.
-///
-/// BLAKE3 is a new, fast, and secure cryptographic hash function. It is designed
-/// to be highly parallelizable and efficient on modern CPUs, making it suitable
-/// for a wide range of applications.
-///
-/// # Arguments
-///
-/// * `data` - A byte slice (`&[u8]`) representing the input data to be hashed.
-///
-/// # Returns
-///
-/// A `Vec<u8>` containing the 32-byte BLAKE3 hash of the input data.
+/// Compute SHA3-512 digest and return hex.
+#[wasm_bindgen]
+pub fn sha3_512_hash_hex(data: &[u8]) -> String {
+    hex::encode(sha3_512_hash(data))
+}
+
+/// Compute SHA3-512 digest and return Base64.
+#[wasm_bindgen]
+pub fn sha3_512_hash_base64(data: &[u8]) -> String {
+    general_purpose::STANDARD.encode(sha3_512_hash(data))
+}
+
+/// Compute BLAKE3 digest.
 #[wasm_bindgen]
 pub fn blake3_hash(data: &[u8]) -> Vec<u8> {
-    let mut hasher = Hasher::new();
-    hasher.update(data);
-    hasher.finalize().as_bytes().to_vec()
+    blake3::hash(data).as_bytes().to_vec()
 }
 
+/// Compute BLAKE3 digest and return hex.
+#[wasm_bindgen]
+pub fn blake3_hash_hex(data: &[u8]) -> String {
+    hex::encode(blake3_hash(data))
+}
 
+/// Compute BLAKE3 digest and return Base64.
+#[wasm_bindgen]
+pub fn blake3_hash_base64(data: &[u8]) -> String {
+    general_purpose::STANDARD.encode(blake3_hash(data))
+}

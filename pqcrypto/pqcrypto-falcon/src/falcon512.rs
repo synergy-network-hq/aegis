@@ -364,14 +364,14 @@ pub fn verify_detached_signature(
 mod test {
     use super::*;
     use rand::prelude::*;
-    use rand::thread_rng;
+    use rand::rng;
 
     #[test]
     pub fn test_sign() {
-        let mut rng = thread_rng();
-        let len: u16 = rng.gen();
+        let mut rng = rng();
+        let len: u16 = rng.random();
 
-        let message = (0..len).map(|_| rng.gen::<u8>()).collect::<Vec<_>>();
+        let message = (0..len).map(|_| rng.random::<u8>()).collect::<Vec<_>>();
         let (pk, sk) = keypair();
         let sm = sign(&message, &sk);
         let verifiedmsg = open(&sm, &pk).unwrap();
@@ -380,9 +380,9 @@ mod test {
 
     #[test]
     pub fn test_sign_detached() {
-        let mut rng = thread_rng();
-        let len: u16 = rng.gen();
-        let message = (0..len).map(|_| rng.gen::<u8>()).collect::<Vec<_>>();
+        let mut rng = rng();
+        let len: u16 = rng.random();
+        let message = (0..len).map(|_| rng.random::<u8>()).collect::<Vec<_>>();
 
         let (pk, sk) = keypair();
         let sig = detached_sign(&message, &sk);
