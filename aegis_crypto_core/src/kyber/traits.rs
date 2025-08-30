@@ -1,7 +1,7 @@
 //! Kyber-specific trait implementations.
 
 use crate::traits::{ Kem, KemError, Algorithm };
-use crate::kyber::{ kyber_keygen_native, kyber_encapsulate_native, kyber_decapsulate_native };
+use crate::kyber::{ kyber_keygen, kyber_encapsulate, kyber_decapsulate };
 use zeroize::Zeroize;
 use std::vec::Vec;
 
@@ -83,14 +83,14 @@ impl Kem for Kyber768 {
     type SharedSecret = KyberSharedSecret;
 
     fn keygen() -> Result<(Self::PublicKey, Self::SecretKey), KemError> {
-        let keypair = kyber_keygen_native();
+        let keypair = kyber_keygen();
         Ok((KyberPublicKey(keypair.public_key()), KyberSecretKey(keypair.secret_key())))
     }
 
     fn encapsulate(
         public_key: &Self::PublicKey
     ) -> Result<(Self::Ciphertext, Self::SharedSecret), KemError> {
-        match kyber_encapsulate_native(&public_key.0) {
+        match kyber_encapsulate(&public_key.0) {
             Ok(encapsulated) =>
                 Ok((
                     KyberCiphertext(encapsulated.ciphertext()),
@@ -104,7 +104,7 @@ impl Kem for Kyber768 {
         secret_key: &Self::SecretKey,
         ciphertext: &[u8]
     ) -> Result<Self::SharedSecret, KemError> {
-        match kyber_decapsulate_native(&secret_key.0, ciphertext) {
+        match kyber_decapsulate(&secret_key.0, ciphertext) {
             Ok(shared_secret) => Ok(KyberSharedSecret(shared_secret)),
             Err(_) => Err(KemError::DecapsulationFailed),
         }

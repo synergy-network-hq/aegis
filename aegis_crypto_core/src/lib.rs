@@ -17,6 +17,7 @@ pub mod traits;
 pub mod hash;
 pub mod utils;
 pub mod performance;
+pub mod blockchain;
 
 // The `js_bindings` module exposes a JavaScript‑friendly API on top of the
 // low‑level functions.  It is compiled unconditionally when building the

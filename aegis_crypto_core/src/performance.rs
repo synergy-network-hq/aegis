@@ -92,7 +92,7 @@ pub fn run_performance_tests() -> Vec<PerformanceResult> {
 
     // Test Kyber operations
     results.push(
-        measure_performance("key_generation", "Kyber", "ML-KEM-768", iterations, || kyber_keygen())
+        measure_performance("key_generation", "Kyber", "ML-KEM-768", iterations, kyber_keygen)
     );
 
     let kyber_keypair = kyber_keygen();
@@ -115,9 +115,7 @@ pub fn run_performance_tests() -> Vec<PerformanceResult> {
     );
 
     // Test HQC operations
-    results.push(
-        measure_performance("key_generation", "HQC", "HQC-256", iterations, || hqc_keygen())
-    );
+    results.push(measure_performance("key_generation", "HQC", "HQC-256", iterations, hqc_keygen));
 
     let hqc_keypair = hqc_keygen();
     let hqc_pk = hqc_keypair.public_key();
@@ -140,8 +138,12 @@ pub fn run_performance_tests() -> Vec<PerformanceResult> {
 
     // Test Dilithium operations
     results.push(
-        measure_performance("key_generation", "Dilithium", "ML-DSA-87", iterations, ||
-            dilithium_keygen()
+        measure_performance(
+            "key_generation",
+            "Dilithium",
+            "ML-DSA-87",
+            iterations,
+            dilithium_keygen
         )
     );
 
@@ -166,9 +168,7 @@ pub fn run_performance_tests() -> Vec<PerformanceResult> {
 
     // Test Falcon operations
     results.push(
-        measure_performance("key_generation", "Falcon", "Falcon-512", iterations, ||
-            falcon_keygen()
-        )
+        measure_performance("key_generation", "Falcon", "Falcon-512", iterations, falcon_keygen)
     );
 
     let falcon_keypair = falcon_keygen();
@@ -192,8 +192,12 @@ pub fn run_performance_tests() -> Vec<PerformanceResult> {
 
     // Test SPHINCS+ operations
     results.push(
-        measure_performance("key_generation", "SPHINCS+", "SHA2-128f", iterations, ||
-            sphincsplus_keygen()
+        measure_performance(
+            "key_generation",
+            "SPHINCS+",
+            "SHA2-128f",
+            iterations,
+            sphincsplus_keygen
         )
     );
 
