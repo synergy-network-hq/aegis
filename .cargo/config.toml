@@ -1,0 +1,13 @@
+[alias]
+# Build and run tests for the wasm32-wasip1 target with the "wasm" feature.
+# Note: Executing the produced .wasm artifacts requires a WASI runtime (e.g., wasmtime).
+test-wasm = "test -p aegis_crypto_core --target wasm32-wasip1 --features wasm"
+
+# List tests for wasm target (useful to confirm which tests will compile under wasm).
+list-wasm = "test -p aegis_crypto_core --target wasm32-wasip1 --features wasm -- --list"
+
+# Run SPHINCS+ tests on native without enabling wasm/js bindings.
+test-native-sphincs = "test -p aegis_crypto_core --tests --no-default-features --features sphincsplus"
+
+# Build and run browser-based wasm tests using wasm-bindgen-test on wasm32-unknown-unknown.
+test-wasm-browser = "test -p aegis_crypto_core --target wasm32-unknown-unknown --features wasm,js-bindings -- --test-threads=1"

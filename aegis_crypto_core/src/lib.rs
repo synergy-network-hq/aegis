@@ -11,6 +11,9 @@ pub mod hqc;
 #[cfg(feature = "classicmceliece")]
 pub mod classicmceliece;
 
+/// Trait definitions for unified algorithm interfaces.
+pub mod traits;
+
 pub mod hash;
 pub mod utils;
 
@@ -23,8 +26,8 @@ pub mod js_bindings;
 // `python-bindings` feature is enabled.  See `Cargo.toml` for more
 // details.  The module contains PyO3 wrappers that expose the
 // algorithms to Python as a native extension.
-#[cfg(feature = "python-bindings")]
-pub mod python_bindings;
+// #[cfg(feature = "python-bindings")]
+// pub mod python_bindings;
 
 #[cfg(feature = "kyber")]
 pub use kyber::*;

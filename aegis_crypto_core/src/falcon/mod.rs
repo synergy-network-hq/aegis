@@ -3,8 +3,23 @@
 //! operations and exposes key functions as WebAssembly (WASM) bindings for use
 //! in JavaScript/TypeScript environments.
 
-use pqcrypto_falcon::falcon512::{PublicKey, SecretKey, DetachedSignature, detached_sign, verify_detached_signature, keypair};
-use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, DetachedSignature as _};
+use pqcrypto_falcon::falcon512::{
+    PublicKey as PublicKey512,
+    SecretKey as SecretKey512,
+    DetachedSignature as DetachedSignature512,
+    detached_sign as detached_sign512,
+    verify_detached_signature as verify_detached_signature512,
+    keypair as keypair512,
+};
+use pqcrypto_falcon::falcon1024::{
+    PublicKey as PublicKey1024,
+    SecretKey as SecretKey1024,
+    DetachedSignature as DetachedSignature1024,
+    detached_sign as detached_sign1024,
+    verify_detached_signature as verify_detached_signature1024,
+    keypair as keypair1024,
+};
+use pqcrypto_traits::sign::{ PublicKey as _, SecretKey as _, DetachedSignature as _ };
 use wasm_bindgen::prelude::*;
 
 /// Represents a Falcon key pair, containing both the public and secret keys.
@@ -32,7 +47,76 @@ impl FalconKeyPair {
     }
 }
 
-/// Generates a new Falcon key pair.
+// Falcon-512 Functions
+#[wasm_bindgen]
+pub fn falcon512_keygen() -> FalconKeyPair {
+    let (pk, sk) = keypair512();
+    FalconKeyPair {
+        pk: pk.as_bytes().to_vec(),
+        sk: sk.as_bytes().to_vec(),
+    }
+}
+
+#[wasm_bindgen]
+pub fn falcon512_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
+    let sk = SecretKey512::from_bytes(secret_key).expect("Invalid secret key");
+    let signature = detached_sign512(message, &sk);
+    signature.as_bytes().to_vec()
+}
+
+#[wasm_bindgen]
+pub fn falcon512_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+    let pk = match PublicKey512::from_bytes(public_key) {
+        Ok(pk) => pk,
+        Err(_) => {
+            return false;
+        }
+    };
+    let sig = match DetachedSignature512::from_bytes(signature) {
+        Ok(sig) => sig,
+        Err(_) => {
+            return false;
+        }
+    };
+    verify_detached_signature512(&sig, message, &pk).is_ok()
+}
+
+// Falcon-1024 Functions
+#[wasm_bindgen]
+pub fn falcon1024_keygen() -> FalconKeyPair {
+    let (pk, sk) = keypair1024();
+    FalconKeyPair {
+        pk: pk.as_bytes().to_vec(),
+        sk: sk.as_bytes().to_vec(),
+    }
+}
+
+#[wasm_bindgen]
+pub fn falcon1024_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
+    let sk = SecretKey1024::from_bytes(secret_key).expect("Invalid secret key");
+    let signature = detached_sign1024(message, &sk);
+    signature.as_bytes().to_vec()
+}
+
+#[wasm_bindgen]
+pub fn falcon1024_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+    let pk = match PublicKey1024::from_bytes(public_key) {
+        Ok(pk) => pk,
+        Err(_) => {
+            return false;
+        }
+    };
+    let sig = match DetachedSignature1024::from_bytes(signature) {
+        Ok(sig) => sig,
+        Err(_) => {
+            return false;
+        }
+    };
+    verify_detached_signature1024(&sig, message, &pk).is_ok()
+}
+
+// Legacy functions (for backward compatibility - default to Falcon-512)
+/// Generates a new Falcon key pair (Falcon-512).
 ///
 /// This function uses the `pqcrypto-falcon` backend to generate a fresh
 /// public and secret key pair for the Falcon-512 scheme.
@@ -42,14 +126,10 @@ impl FalconKeyPair {
 /// A `FalconKeyPair` containing the newly generated public and secret keys.
 #[wasm_bindgen]
 pub fn falcon_keygen() -> FalconKeyPair {
-    let (pk, sk) = keypair();
-    FalconKeyPair {
-        pk: pk.as_bytes().to_vec(),
-        sk: sk.as_bytes().to_vec(),
-    }
+    falcon512_keygen()
 }
 
-/// Signs a message using the provided Falcon secret key.
+/// Signs a message using the provided Falcon secret key (Falcon-512).
 ///
 /// # Arguments
 ///
@@ -62,12 +142,10 @@ pub fn falcon_keygen() -> FalconKeyPair {
 /// invalid, this function will panic.
 #[wasm_bindgen]
 pub fn falcon_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
-    let sk = SecretKey::from_bytes(secret_key).expect("Invalid secret key");
-    let signature = detached_sign(message, &sk);
-    signature.as_bytes().to_vec()
+    falcon512_sign(secret_key, message)
 }
 
-/// Verifies a Falcon signature.
+/// Verifies a Falcon signature (Falcon-512).
 ///
 /// # Arguments
 ///
@@ -81,13 +159,5 @@ pub fn falcon_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
 /// and `false` otherwise.
 #[wasm_bindgen]
 pub fn falcon_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-    let pk = match PublicKey::from_bytes(public_key) {
-        Ok(pk) => pk,
-        Err(_) => return false,
-    };
-    let sig = match DetachedSignature::from_bytes(signature) {
-        Ok(sig) => sig,
-        Err(_) => return false,
-    };
-    verify_detached_signature(&sig, message, &pk).is_ok()
+    falcon512_verify(public_key, message, signature)
 }

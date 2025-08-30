@@ -3,8 +3,31 @@
 //! operations and exposes key functions as WebAssembly (WASM) bindings for use
 //! in JavaScript/TypeScript environments.
 
-use pqcrypto_hqc::hqc128::{PublicKey, SecretKey, Ciphertext, encapsulate, decapsulate, keypair};
-use pqcrypto_traits::kem::{PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _};
+use pqcrypto_hqc::hqc128::{
+    PublicKey as PublicKey128,
+    SecretKey as SecretKey128,
+    Ciphertext as Ciphertext128,
+    encapsulate as encapsulate128,
+    decapsulate as decapsulate128,
+    keypair as keypair128,
+};
+use pqcrypto_hqc::hqc192::{
+    PublicKey as PublicKey192,
+    SecretKey as SecretKey192,
+    Ciphertext as Ciphertext192,
+    encapsulate as encapsulate192,
+    decapsulate as decapsulate192,
+    keypair as keypair192,
+};
+use pqcrypto_hqc::hqc256::{
+    PublicKey as PublicKey256,
+    SecretKey as SecretKey256,
+    Ciphertext as Ciphertext256,
+    encapsulate as encapsulate256,
+    decapsulate as decapsulate256,
+    keypair as keypair256,
+};
+use pqcrypto_traits::kem::{ PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _ };
 use wasm_bindgen::prelude::*;
 
 /// Represents an HQC key pair, containing both the public and secret keys.
@@ -50,36 +73,123 @@ impl HqcEncapsulated {
     }
 }
 
-/// Generates a new HQC key pair.
+// HQC-128 Functions
 #[wasm_bindgen]
-pub fn hqc_keygen() -> HqcKeyPair {
-    let (pk, sk) = keypair();
+pub fn hqc128_keygen() -> HqcKeyPair {
+    let (pk, sk) = keypair128();
     HqcKeyPair {
         pk: pk.as_bytes().to_vec(),
         sk: sk.as_bytes().to_vec(),
     }
 }
 
-/// Encapsulates a shared secret using the provided HQC public key.
 #[wasm_bindgen]
-pub fn hqc_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
-    let pk = PublicKey::from_bytes(public_key)
-        .map_err(|e| format!("Invalid public key: {:?}", e))?;
-    let (ss, ct) = encapsulate(&pk);
+pub fn hqc128_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
+    let pk = PublicKey128::from_bytes(public_key).map_err(|e|
+        format!("Invalid public key: {:?}", e)
+    )?;
+    let (ss, ct) = encapsulate128(&pk);
     Ok(HqcEncapsulated {
         ciphertext: ct.as_bytes().to_vec(),
         shared_secret: ss.as_bytes().to_vec(),
     })
 }
 
-/// Decapsulates a shared secret using the provided HQC secret key and ciphertext.
+#[wasm_bindgen]
+pub fn hqc128_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+    let sk = SecretKey128::from_bytes(secret_key).map_err(|e|
+        format!("Invalid secret key: {:?}", e)
+    )?;
+    let ct = Ciphertext128::from_bytes(ciphertext).map_err(|e|
+        format!("Invalid ciphertext: {:?}", e)
+    )?;
+    let ss = decapsulate128(&ct, &sk);
+    Ok(ss.as_bytes().to_vec())
+}
+
+// HQC-192 Functions
+#[wasm_bindgen]
+pub fn hqc192_keygen() -> HqcKeyPair {
+    let (pk, sk) = keypair192();
+    HqcKeyPair {
+        pk: pk.as_bytes().to_vec(),
+        sk: sk.as_bytes().to_vec(),
+    }
+}
+
+#[wasm_bindgen]
+pub fn hqc192_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
+    let pk = PublicKey192::from_bytes(public_key).map_err(|e|
+        format!("Invalid public key: {:?}", e)
+    )?;
+    let (ss, ct) = encapsulate192(&pk);
+    Ok(HqcEncapsulated {
+        ciphertext: ct.as_bytes().to_vec(),
+        shared_secret: ss.as_bytes().to_vec(),
+    })
+}
+
+#[wasm_bindgen]
+pub fn hqc192_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+    let sk = SecretKey192::from_bytes(secret_key).map_err(|e|
+        format!("Invalid secret key: {:?}", e)
+    )?;
+    let ct = Ciphertext192::from_bytes(ciphertext).map_err(|e|
+        format!("Invalid ciphertext: {:?}", e)
+    )?;
+    let ss = decapsulate192(&ct, &sk);
+    Ok(ss.as_bytes().to_vec())
+}
+
+// HQC-256 Functions
+#[wasm_bindgen]
+pub fn hqc256_keygen() -> HqcKeyPair {
+    let (pk, sk) = keypair256();
+    HqcKeyPair {
+        pk: pk.as_bytes().to_vec(),
+        sk: sk.as_bytes().to_vec(),
+    }
+}
+
+#[wasm_bindgen]
+pub fn hqc256_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
+    let pk = PublicKey256::from_bytes(public_key).map_err(|e|
+        format!("Invalid public key: {:?}", e)
+    )?;
+    let (ss, ct) = encapsulate256(&pk);
+    Ok(HqcEncapsulated {
+        ciphertext: ct.as_bytes().to_vec(),
+        shared_secret: ss.as_bytes().to_vec(),
+    })
+}
+
+#[wasm_bindgen]
+pub fn hqc256_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+    let sk = SecretKey256::from_bytes(secret_key).map_err(|e|
+        format!("Invalid secret key: {:?}", e)
+    )?;
+    let ct = Ciphertext256::from_bytes(ciphertext).map_err(|e|
+        format!("Invalid ciphertext: {:?}", e)
+    )?;
+    let ss = decapsulate256(&ct, &sk);
+    Ok(ss.as_bytes().to_vec())
+}
+
+// Legacy functions (for backward compatibility - default to HQC-128)
+/// Generates a new HQC key pair (HQC-128).
+#[wasm_bindgen]
+pub fn hqc_keygen() -> HqcKeyPair {
+    hqc128_keygen()
+}
+
+/// Encapsulates a shared secret using the provided HQC public key (HQC-128).
+#[wasm_bindgen]
+pub fn hqc_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
+    hqc128_encapsulate(public_key)
+}
+
+/// Decapsulates a shared secret using the provided HQC secret key and ciphertext (HQC-128).
 #[wasm_bindgen]
 pub fn hqc_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
-    let  sk = SecretKey::from_bytes(secret_key)
-        .map_err(|e| format!("Invalid secret key: {:?}", e))?;
-    let ct = Ciphertext::from_bytes(ciphertext)
-        .map_err(|e| format!("Invalid ciphertext: {:?}", e))?;
-    let ss = decapsulate(&ct, &sk);
-
-    Ok(ss.as_bytes().to_vec())
+    hqc128_decapsulate(secret_key, ciphertext)
 }
