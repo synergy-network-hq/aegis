@@ -1,13 +1,10 @@
 // src/hash.rs
 //! Cryptographic hash utilities: SHA3-256, SHA3-512, BLAKE3.
 use wasm_bindgen::prelude::*;
-use sha3::{Digest, Sha3_256, Sha3_512};
+use sha3::{ Digest, Sha3_256, Sha3_512 };
 use blake3;
-use base64::{Engine as _, engine::general_purpose};
-#[cfg(not(feature = "std"))]
-use alloc::{vec::Vec, string::String};
-#[cfg(feature = "std")]
-use std::{vec::Vec, string::String};
+use base64::{ Engine as _, engine::general_purpose };
+use std::{ vec::Vec, string::String };
 
 /// Compute SHA3-256 digest.
 #[wasm_bindgen]

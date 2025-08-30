@@ -42,6 +42,7 @@ base64 = "0.22.1"
 
 [dev-dependencies]
 aegis_crypto_core = { path = "." }
+criterion = "0.7.0"
 wasm-bindgen-test = "0.3"
 
 [build-dependencies]
