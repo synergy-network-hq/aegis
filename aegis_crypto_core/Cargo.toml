@@ -3,7 +3,7 @@ name = "aegis_crypto_core"
 version = "0.1.0"
 authors = ["Justin Hutzler <justin@synergy-network.io>"]
 edition = "2021"
-description = "Aegis: Unified WebAssembly, Rust, and Python PQ cryptography core with Kyber, Dilithium, Falcon, HQC, Classic McEliece, and (pending) SPHINCS+ support."
+description = "Aegis: Unified WebAssembly, Rust, and Python PQ cryptography core with Kyber, Dilithium, Falcon, HQC, SPHINCS+ support. Classic McEliece is experimental and disabled by default."
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/synergy-network-hq/aegis"
@@ -30,6 +30,9 @@ pqcrypto-falcon = { path = "../pqcrypto/pqcrypto-falcon", optional = true }
 pqcrypto-hqc = { path = "../pqcrypto/pqcrypto-hqc", optional = true }
 pqcrypto-classicmceliece = { path = "../pqcrypto/pqcrypto-classicmceliece", optional = true }
 pqcrypto-traits = { path = "../pqcrypto/pqcrypto-traits" }
+# Pure Rust implementations from rustpqc folder
+ml-kem = { path = "../rustpqc/ml-kem", optional = true }
+ml-dsa = { path = "../rustpqc/ml-dsa", optional = true }
 sha3 = "0.10"
 blake3 = "1.5"
 subtle = "2.5"
@@ -54,16 +57,11 @@ cc = "1.0"
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.3", features = ["wasm_js"] }
 
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
 [features]
-default = [
-  "wasm",
-  "kyber",
-  "dilithium",
-  "falcon",
-  "sphincsplus",
-  "hqc",
-  "classicmceliece",
-]
+default = ["wasm", "kyber", "dilithium", "falcon", "sphincsplus", "hqc"]
 std = []
 wasm = ["dep:wasm-bindgen"]
 js-bindings = ["dep:wasm-bindgen"]
@@ -74,6 +72,9 @@ falcon = ["dep:pqcrypto-falcon"]
 sphincsplus = ["dep:pqcrypto-sphincsplus"]
 hqc = ["dep:pqcrypto-hqc"]
 classicmceliece = ["dep:pqcrypto-classicmceliece"]
+# Pure Rust implementations
+rustpqc-kyber = ["dep:ml-kem"]
+rustpqc-dilithium = ["dep:ml-dsa"]
 
 
 [badges]

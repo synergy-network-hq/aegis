@@ -38,10 +38,13 @@
     "examples/"
   ],
   "scripts": {
-    "build": "wasm-pack build --release --target bundler --out-dir pkg",
-    "build:web": "wasm-pack build --release --target web --out-dir pkg",
+    "build": "bash scripts/build-wasm.sh",
+    "build:web": "bash scripts/build-wasm.sh",
     "build:node": "wasm-pack build --release --target nodejs --out-dir pkg",
+    "build:wasi": "bash scripts/build-wasm.sh",
+    "build:custom": "bash scripts/build-wasm.sh",
     "test": "wasm-pack test --headless --chrome",
+    "test:native": "cargo test --workspace",
     "lint": "echo 'No JS linting configured yet.'",
     "prepublishOnly": "npm run build"
   },

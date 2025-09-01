@@ -1,3 +1,13 @@
+[target.wasm32-wasip1]
+linker = "clang"
+ar = "llvm-ar"
+rustflags = [
+  "-C",
+  "target-feature=+crt-static",
+  "-C",
+  "link-arg=--sysroot=${WASI_SDK_DIR}",
+]
+
 [target.wasm32-unknown-unknown]
 rustflags = [
   "-C",
@@ -14,6 +24,27 @@ rustflags = [
   "link-arg=--export-table",
 ]
 
+# Native target configuration for Classic McEliece stack requirements
+[target.'cfg(all(target_arch = "x86_64", target_os = "linux"))']
+rustflags = [
+  "-C",
+  "link-arg=-Wl,-z,stack-size=67108864", # 64MB stack for Classic McEliece
+]
+
+[target.'cfg(all(target_arch = "x86_64", target_os = "macos"))']
+rustflags = [
+  "-C",
+  "link-arg=-Wl,-stack_size,67108864", # 64MB stack for Classic McEliece
+]
+
+[target.'cfg(all(target_arch = "x86_64", target_os = "windows"))']
+rustflags = [
+  "-C",
+  "link-arg=/STACK:67108864", # 64MB stack for Classic McEliece
+]
+
 [env]
+CC_wasm32-wasip1 = "clang"
+AR_wasm32-wasip1 = "llvm-ar"
 CC_wasm32-unknown-unknown = "clang"
 AR_wasm32-unknown-unknown = "llvm-ar"

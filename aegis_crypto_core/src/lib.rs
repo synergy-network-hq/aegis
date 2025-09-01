@@ -11,6 +11,12 @@ pub mod hqc;
 #[cfg(feature = "classicmceliece")]
 pub mod classicmceliece;
 
+// Pure Rust implementations from rustpqc folder
+#[cfg(feature = "rustpqc-kyber")]
+pub mod rustpqc_kyber;
+#[cfg(feature = "rustpqc-dilithium")]
+pub mod rustpqc_dilithium;
+
 /// Trait definitions for unified algorithm interfaces.
 pub mod traits;
 
@@ -43,3 +49,9 @@ pub use sphincsplus::*;
 pub use hqc::*;
 #[cfg(feature = "classicmceliece")]
 pub use classicmceliece::*;
+
+// Re-export pure Rust implementations
+#[cfg(feature = "rustpqc-kyber")]
+pub use rustpqc_kyber::*;
+#[cfg(feature = "rustpqc-dilithium")]
+pub use rustpqc_dilithium::*;

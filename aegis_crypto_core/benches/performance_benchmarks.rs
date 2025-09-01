@@ -8,9 +8,6 @@ use aegis_crypto_core::{
     hqc_keygen,
     hqc_encapsulate,
     hqc_decapsulate,
-    classicmceliece_keygen,
-    classicmceliece_encapsulate,
-    classicmceliece_decapsulate,
     // Signature algorithms
     dilithium_keygen,
     dilithium_sign,
@@ -21,6 +18,13 @@ use aegis_crypto_core::{
     sphincsplus_keygen,
     sphincsplus_sign,
     sphincsplus_verify,
+};
+
+#[cfg(feature = "classicmceliece")]
+use aegis_crypto_core::{
+    classicmceliece_keygen,
+    classicmceliece_encapsulate,
+    classicmceliece_decapsulate,
 };
 
 fn bench_kyber_operations(c: &mut Criterion) {
@@ -99,6 +103,7 @@ fn bench_hqc_operations(c: &mut Criterion) {
     group.finish();
 }
 
+#[cfg(feature = "classicmceliece")]
 fn bench_classicmceliece_operations(c: &mut Criterion) {
     let mut group = c.benchmark_group("Classic McEliece KEM Operations");
 
@@ -263,7 +268,6 @@ criterion_group!(
     benches,
     bench_kyber_operations,
     bench_hqc_operations,
-    bench_classicmceliece_operations,
     bench_dilithium_operations,
     bench_falcon_operations,
     bench_sphincsplus_operations

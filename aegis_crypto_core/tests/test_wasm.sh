@@ -1,5 +1,6 @@
 #!/bin/sh
 echo "Running WASM PQC tests..."
+echo "Note: Classic McEliece is disabled by default. Use --features classicmceliece to enable it."
 
 # Install wasm-pack if not already installed
 if ! command -v wasm-pack &> /dev/null; then
@@ -7,5 +8,5 @@ if ! command -v wasm-pack &> /dev/null; then
     cargo install wasm-pack
 fi
 
-# Run WASM tests using wasm-pack
-wasm-pack test --node
+# Run WASM tests using wasm-pack (excluding Classic McEliece by default)
+wasm-pack test --node --no-default-features --features "kyber dilithium falcon sphincsplus hqc"
