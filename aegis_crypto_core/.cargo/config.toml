@@ -1,50 +1,38 @@
-[target.wasm32-wasip1]
-linker = "clang"
-ar = "llvm-ar"
-rustflags = [
-  "-C",
-  "target-feature=+crt-static",
-  "-C",
-  "link-arg=--sysroot=${WASI_SDK_DIR}",
-]
-
 [target.wasm32-unknown-unknown]
 rustflags = [
+  "--cfg=getrandom_backend=\"wasm_js\"",
   "-C",
   "target-feature=+crt-static",
+  # Force our memory settings to override wasm-pack's defaults
+  "-C",
+  "link-arg=--initial-memory=4194304",
+  "-C",
+  "link-arg=--max-memory=4194304",
+  # Additional memory configuration to ensure it's not overridden
   "-C",
   "link-arg=--import-memory",
   "-C",
-  "link-arg=--initial-memory=65536",
+  "link-arg=--export-memory",
+  # Override wasm-bindgen's memory settings
   "-C",
-  "link-arg=--max-memory=65536",
-  "-C",
-  "link-arg=--stack-first",
+  "link-arg=--no-entry",
   "-C",
   "link-arg=--export-table",
 ]
 
-# Native target configuration for Classic McEliece stack requirements
-[target.'cfg(all(target_arch = "x86_64", target_os = "linux"))']
+# Also configure for wasm32-wasip1 target
+[target.wasm32-wasip1]
 rustflags = [
+  "--cfg=getrandom_backend=\"wasm_js\"",
   "-C",
-  "link-arg=-Wl,-z,stack-size=67108864", # 64MB stack for Classic McEliece
+  "target-feature=+crt-static",
+  "-C",
+  "link-arg=--initial-memory=4194304",
+  "-C",
+  "link-arg=--max-memory=4194304",
 ]
 
-[target.'cfg(all(target_arch = "x86_64", target_os = "macos"))']
-rustflags = [
-  "-C",
-  "link-arg=-Wl,-stack_size,67108864", # 64MB stack for Classic McEliece
-]
-
-[target.'cfg(all(target_arch = "x86_64", target_os = "windows"))']
-rustflags = [
-  "-C",
-  "link-arg=/STACK:67108864", # 64MB stack for Classic McEliece
-]
-
+# Set environment variables that wasm-bindgen respects
 [env]
-CC_wasm32-wasip1 = "clang"
-AR_wasm32-wasip1 = "llvm-ar"
-CC_wasm32-unknown-unknown = "clang"
-AR_wasm32-unknown-unknown = "llvm-ar"
+WASM_BINDGEN_WEAK_REF = "1"
+WASM_BINDGEN_EXTERNREF = "1"

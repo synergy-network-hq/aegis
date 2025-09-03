@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Messaging - Aegis PQC Demo</title>
+  <link rel="stylesheet" href="../portal/portal.css">
+  <style>
+    .chat-container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .sidebar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 15px;
+      padding: 20px;
+      color: white;
+    }
+
+    .user-list {
+      margin-bottom: 20px;
+    }
+
+    .user-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-item:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .user-item.active {
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid #fff;
+    }
+
+    .main-content {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .chat-messages {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      min-height: 400px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .message {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .message.sent {
+      margin-left: 20%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .message.received {
+      margin-right: 20%;
+      background: white;
+      border: 2px solid #e0e0e0;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+
+    .message-content {
+      line-height: 1.5;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .chat-input input:focus {
+      border-color: #667eea;
+    }
+
+    .send-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .send-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .pqc-status {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .status-secure {
+      background: #28a745;
+    }
+
+    .status-warning {
+      background: #ffc107;
+    }
+
+    .status-danger {
+      background: #dc3545;
+    }
+
+    .crypto-info {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .crypto-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      border: 2px solid #e0e0e0;
+    }
+
+    .stat-card h4 {
+      margin: 0 0 10px 0;
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .stat-card .value {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="chat-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>💬 Secure Chat</h2>
+
+      <div class="user-list">
+        <h3>Users</h3>
+        <div class="user-item active" data-user="alice">
+          <div>👩‍💼 Alice Johnson</div>
+          <div style="font-size: 0.9em; opacity: 0.8;">Online</div>
+        </div>
+        <div class="user-item" data-user="bob">
+          <div>👨‍💼 Bob Smith</div>
+          <div style="font-size: 0.9em; opacity: 0.8;">Online</div>
+        </div>
+        <div class="user-item" data-user="carol">
+          <div>👩‍💼 Carol Davis</div>
+          <div style="font-size: 0.9em; opacity: 0.8;">Online</div>
+        </div>
+      </div>
+
+      <div class="pqc-status">
+        <h4>🔒 PQC Security Status</h4>
+        <div><span class="status-indicator status-secure"></span>Kyber-768: Active</div>
+        <div><span class="status-indicator status-secure"></span>Falcon-512: Active</div>
+        <div><span class="status-indicator status-secure"></span>SHA3-256: Active</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="chat-header">
+        <div>
+          <h1>Secure Chat Room</h1>
+          <p style="color: #666; margin: 0;">End-to-end encrypted messaging with PQC algorithms</p>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 1.2em; font-weight: bold; color: #28a745;">🔒 Encrypted</div>
+          <div style="color: #666;">3 users online</div>
+        </div>
+      </div>
+
+      <div class="crypto-info">
+        <h3>🔐 Cryptographic Operations</h3>
+        <div class="crypto-stats">
+          <div class="stat-card">
+            <h4>Key Exchange</h4>
+            <div class="value">Kyber-768</div>
+          </div>
+          <div class="stat-card">
+            <h4>Signatures</h4>
+            <div class="value">Falcon-512</div>
+          </div>
+          <div class="stat-card">
+            <h4>Hashing</h4>
+            <div class="value">SHA3-256</div>
+          </div>
+          <div class="stat-card">
+            <h4>Security Level</h4>
+            <div class="value">Level 3</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="message received">
+          <div class="message-header">
+            <span>👨‍💼 Bob Smith</span>
+            <span>2:30 PM</span>
+          </div>
+          <div class="message-content">
+            Hey Alice! How's the PQC implementation going?
+          </div>
+        </div>
+        <div class="message sent">
+          <div class="message-header">
+            <span>👩‍💼 Alice Johnson</span>
+            <span>2:31 PM</span>
+          </div>
+          <div class="message-content">
+            Great! The Kyber-768 key exchange is working perfectly. Much faster than expected!
+          </div>
+        </div>
+        <div class="message received">
+          <div class="message-header">
+            <span>👩‍💼 Carol Davis</span>
+            <span>2:32 PM</span>
+          </div>
+          <div class="message-content">
+            That's fantastic! Are you seeing the performance improvements with Falcon-512 signatures too?
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Type your secure message..." maxlength="500">
+        <button class="send-btn" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="back-button" onclick="goBack()">← Back to Portal</button>
+
+  <script src="secure-messaging.js"></script>
+</body>
+
+</html>
+
+

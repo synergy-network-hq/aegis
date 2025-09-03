@@ -17,6 +17,14 @@ pub mod rustpqc_kyber;
 #[cfg(feature = "rustpqc-dilithium")]
 pub mod rustpqc_dilithium;
 
+// NIST Reference WASM implementations
+#[cfg(feature = "nist-wasm")]
+pub mod nist_wasm_mlkem;
+#[cfg(feature = "nist-wasm")]
+pub mod nist_wasm_mldsa;
+#[cfg(feature = "nist-wasm")]
+pub mod wasm_loader;
+
 /// Trait definitions for unified algorithm interfaces.
 pub mod traits;
 
@@ -55,3 +63,11 @@ pub use classicmceliece::*;
 pub use rustpqc_kyber::*;
 #[cfg(feature = "rustpqc-dilithium")]
 pub use rustpqc_dilithium::*;
+
+// Re-export NIST Reference WASM implementations
+#[cfg(feature = "nist-wasm")]
+pub use nist_wasm_mlkem::*;
+#[cfg(feature = "nist-wasm")]
+pub use nist_wasm_mldsa::*;
+#[cfg(feature = "nist-wasm")]
+pub use wasm_loader::*;

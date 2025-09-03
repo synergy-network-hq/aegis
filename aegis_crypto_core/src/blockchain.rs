@@ -1,5 +1,6 @@
 //! Blockchain integration utilities for post-quantum cryptography.
 
+#[cfg(all(feature = "kyber", feature = "dilithium"))]
 use crate::{
     kyber_keygen,
     kyber_encapsulate,
@@ -31,6 +32,7 @@ pub struct BlockchainTransaction {
 }
 
 /// Generate a blockchain-compatible key pair
+#[cfg(all(feature = "kyber", feature = "dilithium"))]
 pub fn generate_blockchain_keypair() -> BlockchainKeyPair {
     // Generate KEM keypair for encryption
     let kem_keypair = kyber_keygen();
@@ -68,6 +70,7 @@ pub fn generate_address(public_key: &[u8]) -> String {
 }
 
 /// Encrypt data for blockchain transaction
+#[cfg(feature = "kyber")]
 pub fn encrypt_for_blockchain(recipient_public_key: &[u8], data: &[u8]) -> Result<Vec<u8>, String> {
     // Use Kyber for key encapsulation
     let encapsulated = kyber_encapsulate(recipient_public_key).map_err(|e|
@@ -82,6 +85,7 @@ pub fn encrypt_for_blockchain(recipient_public_key: &[u8], data: &[u8]) -> Resul
 }
 
 /// Decrypt blockchain transaction data
+#[cfg(feature = "kyber")]
 pub fn decrypt_blockchain_data(
     secret_key: &[u8],
     encrypted_data: &[u8]
@@ -105,11 +109,13 @@ pub fn decrypt_blockchain_data(
 }
 
 /// Sign a blockchain transaction
+#[cfg(feature = "dilithium")]
 pub fn sign_transaction(secret_key: &[u8], transaction_data: &[u8]) -> Result<Vec<u8>, String> {
     Ok(dilithium_sign(secret_key, transaction_data))
 }
 
 /// Verify a blockchain transaction signature
+#[cfg(feature = "dilithium")]
 pub fn verify_transaction_signature(
     public_key: &[u8],
     _transaction_data: &[u8],
@@ -119,6 +125,7 @@ pub fn verify_transaction_signature(
 }
 
 /// Create a blockchain transaction
+#[cfg(all(feature = "kyber", feature = "dilithium"))]
 pub fn create_transaction(
     from_keypair: &BlockchainKeyPair,
     to_address: &str,
@@ -149,6 +156,7 @@ pub fn create_transaction(
 }
 
 /// Verify a blockchain transaction
+#[cfg(feature = "dilithium")]
 pub fn verify_transaction(transaction: &BlockchainTransaction, sender_public_key: &[u8]) -> bool {
     let tx_data = format!(
         "{}:{}:{}",
@@ -173,6 +181,7 @@ pub mod smart_contract {
     }
 
     /// Deploy a smart contract with PQC security
+    #[cfg(all(feature = "kyber", feature = "dilithium"))]
     pub fn deploy_contract(admin_keypair: BlockchainKeyPair) -> SmartContractState {
         let contract_address = generate_address(&admin_keypair.signature_public_key);
 
@@ -185,6 +194,7 @@ pub mod smart_contract {
     }
 
     /// Execute a smart contract function with PQC verification
+    #[cfg(feature = "dilithium")]
     pub fn execute_contract_function(
         contract: &mut SmartContractState,
         function_name: &str,
@@ -219,6 +229,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[cfg(all(feature = "kyber", feature = "dilithium"))]
     fn test_blockchain_keypair_generation() {
         let keypair = generate_blockchain_keypair();
         assert!(!keypair.address.is_empty());
@@ -227,6 +238,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(all(feature = "kyber", feature = "dilithium"))]
     fn test_transaction_creation_and_verification() {
         let sender = generate_blockchain_keypair();
         let recipient = generate_blockchain_keypair();
@@ -248,6 +260,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(all(feature = "kyber", feature = "dilithium"))]
     fn test_smart_contract_operations() {
         let admin = generate_blockchain_keypair();
         let mut contract = smart_contract::deploy_contract(admin.clone());

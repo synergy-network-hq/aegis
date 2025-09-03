@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>healthcare data protection - Aegis PQC Demo</title>
+    <link rel="stylesheet" href="../portal/portal.css">
+    <style>
+        .demo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .demo-content {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+        
+        .demo-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .demo-title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .demo-description {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .demo-status {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .back-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-content">
+            <div class="demo-icon">🚧</div>
+            <h1 class="demo-title">healthcare data protection Demo</h1>
+            <p class="demo-description">
+                This demo application is currently under development and will showcase 
+                Aegis's post-quantum cryptography capabilities for healthcare data protection use cases.
+            </p>
+            
+            <div class="demo-status">
+                <h3>🔒 PQC Security Features (Coming Soon)</h3>
+                <p>This demo will implement multiple PQC algorithms including:</p>
+                <ul style="text-align: left; display: inline-block;">
+                    <li>ML-KEM (Kyber) for key exchange</li>
+                    <li>ML-DSA (Dilithium) for digital signatures</li>
+                    <li>FN-DSA (Falcon) for compact signatures</li>
+                    <li>SLH-DSA (SPHINCS+) for hash-based signatures</li>
+                    <li>HQC-KEM for additional key encapsulation</li>
+                </ul>
+            </div>
+            
+            <p style="color: #666; font-size: 0.9em;">
+                Expected completion: Q2 2024<br>
+                This demo will provide real cryptographic operations with performance metrics, 
+                security analysis, and interactive features suitable for investor presentations.
+            </p>
+        </div>
+        
+        <button class="back-button" onclick="goBack()">← Back to Portal</button>
+    </div>
+    
+    <script>
+        function goBack() {
+            window.location.href = '../portal/index.html';
+        }
+    </script>
+</body>
+</html>

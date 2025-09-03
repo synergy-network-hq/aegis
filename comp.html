@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis: Post-Quantum Competitive Analysis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Slate & Sky -->
+  <!-- Application Structure Plan: A tabbed single-page dashboard. The structure is designed for a strategic decision-maker. It starts with a high-level Market Overview (the 'what'), moves to a detailed Head-to-Head Comparison (the 'how'), synthesizes this into a SWOT analysis for Aegis (the 'so what'), and concludes with an actionable Strategic Roadmap (the 'now what'). This logical flow guides the user from data to insight to action, which is more effective than just listing competitors. -->
+  <!-- Visualization & Content Choices: Market Overview -> Goal: Context -> Viz: Bubble Chart (Chart.js) -> Interaction: Hover for info, shows market positioning at a glance. Comparison -> Goal: Detailed Analysis -> Viz: Dynamic HTML cards -> Interaction: User selects competitors to compare, enabling focused analysis. SWOT/Roadmap -> Goal: Strategy -> Viz: Styled HTML sections -> Interaction: Click-to-expand details, making dense info digestible. This avoids overwhelming the user and uses JS to tailor the view to their specific query. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 400px;
+      max-height: 50vh;
+    }
+
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 500px;
+      }
+    }
+
+    .nav-link {
+      transition: all 0.3s ease;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-link.active {
+      border-bottom-color: #0ea5e9;
+      color: #0c4a6e;
+    }
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    .roadmap-item::before {
+      content: '';
+      position: absolute;
+      left: 1.25rem;
+      top: 2.25rem;
+      bottom: -2.25rem;
+      width: 2px;
+      background-color: #e2e8f0;
+      transform: translateX(-50%);
+    }
+
+    .roadmap-item:last-child::before {
+      display: none;
+    }
+
+    .roadmap-dot {
+      position: absolute;
+      left: 1.25rem;
+      top: 1.25rem;
+      height: 1rem;
+      width: 1rem;
+      border-radius: 9999px;
+      border-width: 2px;
+      background-color: #fff;
+      transform: translateX(-50%);
+    }
+  </style>
+</head>
+
+<body class="text-slate-800">
+
+  <header class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-slate-900">Aegis Competitive Analysis</h1>
+        <div class="text-sm text-slate-500">Post-Quantum Cryptography Landscape</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <nav class="bg-white rounded-lg shadow p-2 mb-8">
+      <ul class="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
+        <li><a href="#overview" class="nav-link active font-semibold text-slate-600 hover:text-sky-600 p-2"
+            data-section="overview">Market Overview</a></li>
+        <li><a href="#comparison" class="nav-link font-semibold text-slate-600 hover:text-sky-600 p-2"
+            data-section="comparison">Head-to-Head</a></li>
+        <li><a href="#swot" class="nav-link font-semibold text-slate-600 hover:text-sky-600 p-2"
+            data-section="swot">Aegis SWOT</a></li>
+        <li><a href="#roadmap" class="nav-link font-semibold text-slate-600 hover:text-sky-600 p-2"
+            data-section="roadmap">Strategic Roadmap</a></li>
+      </ul>
+    </nav>
+
+    <section id="overview" class="content-section active">
+      <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <h2 class="text-xl font-bold text-slate-900 mb-2">PQC Market Landscape</h2>
+        <p class="text-slate-600">The Post-Quantum Cryptography (PQC) market is composed of open-source projects,
+          commercial SDKs, and academic libraries. Key differentiators include platform support, algorithm coverage, and
+          ease of deployment. Aegis is uniquely positioned by combining a memory-safe Rust core with a first-class
+          WebAssembly (WASM) build, targeting modern web and cloud-native applications—a segment currently underserved
+          by C-library or JVM-centric competitors.</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-lg font-semibold text-center mb-4">Competitor Positioning</h3>
+        <div class="chart-container">
+          <canvas id="marketChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="content-section">
+      <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <h2 class="text-xl font-bold text-slate-900 mb-2">Feature Comparison</h2>
+        <p class="text-slate-600 mb-4">Select competitors to see a detailed feature-by-feature comparison against Aegis.
+          This analysis highlights Aegis's key advantages in platform universality and modern language support, which
+          translate to faster and safer integration for developers.</p>
+        <div id="competitor-toggle" class="flex flex-wrap gap-2 justify-center">
+        </div>
+      </div>
+      <div id="comparison-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      </div>
+    </section>
+
+    <section id="swot" class="content-section">
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-bold text-slate-900 mb-2">Aegis SWOT Analysis</h2>
+        <p class="text-slate-600 mb-6">This analysis, based on the current competitive landscape, synthesizes Aegis's
+          internal strengths and weaknesses against external market opportunities and threats. It provides a strategic
+          foundation for decision-making and prioritizing future development.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg">
+            <h3 class="text-lg font-semibold text-green-800 mb-3 flex items-center"><span
+                class="text-2xl mr-2">👍</span> Strengths</h3>
+            <ul class="list-disc list-inside space-y-2 text-green-700">
+              <li><strong>Universal Platform Support:</strong> Rust core with WASM/JS/Python bindings provides unmatched
+                reach from embedded to web.</li>
+              <li><strong>Memory Safety by Default:</strong> Rust eliminates entire classes of vulnerabilities common in
+                C-based competitors like Open Quantum Safe.</li>
+              <li><strong>Zero-Config Web Deployment:</strong> The WASM package is a major differentiator, making PQC
+                accessible to millions of web developers.</li>
+              <li><strong>Complete NIST Coverage:</strong> Implements all finalized NIST PQC standards, ensuring
+                long-term viability and compliance.</li>
+            </ul>
+          </div>
+          <div class="bg-amber-50 border-l-4 border-amber-500 p-6 rounded-r-lg">
+            <h3 class="text-lg font-semibold text-amber-800 mb-3 flex items-center"><span
+                class="text-2xl mr-2">👎</span> Weaknesses</h3>
+            <ul class="list-disc list-inside space-y-2 text-amber-700">
+              <li><strong>Market Maturity:</strong> Newer than established projects like OQS or Bouncy Castle, implying
+                a smaller user base and less real-world hardening.</li>
+              <li><strong>Performance Benchmarks Needed:</strong> While theoretically performant, lacks published
+                benchmarks against optimized C or hardware-specific libraries.</li>
+              <li><strong>Brand Recognition:</strong> Aegis is not yet a widely known name in the cryptography community
+                compared to competitors.</li>
+              <li><strong>Enterprise Support Ecosystem:</strong> Commercial support and services are not as developed as
+                those from vendors like PQShield.</li>
+            </ul>
+          </div>
+          <div class="bg-sky-50 border-l-4 border-sky-500 p-6 rounded-r-lg">
+            <h3 class="text-lg font-semibold text-sky-800 mb-3 flex items-center"><span class="text-2xl mr-2">🚀</span>
+              Opportunities</h3>
+            <ul class="list-disc list-inside space-y-2 text-sky-700">
+              <li><strong>Dominate the Web/Cloud-Native Niche:</strong> Become the de-facto PQC standard for JavaScript,
+                TypeScript, and Node.js ecosystems.</li>
+              <li><strong>Strategic Partnerships:</strong> Integrate with popular web frameworks (React, Vue), cloud
+                providers (Vercel, AWS Lambda), and package managers.</li>
+              <li><strong>Developer-Focused Marketing:</strong> Create tutorials, and case studies that showcase the
+                ease of use, attracting developers who find other solutions too complex.</li>
+              <li><strong>FIPS Certification:</strong> Achieving FIPS validation would be a powerful differentiator for
+                government and enterprise contracts.</li>
+            </ul>
+          </div>
+          <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-lg">
+            <h3 class="text-lg font-semibold text-red-800 mb-3 flex items-center"><span class="text-2xl mr-2">💣</span>
+              Threats</h3>
+            <ul class="list-disc list-inside space-y-2 text-red-700">
+              <li><strong>Major Player Entry:</strong> A company like Google or AWS could release a competing, deeply
+                integrated PQC library, capturing the market quickly.</li>
+              <li><strong>OQS Improves Usability:</strong> If the Open Quantum Safe project develops high-quality,
+                easy-to-use WASM wrappers, it could erode Aegis's key advantage.</li>
+              <li><strong>Performance Gap:</strong> If competitors with hardware-specific implementations (e.g.,
+                PQShield) demonstrate a significant performance advantage for key use cases.</li>
+              <li><strong>Slow Adoption of PQC:</strong> Market-wide procrastination in migrating to PQC could slow
+                growth for all players in the space.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap" class="content-section">
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-bold text-slate-900 mb-2">Strategic Roadmap to #1</h2>
+        <p class="text-slate-600 mb-8">This roadmap outlines a phased approach for Aegis to capitalize on its strengths
+          and address its weaknesses, with the goal of establishing market leadership, particularly within the modern
+          development landscape. Each phase builds upon the last to create compounding momentum.</p>
+
+        <div class="relative">
+          <div class="roadmap-item relative pl-10 pb-10">
+            <div class="roadmap-dot border-sky-500"></div>
+            <p class="text-sm font-semibold text-sky-600">Phase 1: Foundation & Proof (Next 3-6 Months)</p>
+            <h3 class="text-lg font-semibold text-slate-800 mt-1 mb-2">Solidify Technical Leadership</h3>
+            <div class="text-slate-600 space-y-1">
+              <p><strong>Action:</strong> Conduct and publish comprehensive performance benchmarks against OQS and
+                PQShield.</p>
+              <p><strong>Action:</strong> Create a dedicated documentation portal with rich tutorials, code examples,
+                and migration guides.</p>
+              <p><strong>Goal:</strong> Eliminate performance questions and lower the barrier to adoption by providing
+                best-in-class developer resources.</p>
+            </div>
+          </div>
+          <div class="roadmap-item relative pl-10 pb-10">
+            <div class="roadmap-dot border-sky-500"></div>
+            <p class="text-sm font-semibold text-sky-600">Phase 2: Market Penetration (6-12 Months)</p>
+            <h3 class="text-lg font-semibold text-slate-800 mt-1 mb-2">Evangelize & Build Community</h3>
+            <div class="text-slate-600 space-y-1">
+              <p><strong>Action:</strong> Launch a targeted marketing campaign focused on the Web, JS, and Rust
+                developer communities.</p>
+              <p><strong>Action:</strong> Present at key developer conferences (e.g., JSConf, RustConf) showcasing
+                Aegis's ease of use.</p>
+              <p><strong>Goal:</strong> Build brand recognition and establish Aegis as the thought leader for practical
+                PQC implementation in modern applications.</p>
+            </div>
+          </div>
+          <div class="roadmap-item relative pl-10">
+            <div class="roadmap-dot border-sky-500"></div>
+            <p class="text-sm font-semibold text-sky-600">Phase 3: Market Dominance (12-24 Months)</p>
+            <h3 class="text-lg font-semibold text-slate-800 mt-1 mb-2">Expand & Monetize</h3>
+            <div class="text-slate-600 space-y-1">
+              <p><strong>Action:</strong> Develop and launch an enterprise support package including SLAs, private
+                workshops, and integration services.</p>
+              <p><strong>Action:</strong> Form strategic partnerships with cloud providers and security companies to
+                offer Aegis as an integrated solution.</p>
+              <p><strong>Action:</strong> Begin the FIPS 140-3 validation process to unlock government and highly
+                regulated industry contracts.</p>
+              <p><strong>Goal:</strong> Capture the high-value enterprise market and create deep, defensible moats
+                through partnerships and certifications.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <footer class="text-center py-6 text-sm text-slate-500">
+    <p>Aegis Competitive Intelligence Report. Generated on <span id="generation-date"></span>.</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      const competitorData = {
+        'oqs': {
+          name: 'Open Quantum Safe',
+          position: { x: 2, y: 9, r: 20 },
+          description: 'Open-source C library with many wrappers. Academic/research focused.',
+          features: {
+            core_tech: { value: 'C Library', score: 2 },
+            platforms: { value: 'C, Python, Java, Go (Wrappers)', score: 3 },
+            web_focus: { value: 'Low (via complex wrappers)', score: 1 },
+            security_model: { value: 'Community Vetted', score: 3 },
+            ease_of_use: { value: 'Moderate to Complex', score: 2 }
+          }
+        },
+        'bouncy-castle': {
+          name: 'Bouncy Castle',
+          position: { x: 4, y: 7, r: 15 },
+          description: 'Mature, trusted Java library. Strong in the JVM ecosystem.',
+          features: {
+            core_tech: { value: 'Java Library', score: 3 },
+            platforms: { value: 'Java / JVM', score: 2 },
+            web_focus: { value: 'Low (Server-side Java only)', score: 1 },
+            security_model: { value: 'Established & Trusted', score: 5 },
+            ease_of_use: { value: 'High (for Java Devs)', score: 4 }
+          }
+        },
+        'pqshield': {
+          name: 'PQShield',
+          position: { x: 7, y: 8, r: 18 },
+          description: 'Commercial libraries & IP. Focus on embedded systems & hardware.',
+          features: {
+            core_tech: { value: 'C / Rust / Hardware IP', score: 5 },
+            platforms: { value: 'Embedded, Mobile, Servers', score: 4 },
+            web_focus: { value: 'Moderate', score: 3 },
+            security_model: { value: 'Commercial, Audited', score: 5 },
+            ease_of_use: { value: 'High (Commercial Support)', score: 4 }
+          }
+        },
+        'circl': {
+          name: 'Cloudflare CIRCL',
+          position: { x: 5, y: 6, r: 16 },
+          description: 'High-performance Go library from a major network provider.',
+          features: {
+            core_tech: { value: 'Go Library', score: 4 },
+            platforms: { value: 'Go', score: 2 },
+            web_focus: { value: 'Moderate (Go backends)', score: 3 },
+            security_model: { value: 'High (Cloudflare backed)', score: 4 },
+            ease_of_use: { value: 'High (for Go Devs)', score: 4 }
+          }
+        }
+      };
+
+      const aegisFeatures = {
+        core_tech: { value: 'Rust Core + WASM', score: 5 },
+        platforms: { value: 'Rust, WASM, JS, Python, Node.js', score: 5 },
+        web_focus: { value: 'Very High (Zero-config)', score: 5 },
+        security_model: { value: 'High (Memory Safe)', score: 4 },
+        ease_of_use: { value: 'Very High (for Web)', score: 5 }
+      };
+
+      const featureMeta = {
+        core_tech: { title: 'Core Technology' },
+        platforms: { title: 'Platform Support' },
+        web_focus: { title: 'Web & Browser Focus' },
+        security_model: { title: 'Security Model / Assurance' },
+        ease_of_use: { title: 'Ease of Use / Deployment' }
+      };
+
+      const navLinks = document.querySelectorAll('.nav-link');
+      const sections = document.querySelectorAll('.content-section');
+
+      const toggleContainer = document.getElementById('competitor-toggle');
+      const comparisonGrid = document.getElementById('comparison-grid');
+      let selectedCompetitors = ['oqs', 'pqshield'];
+
+      function switchTab(targetId) {
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.dataset.section === targetId);
+        });
+        sections.forEach(section => {
+          section.classList.toggle('active', section.id === targetId);
+        });
+      }
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetSection = e.target.dataset.section;
+          switchTab(targetSection);
+          window.location.hash = targetSection;
+        });
+      });
+
+      function renderMarketChart() {
+        const ctx = document.getElementById('marketChart').getContext('2d');
+        const data = Object.values(competitorData).map(c => ({
+          x: c.position.x,
+          y: c.position.y,
+          r: c.position.r,
+          label: c.name,
+          description: c.description
+        }));
+
+        new Chart(ctx, {
+          type: 'bubble',
+          data: {
+            datasets: [{
+              label: 'Competitors',
+              data: data,
+              backgroundColor: 'rgba(14, 165, 233, 0.6)',
+              borderColor: 'rgb(14, 165, 233)',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    const item = context.dataset.data[context.dataIndex];
+                    return [item.label, `  ${item.description}`];
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                title: { display: true, text: 'NIST Algorithm Coverage & Maturity', font: { size: 14 } },
+                min: 0,
+                max: 10,
+              },
+              x: {
+                title: { display: true, text: 'Implementation Focus (Library → Platform)', font: { size: 14 } },
+                min: 0,
+                max: 10,
+              }
+            }
+          }
+        });
+      }
+
+      function renderToggles() {
+        toggleContainer.innerHTML = '';
+        Object.keys(competitorData).forEach(key => {
+          const data = competitorData[key];
+          const isChecked = selectedCompetitors.includes(key);
+          const button = document.createElement('button');
+          button.dataset.key = key;
+          button.textContent = data.name;
+          button.className = `px-4 py-2 text-sm font-medium rounded-md transition-colors ${isChecked ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`;
+          button.addEventListener('click', () => {
+            if (selectedCompetitors.includes(key)) {
+              selectedCompetitors = selectedCompetitors.filter(c => c !== key);
+            } else {
+              selectedCompetitors.push(key);
+            }
+            renderComparison();
+            renderToggles();
+          });
+          toggleContainer.appendChild(button);
+        });
+      }
+
+      function renderComparison() {
+        comparisonGrid.innerHTML = '';
+        if (selectedCompetitors.length === 0) {
+          comparisonGrid.innerHTML = `<div class="col-span-full text-center text-slate-500 p-8 bg-slate-50 rounded-lg">Select a competitor to begin comparison.</div>`;
+          return;
+        }
+
+        Object.keys(featureMeta).forEach(featureKey => {
+          const card = document.createElement('div');
+          card.className = 'bg-white rounded-lg shadow p-6';
+          let content = `<h3 class="font-bold text-lg mb-4 text-slate-900">${featureMeta[featureKey].title}</h3><div class="space-y-4">`;
+
+          content += createComparisonRow('Aegis', aegisFeatures[featureKey]);
+
+          selectedCompetitors.forEach(competitorKey => {
+            const competitor = competitorData[competitorKey];
+            content += createComparisonRow(competitor.name, competitor.features[featureKey]);
+          });
+
+          content += '</div>';
+          card.innerHTML = content;
+          comparisonGrid.appendChild(card);
+        });
+      }
+
+      function createComparisonRow(name, feature) {
+        const score = feature.score || 0;
+        const maxScore = 5;
+        let meterHtml = '<div class="w-24 h-2 bg-slate-200 rounded-full overflow-hidden"><div class="h-full bg-sky-500" style="width: ' + (score / maxScore * 100) + '%"></div></div>';
+
+        return `
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="font-semibold text-slate-700">${name}</p>
+                            <p class="text-sm text-slate-500">${feature.value}</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            ${meterHtml}
+                        </div>
+                    </div>
+                `;
+      }
+
+      function checkHash() {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+          const targetSection = document.getElementById(hash);
+          if (targetSection && targetSection.classList.contains('content-section')) {
+            switchTab(hash);
+          }
+        }
+      }
+
+      document.getElementById('generation-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      renderMarketChart();
+      renderToggles();
+      renderComparison();
+      checkHash();
+    });
+  </script>
+</body>
+
+</html>

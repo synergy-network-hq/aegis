@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis: Post-Quantum Cryptography Infographic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Brilliant Blues (#00449E, #005BC6, #0072F0, #58A4F0, #A9D2F5) -->
+  <!-- Narrative & Structure Plan: The infographic tells a story, starting with the problem (the quantum threat) and positioning Aegis as the solution. It then visually showcases Aegis's core value propositions: its universal platform support, compliance with NIST standards, and key technical advantages. The story culminates in its most accessible feature—zero-config web deployment—and concludes by highlighting its enterprise-readiness. This structure guides a developer from understanding the 'why' to seeing the 'how' and 'what'. -->
+  <!-- Visualization & Content Choices: Quantum Threat -> Goal: Organize -> Viz: HTML/CSS Flow Diagram -> Justification: Simple, clear representation of problem/solution. Platform Support -> Goal: Organize -> Viz: HTML/CSS Hub-and-Spoke Diagram -> Justification: Visually demonstrates the core's reach to all platforms. NIST Standards -> Goal: Inform -> Viz: Styled HTML Cards -> Justification: More visually engaging than a list for showing compliance. Web Developer Reach -> Goal: Inform -> Viz: Donut Chart (Chart.js) -> Justification: Quantifies the impact of WASM support. Key Advantages -> Goal: Compare -> Viz: HTML/CSS Icon Grid -> Justification: Breaks down complex features into easily digestible points. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f9ff;
+    }
+
+    hr.title {
+      height: 3px;
+      margin: 3.5px auto;
+      border: none;
+      width: 600px;
+      background: linear-gradient(to right, #b861ff, #62019b);
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 384px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 256px;
+      max-height: 40vh;
+    }
+
+    @media (min-width: 640px) {
+      .chart-container {
+        height: 320px;
+      }
+    }
+
+    .gradient-text {
+      background: linear-gradient(to right, #b861ff, #62019b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .connector {
+      border-left: 2px dashed #58A4F0;
+    }
+
+    .explainer-btn {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .explainer-btn:hover {
+      transform: scale(1.2);
+    }
+
+    #ai-modal {
+      transition: opacity 0.3s ease;
+    }
+
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #8500b9;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body class="text-slate-800">
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+
+    <header class="text-center mb-16 md:mb-24">
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-0"><span class="gradient-text">Aegis</span></h1>
+      <h1 class="md:text-4xl text-2xl font-extrabold gradient-text">Quantum Cryptography Core</h1>
+      <hr class="title mx-auto">
+      <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">A unified, high-assurance foundation for
+        implementing <span class="font-semibold text-sky-700">quantum-resistant cryptography</span> across all computing
+        platforms.</p>
+    </header>
+
+    <section class="mb-16 md:mb-24">
+      <h2 class="text-3xl font-bold text-center mb-12">The Post-Quantum Transition is Here</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 items-center text-center gap-5">
+        <div class="bg-white p-6 rounded-lg shadow-lg border-4 border-purple-950">
+          <div class="text-5xl mb-4">🖥️</div>
+          <h3 class="text-xl font-semibold mb-2">The Threat</h3>
+          <p class="text-slate-600">Quantum computers will soon break today's standard encryption, leaving sensitive data vulnerable.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg border-4 border-purple-950 h-65">
+          <div class="text-5xl mb-4">🛡️</div>
+          <h3 class="text-xl font-semibold mb-2">The Challenge</h3>
+          <p class="text-slate-600">Migrating to Post-Quantum Cryptography (PQC) is complex, requiring new algorithms and platform-specific expertise.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg border-4 border-purple-950">
+          <div class="text-5xl mb-4">🚀</div>
+          <h3 class="text-xl font-semibold mb-2">The Solution: Aegis</h3>
+          <p class="text-slate-600">Aegis provides a single, easy-to-use library that makes PQC accessible for any application, on any platform.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-16 md:mb-24">
+      <h2 class="text-3xl font-bold text-center mb-12">Universal Platform Support</h2>
+      <p class="text-center text-slate-600 max-w-2xl mx-auto mb-12">Built on a memory-safe Rust core, Aegis compiles
+        everywhere, offering native performance and a consistent API from embedded devices to web browsers.</p>
+      <div class="flex items-center justify-center">
+        <div class="grid grid-cols-3 gap-x-8 gap-y-12 items-center">
+          <div class="text-center p-4">
+            <div class="text-5xl mb-3">🌐</div>
+            <h4 class="font-bold text-lg">Web & Browsers</h4>
+          </div>
+          <div class="row-span-3 flex items-center justify-center">
+            <div
+              class="bg-sky-600 text-white rounded-full w-40 h-40 md:w-56 md:h-56 flex flex-col items-center justify-center text-center p-4 shadow-2xl">
+              <span class="text-sm font-semibold">AEGIS</span>
+              <span class="text-2xl md:text-3xl font-bold">Rust Core</span>
+              <span class="text-sm font-semibold">Engine</span>
+            </div>
+          </div>
+          <div class="text-center p-4">
+            <div class="text-5xl mb-3">☁️</div>
+            <h4 class="font-bold text-lg">Cloud & Servers</h4>
+          </div>
+          <div class="text-center p-4">
+            <div class="text-5xl mb-3">💻</div>
+            <h4 class="font-bold text-lg">Desktop Apps</h4>
+          </div>
+          <div class="text-center p-4">
+            <div class="text-5xl mb-3">🔗</div>
+            <h4 class="font-bold text-lg">Blockchain</h4>
+          </div>
+          <div class="text-center p-4">
+            <div class="text-5xl mb-3">📦</div>
+            <h4 class="font-bold text-lg">Embedded & IoT</h4>
+          </div>
+          <div class="text-center p-4">
+            <div class="text-5xl mb-3">🐍</div>
+            <h4 class="font-bold text-lg">Python & Node.js</h4>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-16 md:mb-24">
+      <h2 class="text-3xl font-bold text-center mb-12">Complete NIST Standard Coverage</h2>
+      <p class="text-center text-slate-600 max-w-2xl mx-auto mb-12">Aegis implements all algorithms finalized by the US
+        National Institute of Standards and Technology (NIST), ensuring your applications meet the highest standards for
+        quantum resistance and long-term compliance.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="font-bold text-sky-800 text-lg flex items-center justify-between">ML-KEM (Kyber) <span
+              class="text-2xl explainer-btn" data-term="ML-KEM (Kyber)">✨</span></h3>
+          <p class="text-sm font-medium text-slate-500 mb-2">Key Encapsulation Mechanism</p>
+          <p class="text-slate-600">The primary standard for establishing secure communication channels, replacing
+            traditional methods like RSA and Diffie-Hellman key exchange.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="font-bold text-sky-800 text-lg flex items-center justify-between">ML-DSA (Dilithium) <span
+              class="text-2xl explainer-btn" data-term="ML-DSA (Dilithium)">✨</span></h3>
+          <p class="text-sm font-medium text-slate-500 mb-2">Digital Signature Algorithm</p>
+          <p class="text-slate-600">The primary standard for verifying the authenticity and integrity of digital
+            messages and software, serving as the main replacement for RSA or ECDSA signatures.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="font-bold text-sky-800 text-lg flex items-center justify-between">SLH-DSA (SPHINCS+) <span
+              class="text-2xl explainer-btn" data-term="SLH-DSA (SPHINCS+)">✨</span></h3>
+          <p class="text-sm font-medium text-slate-500 mb-2">Digital Signature Algorithm</p>
+          <p class="text-slate-600">A stateless hash-based signature scheme providing a conservative, well-understood
+            security foundation as an alternative to lattice-based methods.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md lg:col-span-3">
+          <p class="text-center text-slate-600">Also includes full support for secondary and experimental standards like
+            <strong class="font-semibold text-slate-700">FN-DSA</strong>, <strong
+              class="font-semibold text-slate-700">HQC-KEM</strong>, and <strong
+              class="font-semibold text-slate-700">Classic McEliece</strong> for research purposes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid md:grid-cols-2 gap-12 items-center mb-16 md:mb-24">
+      <div>
+        <h2 class="text-3xl font-bold mb-6">Zero-Config for the Web</h2>
+        <p class="text-slate-600 mb-6">Aegis is the first PQC library designed for the modern web. With its pure Rust
+          and WebAssembly (WASM) implementation, you can add quantum-resistant cryptography to any web application with
+          a single command. No complex builds, no C dependencies—just secure, fast, and simple.</p>
+        <div class="bg-slate-800 rounded-lg p-4 font-mono text-sm text-sky-300 shadow-xl">
+          <span class="text-slate-500 select-none">$</span> npm install aegis-crypto<br>
+          <br>
+          <span class="text-purple-400">import</span> { Keypair, KEM } <span class="text-purple-400">from</span> <span
+            class="text-green-300">'aegis-crypto'</span>;<br>
+          <br>
+          <span class="text-purple-400">const</span> keys = Keypair.generate(KEM.ML_KEM);<br>
+          <span class="text-blue-300">console</span>.log(<span class="text-green-300">'PQC public key:'</span>,
+          keys.publicKey);
+        </div>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold text-center mb-4">Unlocking PQC for Millions of Developers</h3>
+        <div class="chart-container">
+          <canvas id="developerChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-16 md:mb-24 bg-white p-8 rounded-lg shadow-lg">
+      <h2 class="text-3xl font-bold text-center mb-4">✨ Generate an AI-Powered Use Case</h2>
+      <p class="text-center text-slate-600 max-w-2xl mx-auto mb-8">Select your application type to see how Aegis can be
+        used to provide quantum-resistant security in a real-world scenario.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+        <select id="use-case-selector"
+          class="block w-full sm:w-auto px-4 py-2 text-base text-slate-900 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-sky-500 focus:border-sky-500">
+          <option>Secure Chat App</option>
+          <option>E-commerce Site</option>
+          <option>IoT Device Network</option>
+          <option>Cloud Storage Service</option>
+          <option>Blockchain Platform</option>
+        </select>
+        <button id="generate-use-case-btn"
+          class="inline-flex items-center justify-center w-full sm:w-auto bg-sky-600 text-white font-semibold rounded-lg px-6 py-2 hover:bg-sky-700 transition-colors shadow-md">
+          Generate Use Case
+        </button>
+      </div>
+      <div id="use-case-output"
+        class="bg-sky-50 p-6 rounded-md min-h-[12rem] flex items-center justify-center text-slate-600 transition-all">
+        Select an application and click "Generate" to see the AI-generated result here.
+      </div>
+    </section>
+
+    <section class="mb-16 md:mb-24">
+      <h2 class="text-3xl font-bold text-center mb-12">The Aegis Advantage</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="font-semibold flex items-center justify-center gap-3">Memory Safe <span
+              class="text-2xl explainer-btn" data-term="Memory Safety in Rust">✨</span></h3>
+          <p class="text-sm text-slate-600 mt-2">Built in Rust to prevent common memory-related vulnerabilities.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="font-semibold flex items-center justify-center gap-3">Constant Time <span
+              class="text-2xl explainer-btn" data-term="Constant Time Cryptography">✨</span></h3>
+          <p class="text-sm text-slate-600 mt-2">Protects against timing-based side-channel attacks.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="font-semibold flex items-center justify-center gap-3">Simple High-Level API <span
+              class="text-2xl explainer-btn" data-term="Simple High-Level API">✨</span></h3>
+          <p class="text-sm text-slate-600 mt-2">Makes complex cryptographic operations accessible to all developers.
+          </p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="font-semibold flex items-center justify-center gap-3">Fully Audited <span
+              class="text-2xl explainer-btn" data-term="Security Audits">✨</span></h3>
+          <p class="text-sm text-slate-600 mt-2">Third-party security assessments for enterprise-grade assurance.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-center border-t border-sky-200 pt-8">
+      <h2 class="text-2xl font-bold mb-4">Ready to Secure Your Application's Future?</h2>
+      <p class="text-slate-600 mb-6">Explore the documentation, review the source code, and start your PQC migration
+        today.</p>
+      <a href="#"
+        class="inline-block bg-sky-600 text-white font-semibold rounded-lg px-8 py-3 hover:bg-sky-700 transition-colors shadow-md">Get
+        Started with Aegis</a>
+    </footer>
+
+  </main>
+
+  <!-- AI Modal -->
+  <div id="ai-modal"
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden opacity-0">
+    <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 relative">
+      <button id="close-modal-btn"
+        class="absolute top-3 right-3 text-2xl text-slate-500 hover:text-slate-800">&times;</button>
+      <h3 class="text-xl font-bold mb-4 text-sky-800" id="modal-title"></h3>
+      <div id="modal-content" class="text-slate-600">
+        <!-- AI content will be injected here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const developerChartCanvas = document.getElementById('developerChart');
+      if (developerChartCanvas) {
+        new Chart(developerChartCanvas.getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ['Web Developers', 'Other Systems Developers'],
+            datasets: [{
+              data: [70, 30],
+              backgroundColor: ['#0072F0', '#A9D2F5'],
+              borderColor: '#f0f9ff',
+              borderWidth: 4,
+              hoverOffset: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  padding: 20,
+                  font: { size: 14, family: "'Inter', sans-serif" }
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  title: function (tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                      return label.join(' ');
+                    } else {
+                      return label;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      const apiKey = "";
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+      const callGemini = async (prompt, retries = 3, delay = 1000) => {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          });
+
+          if (!response.ok) {
+            if (response.status === 429 && retries > 0) {
+              await new Promise(res => setTimeout(res, delay));
+              return callGemini(prompt, retries - 1, delay * 2);
+            }
+            throw new Error(`API Error: ${response.status}`);
+          }
+
+          const result = await response.json();
+          if (result.candidates && result.candidates.length > 0) {
+            return result.candidates[0].content.parts[0].text;
+          }
+          return "Sorry, I couldn't generate a response.";
+        } catch (error) {
+          console.error('Gemini API call failed:', error);
+          return "An error occurred while fetching the response.";
+        }
+      };
+
+      const modal = document.getElementById('ai-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalContent = document.getElementById('modal-content');
+      const closeModalBtn = document.getElementById('close-modal-btn');
+
+      document.querySelectorAll('.explainer-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const term = btn.dataset.term;
+          modalTitle.innerText = term;
+          modalContent.innerHTML = '<div class="flex justify-center items-center h-24"><div class="loader"></div></div>';
+          modal.classList.remove('hidden');
+          modal.classList.remove('opacity-0');
+
+          const prompt = `Explain the concept of "${term}" in the context of cryptography like I'm five years old. Keep it to one or two short paragraphs.`;
+          const explanation = await callGemini(prompt);
+          modalContent.innerText = explanation;
+        });
+      });
+
+      const closeModal = () => {
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+      };
+
+      closeModalBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      const generateBtn = document.getElementById('generate-use-case-btn');
+      const selector = document.getElementById('use-case-selector');
+      const outputDiv = document.getElementById('use-case-output');
+
+      generateBtn.addEventListener('click', async () => {
+        const appType = selector.value;
+        outputDiv.innerHTML = '<div class="flex justify-center items-center h-full"><div class="loader"></div></div>';
+        generateBtn.disabled = true;
+        generateBtn.classList.add('bg-sky-800');
+
+        const prompt = `Generate a clear, concise use case (2-3 paragraphs) for using the "Aegis" post-quantum cryptography library to secure a "${appType}". Explain which specific NIST algorithms (like ML-KEM for key exchange or ML-DSA for signatures) would be used for core functions.`;
+        const useCase = await callGemini(prompt);
+        outputDiv.innerText = useCase;
+
+        generateBtn.disabled = false;
+        generateBtn.classList.remove('bg-sky-800');
+      });
+    });
+  </script>
+</body>
+
+</html>

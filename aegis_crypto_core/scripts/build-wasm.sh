@@ -130,6 +130,17 @@ else
     # Alternative approach: Build with cargo directly
     print_status "Building with cargo directly..."
 
+    # First try the direct build script
+    if [ -f "scripts/build-wasm-direct.sh" ]; then
+        print_status "Using direct build script..."
+        if ./scripts/build-wasm-direct.sh; then
+            print_success "Direct build script succeeded!"
+            exit 0
+        else
+            print_warning "Direct build script failed, trying manual cargo build..."
+        fi
+    fi
+
     if cargo build --target wasm32-unknown-unknown --release; then
         print_success "Cargo build succeeded!"
 

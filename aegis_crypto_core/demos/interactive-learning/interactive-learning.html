@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>interactive learning - Aegis WASM Demo</title>
+    <link rel="stylesheet" href="../portal/portal.css">
+    <style>
+        .demo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .demo-content {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+        
+        .demo-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .demo-title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .demo-description {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .demo-status {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .back-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-content">
+            <div class="demo-icon">🌐</div>
+            <h1 class="demo-title">interactive learning WASM Demo</h1>
+            <p class="demo-description">
+                This WebAssembly (WASM) demo application will showcase Aegis's 
+                post-quantum cryptography capabilities running directly in web browsers.
+            </p>
+            
+            <div class="demo-status">
+                <h3>🚧 WASM Features (Coming Soon)</h3>
+                <p>This demo will leverage WebAssembly for:</p>
+                <ul style="text-align: left; display: inline-block;">
+                    <li>Native performance in browsers</li>
+                    <li>Cross-platform compatibility</li>
+                    <li>Real-time cryptographic operations</li>
+                    <li>Interactive learning experiences</li>
+                    <li>Client-side security processing</li>
+                </ul>
+            </div>
+            
+            <p style="color: #666; font-size: 0.9em;">
+                Expected completion: Q3 2024<br>
+                This demo will provide browser-based PQC operations with WASM optimizations, 
+                making it accessible to users without installing additional software.
+            </p>
+        </div>
+        
+        <button class="back-button" onclick="goBack()">← Back to Portal</button>
+    </div>
+    
+    <script>
+        function goBack() {
+            window.location.href = '../portal/index.html';
+        }
+    </script>
+</body>
+</html>

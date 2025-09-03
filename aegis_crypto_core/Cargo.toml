@@ -29,7 +29,7 @@ pqcrypto-sphincsplus = { path = "../pqcrypto/pqcrypto-sphincsplus", optional = t
 pqcrypto-falcon = { path = "../pqcrypto/pqcrypto-falcon", optional = true }
 pqcrypto-hqc = { path = "../pqcrypto/pqcrypto-hqc", optional = true }
 pqcrypto-classicmceliece = { path = "../pqcrypto/pqcrypto-classicmceliece", optional = true }
-pqcrypto-traits = { path = "../pqcrypto/pqcrypto-traits" }
+pqcrypto-traits = { path = "../pqcrypto/pqcrypto-traits", optional = true }
 # Pure Rust implementations from rustpqc folder
 ml-kem = { path = "../rustpqc/ml-kem", optional = true }
 ml-dsa = { path = "../rustpqc/ml-dsa", optional = true }
@@ -37,7 +37,7 @@ sha3 = "0.10"
 blake3 = "1.5"
 subtle = "2.5"
 zeroize = "1.8"
-getrandom = "0.3.3"
+getrandom = { version = "0.3", features = ["wasm_js"] }
 getrandom_02 = { package = "getrandom", version = "0.2.16", features = ["js"] }
 rand = { version = "0.8", default-features = false, features = [
   "std",
@@ -45,6 +45,22 @@ rand = { version = "0.8", default-features = false, features = [
 ] }
 hex = "0.4"
 base64 = "0.22.1"
+# WASM and web dependencies
+web-sys = { version = "0.3", optional = true, features = [
+  "Request",
+  "RequestInit",
+  "RequestMode",
+  "Response",
+  "Window",
+] }
+wasm-bindgen-futures = { version = "0.4", optional = true }
+
+# Server dependencies (not for WASM)
+axum = { version = "0.7", optional = true }
+tokio = { version = "1.0", optional = true, features = ["full"] }
+tower-http = { version = "0.5", optional = true, features = ["cors"] }
+serde = { version = "1.0", optional = true, features = ["derive"] }
+serde_json = { version = "1.0", optional = true }
 
 [dev-dependencies]
 aegis_crypto_core = { path = "." }
@@ -54,27 +70,42 @@ wasm-bindgen-test = "0.3"
 [build-dependencies]
 cc = "1.0"
 
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-getrandom = { version = "0.3", features = ["wasm_js"] }
-
-[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
-getrandom = { version = "0.3", features = ["wasm_js"] }
 
 [features]
-default = ["wasm", "kyber", "dilithium", "falcon", "sphincsplus", "hqc"]
+default = [
+  "wasm",
+  "kyber",
+  "dilithium",
+  "falcon",
+  "sphincsplus",
+  "hqc",
+  "server",
+]
 std = []
 wasm = ["dep:wasm-bindgen"]
 js-bindings = ["dep:wasm-bindgen"]
 python-bindings = ["dep:pyo3"]
-kyber = ["dep:pqcrypto-mlkem"]
-dilithium = ["dep:pqcrypto-mldsa"]
-falcon = ["dep:pqcrypto-falcon"]
-sphincsplus = ["dep:pqcrypto-sphincsplus"]
-hqc = ["dep:pqcrypto-hqc"]
-classicmceliece = ["dep:pqcrypto-classicmceliece"]
+kyber = ["dep:pqcrypto-mlkem", "dep:pqcrypto-traits"]
+dilithium = ["dep:pqcrypto-mldsa", "dep:pqcrypto-traits"]
+falcon = ["dep:pqcrypto-falcon", "dep:pqcrypto-traits"]
+sphincsplus = ["dep:pqcrypto-sphincsplus", "dep:pqcrypto-traits"]
+hqc = ["dep:pqcrypto-hqc", "dep:pqcrypto-traits"]
+classicmceliece = ["dep:pqcrypto-classicmceliece", "dep:pqcrypto-traits"]
 # Pure Rust implementations
 rustpqc-kyber = ["dep:ml-kem"]
 rustpqc-dilithium = ["dep:ml-dsa"]
+# NIST Reference WASM implementations
+nist-wasm = ["dep:web-sys", "dep:wasm-bindgen-futures"]
+# WASM-only build (excludes all PQC crates with C dependencies)
+wasm-only = ["nist-wasm", "wasm"]
+# Server features
+server = [
+  "dep:axum",
+  "dep:tokio",
+  "dep:tower-http",
+  "dep:serde",
+  "dep:serde_json",
+]
 
 
 [badges]

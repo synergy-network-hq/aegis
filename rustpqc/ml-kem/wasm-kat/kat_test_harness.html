@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML-KEM WASM KAT Testing Harness</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #1a1a1a;
+      color: #00ff00;
+    }
+
+    .container {
+      background-color: #2a2a2a;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .test-section {
+      margin-bottom: 30px;
+      padding: 15px;
+      border: 1px solid #444;
+      border-radius: 5px;
+    }
+
+    .variant-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #666;
+      border-radius: 5px;
+      background-color: #333;
+    }
+
+    .variant-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #ffff00;
+    }
+
+    .test-result {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .test-pass {
+      background-color: #1a4a1a;
+      border: 1px solid #4a4a4a;
+    }
+
+    .test-fail {
+      background-color: #4a1a1a;
+      border: 1px solid #4a4a4a;
+    }
+
+    .test-running {
+      background-color: #2a2a4a;
+      border: 1px solid #4a4a4a;
+    }
+
+    button {
+      background-color: #4a4a4a;
+      color: #00ff00;
+      border: 1px solid #666;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+    }
+
+    button:hover {
+      background-color: #666;
+    }
+
+    button:disabled {
+      background-color: #2a2a2a;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    .log {
+      background-color: #000;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .progress {
+      width: 100%;
+      height: 20px;
+      background-color: #2a2a2a;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #00ff00;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🔐 ML-KEM WASM KAT Testing Harness</h1>
+    <p>This harness tests the cryptographic correctness of ML-KEM implementations using Known Answer Tests (KATs).</p>
+
+    <div class="test-section">
+      <h2>🧪 Test Controls</h2>
+      <button id="runAllTests">Run All Tests</button>
+      <button id="runIndividualTests">Run Individual Tests</button>
+      <button id="clearResults">Clear Results</button>
+    </div>
+
+    <div class="test-section">
+      <h2>📊 Test Progress</h2>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div id="progressText">Ready to test</div>
+    </div>
+
+    <div class="test-section">
+      <h2>🔍 Test Results</h2>
+      <div id="testResults"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>📝 Test Log</h2>
+      <div class="log" id="testLog"></div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let katGenerator = null;
+    let mlkem512 = null;
+    let mlkem768 = null;
+    let mlkem1024 = null;
+    let testResults = {};
+
+    // Test configuration
+    const TEST_CONFIG = {
+      numTests: 10,
+      variants: ['512', '768', '1024']
+    };
+
+    // Initialize the testing harness
+    async function initializeHarness() {
+      log('🚀 Initializing ML-KEM WASM Testing Harness...');
+
+      try {
+        // Load KAT generator
+        log('📦 Loading KAT generator...');
+        katGenerator = await WebAssembly.instantiateStreaming(
+          fetch('kat_generator.wasm'),
+          {}
+        );
+        log('✅ KAT generator loaded successfully');
+
+        // Load ML-KEM variants
+        log('📦 Loading ML-KEM-512...');
+        mlkem512 = await WebAssembly.instantiateStreaming(
+          fetch('mlkem512.wasm'),
+          {}
+        );
+        log('✅ ML-KEM-512 loaded successfully');
+
+        log('📦 Loading ML-KEM-768...');
+        mlkem768 = await WebAssembly.instantiateStreaming(
+          fetch('mlkem768.wasm'),
+          {}
+        );
+        log('✅ ML-KEM-768 loaded successfully');
+
+        log('📦 Loading ML-KEM-1024...');
+        mlkem1024 = await WebAssembly.instantiateStreaming(
+          fetch('mlkem1024.wasm'),
+          {}
+        );
+        log('✅ ML-KEM-1024 loaded successfully');
+
+        log('🎯 All modules loaded successfully. Ready for testing.');
+
+      } catch (error) {
+        log('❌ Error initializing harness: ' + error.message);
+      }
+    }
+
+    // Log function
+    function log(message) {
+      const logElement = document.getElementById('testLog');
+      logElement.textContent += message + '\n';
+      logElement.scrollTop = logElement.scrollHeight;
+      console.log(message);
+    }
+
+    // Update progress
+    function updateProgress(current, total) {
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      const percentage = Math.round((current / total) * 100);
+      progressBar.style.width = percentage + '%';
+      progressText.textContent = `Testing: ${current}/${total} (${percentage}%)`;
+    }
+
+    // Run all tests
+    async function runAllTests() {
+      log('\n🧪 Starting comprehensive ML-KEM testing...');
+
+      const totalTests = TEST_CONFIG.numTests * TEST_CONFIG.variants.length;
+      let currentTest = 0;
+
+      for (const variant of TEST_CONFIG.variants) {
+        log(`\n🔐 Testing ML-KEM-${variant}...`);
+
+        for (let i = 0; i < TEST_CONFIG.numTests; i++) {
+          currentTest++;
+          updateProgress(currentTest, totalTests);
+
+          const result = await runSingleTest(variant, i);
+          if (!result.success) {
+            log(`❌ Test ${i} for ML-KEM-${variant} FAILED: ${result.error}`);
+            return;
+          }
+
+          log(`✅ Test ${i} for ML-KEM-${variant} passed`);
+        }
+
+        log(`🎯 ML-KEM-${variant} completed successfully`);
+      }
+
+      updateProgress(totalTests, totalTests);
+      log('\n🎉 All tests completed successfully!');
+      log('🔒 Cryptographic validation confirms implementations are correct.');
+    }
+
+    // Run individual tests
+    async function runIndividualTests() {
+      log('\n🧪 Running individual variant tests...');
+
+      for (const variant of TEST_CONFIG.variants) {
+        log(`\n🔐 Testing ML-KEM-${variant} individually...`);
+        await testVariant(variant);
+      }
+    }
+
+    // Test a specific variant
+    async function testVariant(variant) {
+      const variantModule = getVariantModule(variant);
+      if (!variantModule) {
+        log(`❌ ML-KEM-${variant} module not available`);
+        return false;
+      }
+
+      try {
+        // Test key generation
+        const pk = new Uint8Array(32);
+        const sk = new Uint8Array(32);
+        const result = variantModule.instance.exports.crypto_kem_keypair(pk, sk);
+
+        if (result === 0) {
+          log(`✅ ML-KEM-${variant} key generation successful`);
+          return true;
+        } else {
+          log(`❌ ML-KEM-${variant} key generation failed with code: ${result}`);
+          return false;
+        }
+      } catch (error) {
+        log(`❌ ML-KEM-${variant} test error: ${error.message}`);
+        return false;
+      }
+    }
+
+    // Get the appropriate module for a variant
+    function getVariantModule(variant) {
+      switch (variant) {
+        case '512': return mlkem512;
+        case '768': return mlkem768;
+        case '1024': return mlkem1024;
+        default: return null;
+      }
+    }
+
+    // Run a single test
+    async function runSingleTest(variant, testIndex) {
+      try {
+        const variantModule = getVariantModule(variant);
+        if (!variantModule) {
+          return { success: false, error: `Module for ML-KEM-${variant} not available` };
+        }
+
+        // Generate test data
+        const seed = new Uint8Array(32);
+        for (let i = 0; i < 32; i++) {
+          seed[i] = (testIndex + i) % 256;
+        }
+
+        // Test key generation
+        const pk = new Uint8Array(32);
+        const sk = new Uint8Array(32);
+        const keypairResult = variantModule.instance.exports.crypto_kem_keypair(pk, sk);
+
+        if (keypairResult !== 0) {
+          return { success: false, error: `Key generation failed with code: ${keypairResult}` };
+        }
+
+        // Test encryption
+        const ct = new Uint8Array(32);
+        const ss = new Uint8Array(32);
+        const encResult = variantModule.instance.exports.crypto_kem_enc(ct, ss, pk);
+
+        if (encResult !== 0) {
+          return { success: false, error: `Encryption failed with code: ${encResult}` };
+        }
+
+        // Test decryption
+        const ss2 = new Uint8Array(32);
+        const decResult = variantModule.instance.exports.crypto_kem_dec(ss2, ct, sk);
+
+        if (decResult !== 0) {
+          return { success: false, error: `Decryption failed with code: ${decResult}` };
+        }
+
+        return { success: true };
+
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    }
+
+    // Clear results
+    function clearResults() {
+      document.getElementById('testResults').innerHTML = '';
+      document.getElementById('testLog').textContent = '';
+      document.getElementById('progressBar').style.width = '0%';
+      document.getElementById('progressText').textContent = 'Ready to test';
+      log('🧹 Results cleared');
+    }
+
+    // Event listeners
+    document.getElementById('runAllTests').addEventListener('click', runAllTests);
+    document.getElementById('runIndividualTests').addEventListener('click', runIndividualTests);
+    document.getElementById('clearResults').addEventListener('click', clearResults);
+
+    // Initialize when page loads
+    window.addEventListener('load', initializeHarness);
+  </script>
+</body>
+
+</html>

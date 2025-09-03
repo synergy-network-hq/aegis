@@ -68,6 +68,15 @@ pub fn format_duration(duration: Duration) -> String {
 }
 
 /// Run comprehensive performance tests
+#[cfg(
+    all(
+        feature = "kyber",
+        feature = "hqc",
+        feature = "dilithium",
+        feature = "falcon",
+        feature = "sphincsplus"
+    )
+)]
 pub fn run_performance_tests() -> Vec<PerformanceResult> {
     use crate::{
         kyber_keygen,

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Signing - Aegis PQC Demo</title>
+  <link rel="stylesheet" href="../portal/portal.css">
+  <style>
+    .signing-container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .sidebar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 15px;
+      padding: 20px;
+      color: white;
+    }
+
+    .user-list {
+      margin-bottom: 20px;
+    }
+
+    .user-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-item:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .user-item.active {
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid #fff;
+    }
+
+    .main-content {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .document-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .document-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .action-card {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .document-editor {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .document-textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    .signature-history {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .signature-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      margin-bottom: 10px;
+      background: white;
+      border-radius: 10px;
+      border-left: 4px solid #28a745;
+    }
+
+    .signature-item.pending {
+      border-left-color: #ffc107;
+    }
+
+    .signature-item.rejected {
+      border-left-color: #dc3545;
+    }
+
+    .back-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .pqc-status {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .status-secure {
+      background: #28a745;
+    }
+
+    .status-warning {
+      background: #ffc107;
+    }
+
+    .status-danger {
+      background: #dc3545;
+    }
+
+    .document-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .info-card {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .info-card h4 {
+      margin: 0 0 10px 0;
+      color: #666;
+    }
+
+    .info-card .value {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="signing-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>📝 Document Signing</h2>
+
+      <div class="user-list">
+        <h3>Users</h3>
+        <div class="user-item active" data-user="alice">
+          <div>👩‍💼 Alice Johnson</div>
+          <div style="font-size: 0.9em; opacity: 0.8;">CEO</div>
+        </div>
+        <div class="user-item" data-user="bob">
+          <div>👨‍💼 Bob Smith</div>
+          <div style="font-size: 0.9em; opacity: 0.8;">CTO</div>
+        </div>
+        <div class="user-item" data-user="carol">
+          <div>👩‍💼 Carol Davis</div>
+          <div style="font-size: 0.9em; opacity: 0.8;">Legal Counsel</div>
+        </div>
+      </div>
+
+      <div class="pqc-status">
+        <h4>🔒 PQC Security Status</h4>
+        <div><span class="status-indicator status-secure"></span>Falcon-512: Active</div>
+        <div><span class="status-indicator status-secure"></span>Dilithium-65: Active</div>
+        <div><span class="status-indicator status-secure"></span>SPHINCS+: Active</div>
+        <div><span class="status-indicator status-secure"></span>SHA3-256: Active</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="document-header">
+        <div>
+          <h1>Contract Agreement</h1>
+          <p style="color: #666; margin: 0;">Document ID: DOC-2024-001</p>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 1.2em; font-weight: bold; color: #28a745;">Status: Ready for Signing</div>
+          <div style="color: #666;">Created: 2 hours ago</div>
+        </div>
+      </div>
+
+      <div class="document-info">
+        <div class="info-card">
+          <h4>Total Signatures</h4>
+          <div class="value">0/3</div>
+        </div>
+        <div class="info-card">
+          <h4>Document Hash</h4>
+          <div class="value" style="font-size: 0.8em;">a1b2c3...</div>
+        </div>
+        <div class="info-card">
+          <h4>Security Level</h4>
+          <div class="value">Level 3</div>
+        </div>
+      </div>
+
+      <div class="document-actions">
+        <div class="action-card" onclick="showSignModal()">
+          <h3>✍️ Sign Document</h3>
+          <p>Add your digital signature</p>
+        </div>
+        <div class="action-card" onclick="showVerifyModal()">
+          <h3>🔍 Verify Signature</h3>
+          <p>Check signature validity</p>
+        </div>
+        <div class="action-card" onclick="showExportModal()">
+          <h3>📤 Export</h3>
+          <p>Download signed document</p>
+        </div>
+        <div class="action-card" onclick="showAuditModal()">
+          <h3>📊 Audit Trail</h3>
+          <p>View signing history</p>
+        </div>
+      </div>
+
+      <div class="document-editor">
+        <h3>Document Content</h3>
+        <textarea class="document-textarea" id="documentContent" readonly>
+CONTRACT AGREEMENT
+
+This agreement is made on [DATE] between:
+
+PARTY A: Aegis Technologies Inc.
+Address: 123 Quantum Street, Crypto City, CC 12345
+
+PARTY B: [PARTY B NAME]
+Address: [PARTY B ADDRESS]
+
+1. SCOPE OF WORK
+   Party A agrees to provide post-quantum cryptographic services
+   including but not limited to:
+   - Key generation and management
+   - Digital signature services
+   - Encryption and decryption services
+   - Security consulting
+
+2. TERM
+   This agreement shall commence on [START DATE] and continue
+   for a period of [DURATION] unless terminated earlier.
+
+3. COMPENSATION
+   Party B shall pay Party A [AMOUNT] for services rendered.
+
+4. CONFIDENTIALITY
+   Both parties agree to maintain strict confidentiality
+   regarding all proprietary information shared.
+
+5. SIGNATURES
+   Party A: _________________ Date: _________
+   Party B: _________________ Date: _________
+
+Document Hash: [AUTO-GENERATED]
+Signature Timestamp: [AUTO-GENERATED]
+PQC Algorithm: Falcon-512 + Dilithium-65
+                </textarea>
+      </div>
+
+      <div class="signature-history">
+        <h3>Signature History</h3>
+        <div class="signature-item pending">
+          <div>
+            <div style="font-weight: 600;">Pending: Alice Johnson</div>
+            <div style="font-size: 0.9em; color: #666;">CEO - Not yet signed</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="color: #ffc107; font-weight: 600;">Pending</div>
+            <div style="font-size: 0.9em; color: #666;">-</div>
+          </div>
+        </div>
+        <div class="signature-item pending">
+          <div>
+            <div style="font-weight: 600;">Pending: Bob Smith</div>
+            <div style="font-size: 0.9em; color: #666;">CTO - Not yet signed</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="color: #ffc107; font-weight: 600;">Pending</div>
+            <div style="font-size: 0.9em; color: #666;">-</div>
+          </div>
+        </div>
+        <div class="signature-item pending">
+          <div>
+            <div style="font-weight: 600;">Pending: Carol Davis</div>
+            <div style="font-size: 0.9em; color: #666;">Legal Counsel - Not yet signed</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="color: #ffc107; font-weight: 600;">Pending</div>
+            <div style="font-size: 0.9em; color: #666;">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="back-button" onclick="goBack()">← Back to Portal</button>
+
+  <script src="document-signing.js"></script>
+</body>
+
+</html>
