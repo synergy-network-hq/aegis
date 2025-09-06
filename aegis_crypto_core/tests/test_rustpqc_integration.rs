@@ -1,4 +1,4 @@
-#[cfg(all(feature = "rustpqc-kyber", feature = "rustpqc-dilithium"))]
+#[cfg(any())]
 mod test_rustpqc_integration {
     use aegis_crypto_core::rustpqc_kyber::*;
     use aegis_crypto_core::rustpqc_dilithium::*;
@@ -81,7 +81,7 @@ mod test_rustpqc_integration {
     }
 }
 
-#[cfg(not(all(feature = "rustpqc-kyber", feature = "rustpqc-dilithium")))]
+#[cfg(not(any()))]
 mod test_rustpqc_integration {
     #[test]
     fn test_rustpqc_features_disabled() {

@@ -16,7 +16,9 @@ struct DigitalIdentity {
     email: String,
     full_name: String,
     organization: String,
+    #[allow(dead_code)]
     role: String,
+    #[allow(dead_code)]
     created_at: u64,
     last_login: u64,
     login_count: u32,
@@ -35,12 +37,15 @@ enum SecurityLevel {
 /// Authentication credentials for an identity
 #[derive(Debug)]
 struct AuthCredentials {
+    #[allow(dead_code)]
     identity_id: String,
     dilithium_keypair: (Vec<u8>, Vec<u8>), // (public_key, secret_key)
     falcon_keypair: (Vec<u8>, Vec<u8>), // (public_key, secret_key)
     sphincsplus_keypair: (Vec<u8>, Vec<u8>), // (public_key, secret_key)
     password_hash: Vec<u8>,
+    #[allow(dead_code)]
     salt: Vec<u8>,
+    #[allow(dead_code)]
     mfa_secret: Vec<u8>,
 }
 
@@ -49,10 +54,14 @@ struct AuthCredentials {
 struct AuthSession {
     session_id: String,
     identity_id: String,
+    #[allow(dead_code)]
     created_at: u64,
     expires_at: u64,
+    #[allow(dead_code)]
     ip_address: String,
+    #[allow(dead_code)]
     user_agent: String,
+    #[allow(dead_code)]
     is_valid: bool,
 }
 
@@ -67,6 +76,7 @@ struct IdentityManagementSystem {
 /// Audit event for security monitoring
 #[derive(Debug, Clone)]
 struct AuditEvent {
+    #[allow(dead_code)]
     timestamp: u64,
     event_type: String,
     identity_id: String,
@@ -95,7 +105,7 @@ impl IdentityManagementSystem {
         role: String,
         security_level: SecurityLevel
     ) -> Result<String, String> {
-        if self.identities.values().any(|id| (id.username == username || id.email == email)) {
+        if self.identities.values().any(|id| id.username == username || id.email == email) {
             return Err("Username or email already exists".to_string());
         }
 
@@ -264,7 +274,7 @@ impl IdentityManagementSystem {
     fn verify_basic_challenge(
         &self,
         credentials: &AuthCredentials,
-        challenge_response: &[u8]
+        _challenge_response: &[u8]
     ) -> bool {
         let challenge = b"authenticate_user_challenge";
         let challenge_hash = sha3_256_hash(challenge);
@@ -276,7 +286,7 @@ impl IdentityManagementSystem {
     fn verify_enhanced_challenge(
         &self,
         credentials: &AuthCredentials,
-        challenge_response: &[u8]
+        _challenge_response: &[u8]
     ) -> bool {
         let challenge = b"authenticate_user_challenge_enhanced";
         let challenge_hash = sha3_256_hash(challenge);
@@ -286,7 +296,7 @@ impl IdentityManagementSystem {
         let falcon_valid = falcon_verify(
             &credentials.dilithium_keypair.0,
             &challenge_hash,
-            challenge_response
+            _challenge_response
         );
 
         dilithium_valid && falcon_valid
@@ -296,7 +306,7 @@ impl IdentityManagementSystem {
     fn verify_maximum_challenge(
         &self,
         credentials: &AuthCredentials,
-        challenge_response: &[u8]
+        _challenge_response: &[u8]
     ) -> bool {
         let challenge = b"authenticate_user_challenge_maximum";
         let challenge_hash = sha3_256_hash(challenge);
@@ -306,11 +316,11 @@ impl IdentityManagementSystem {
         let falcon_valid = falcon_verify(
             &credentials.falcon_keypair.0,
             &challenge_hash,
-            challenge_response
+            _challenge_response
         );
         let sphincsplus_valid = sphincsplus_verify(
             &credentials.sphincsplus_keypair.0,
-            challenge_response
+            _challenge_response
         );
 
         dilithium_valid && falcon_valid && sphincsplus_valid
@@ -626,6 +636,7 @@ struct DocumentSignature {
     document_hash: Vec<u8>,
     signatures: Vec<Vec<u8>>,
     signature_types: Vec<String>,
+    #[allow(dead_code)]
     timestamp: u64,
     security_level: SecurityLevel,
 }

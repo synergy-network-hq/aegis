@@ -1,4 +1,6 @@
+#[allow(unused_imports)]
 use criterion::{ criterion_group, criterion_main, Criterion };
+#[allow(unused_imports)]
 use std::hint::black_box;
 
 #[cfg(feature = "classicmceliece")]

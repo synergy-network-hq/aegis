@@ -78,6 +78,7 @@ struct FinancialSecuritySystem {
     transactions: Vec<SecureTransaction>,
     system_id: String,
     system_kyber_keys: (Vec<u8>, Vec<u8>), // (public, secret)
+    #[allow(dead_code)]
     system_falcon_keys: (Vec<u8>, Vec<u8>), // (public, secret)
     fraud_detection_rules: Vec<FraudRule>,
 }

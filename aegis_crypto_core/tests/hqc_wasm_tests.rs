@@ -1,5 +1,6 @@
 //! WASM tests for the HQC key encapsulation mechanism (KEM).
 
+#![cfg(target_arch = "wasm32")]
 use wasm_bindgen_test::*;
 use aegis_crypto_core::{ hqc128_keygen, hqc128_encapsulate, hqc128_decapsulate };
 use aegis_crypto_core::{ hqc192_keygen, hqc192_encapsulate, hqc192_decapsulate };

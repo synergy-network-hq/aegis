@@ -1,9 +1,10 @@
+#![cfg(all(feature = "nist-wasm", target_arch = "wasm32"))]
 //! Tests for NIST Reference WASM implementations
 
 #[allow(unused_imports)]
 use aegis_crypto_core::*;
+use wasm_bindgen::JsCast;
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mlkem_variants_info() {
     let variants = nist_mlkem_variants();
@@ -22,7 +23,6 @@ async fn test_mlkem_variants_info() {
     assert_eq!(name.as_string().unwrap(), "ML-KEM-512");
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mldsa_variants_info() {
     let variants = nist_mldsa_variants();
@@ -41,7 +41,6 @@ async fn test_mldsa_variants_info() {
     assert_eq!(name.as_string().unwrap(), "ML-DSA-2");
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_wasm_environment_info() {
     let info = get_wasm_info();
@@ -62,7 +61,6 @@ async fn test_wasm_environment_info() {
     assert!(promise_supported.as_bool().unwrap());
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mlkem_keygen_512() {
     // This test will fail in a test environment without the actual WASM files
@@ -84,7 +82,6 @@ async fn test_mlkem_keygen_512() {
     }
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mlkem_keygen_768() {
     let result = nist_mlkem_keygen("ML-KEM-768").await;
@@ -102,7 +99,6 @@ async fn test_mlkem_keygen_768() {
     }
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mlkem_keygen_1024() {
     let result = nist_mlkem_keygen("ML-KEM-1024").await;
@@ -120,7 +116,6 @@ async fn test_mlkem_keygen_1024() {
     }
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mlkem_invalid_variant() {
     let result = nist_mlkem_keygen("INVALID-VARIANT").await;
@@ -131,7 +126,6 @@ async fn test_mlkem_invalid_variant() {
     assert!(error_msg.contains("Unsupported ML-KEM variant"));
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mldsa_keygen_2() {
     let result = nist_mldsa_keygen("ML-DSA-2").await;
@@ -149,7 +143,6 @@ async fn test_mldsa_keygen_2() {
     }
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mldsa_keygen_3() {
     let result = nist_mldsa_keygen("ML-DSA-3").await;
@@ -167,7 +160,6 @@ async fn test_mldsa_keygen_3() {
     }
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mldsa_keygen_5() {
     let result = nist_mldsa_keygen("ML-DSA-5").await;
@@ -185,7 +177,6 @@ async fn test_mldsa_keygen_5() {
     }
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mldsa_invalid_variant() {
     let result = nist_mldsa_keygen("INVALID-VARIANT").await;
@@ -196,7 +187,6 @@ async fn test_mldsa_invalid_variant() {
     assert!(error_msg.contains("Unsupported ML-DSA variant"));
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mlkem_encapsulation_validation() {
     // Test with invalid public key length
@@ -210,7 +200,6 @@ async fn test_mlkem_encapsulation_validation() {
     assert!(error_msg.contains("Invalid public key length"));
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mlkem_decapsulation_validation() {
     // Test with invalid secret key length
@@ -228,7 +217,6 @@ async fn test_mlkem_decapsulation_validation() {
     );
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mldsa_signing_validation() {
     // Test with invalid secret key length
@@ -243,7 +231,6 @@ async fn test_mldsa_signing_validation() {
     assert!(error_msg.contains("Invalid secret key length"));
 }
 
-#[cfg(feature = "nist-wasm")]
 #[tokio::test]
 async fn test_mldsa_verification_validation() {
     // Test with invalid public key length
@@ -262,7 +249,6 @@ async fn test_mldsa_verification_validation() {
     );
 }
 
-#[cfg(feature = "nist-wasm")]
 #[test]
 fn test_mlkem_variant_enum() {
     use crate::nist_wasm_mlkem::MlkemVariant;
@@ -292,7 +278,6 @@ fn test_mlkem_variant_enum() {
     assert_eq!(variant.wasm_filename(), "mlkem1024.wasm");
 }
 
-#[cfg(feature = "nist-wasm")]
 #[test]
 fn test_mldsa_variant_enum() {
     use crate::nist_wasm_mldsa::MldsaVariant;

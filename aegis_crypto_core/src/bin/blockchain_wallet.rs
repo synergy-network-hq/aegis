@@ -286,7 +286,7 @@ impl BlockchainWalletSystem {
             }
         };
 
-        if self.wallets.get(&transaction.from_wallet).is_none() {
+        if !self.wallets.contains_key(&transaction.from_wallet) {
             return false;
         }
 

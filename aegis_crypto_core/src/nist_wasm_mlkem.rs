@@ -9,8 +9,7 @@ use wasm_bindgen::JsValue;
 use js_sys::{ Object, Reflect, Uint8Array, WebAssembly, Function };
 use wasm_bindgen::JsCast;
 use web_sys::{ Request, RequestInit, RequestMode, Response };
-
-git use std::vec::Vec;
+use std::vec::Vec;
 
 /// Represents an ML-KEM key pair (public and secret keys).
 #[wasm_bindgen]

@@ -10,12 +10,14 @@ use std::time::{ SystemTime, UNIX_EPOCH };
 /// Represents an IoT device with PQC security
 #[derive(Clone, Debug)]
 struct IoTDevice {
+    #[allow(dead_code)]
     id: String,
     name: String,
     device_type: String,
     location: String,
     status: DeviceStatus,
     kyber_public_key: Vec<u8>,
+    #[allow(dead_code)]
     kyber_secret_key: Vec<u8>,
     falcon_public_key: Vec<u8>,
     falcon_secret_key: Vec<u8>,
@@ -48,7 +50,6 @@ struct SecureMessage {
 /// Types of IoT messages
 #[allow(dead_code)]
 #[derive(Clone, Debug)]
-#[allow(dead_code)]
 enum MessageType {
     Heartbeat,
     SensorData,
