@@ -9,6 +9,7 @@ use std::time::{ SystemTime, UNIX_EPOCH };
 
 /// Represents a financial account with PQC security
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 struct FinancialAccount {
     account_id: String,
     account_type: AccountType,
@@ -35,6 +36,7 @@ enum AccountType {
 
 /// Account status
 #[derive(Clone, Debug, PartialEq)]
+#[allow(dead_code)]
 enum AccountStatus {
     Active,
     Suspended,
@@ -44,6 +46,7 @@ enum AccountStatus {
 
 /// Secure financial transaction
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 struct SecureTransaction {
     transaction_id: String,
     from_account: String,
@@ -60,6 +63,7 @@ struct SecureTransaction {
 
 /// Types of financial transactions
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 enum TransactionType {
     Transfer,
     Payment,
@@ -94,25 +98,26 @@ impl FinancialSecuritySystem {
         let falcon_keys = falcon_keygen();
 
         // Initialize fraud detection rules
-        let mut fraud_rules = Vec::new();
-        fraud_rules.push(FraudRule {
-            rule_id: "RULE_001".to_string(),
-            description: "Large transaction amount".to_string(),
-            threshold: 10000.0,
-            risk_multiplier: 2.0,
-        });
-        fraud_rules.push(FraudRule {
-            rule_id: "RULE_002".to_string(),
-            description: "High frequency transactions".to_string(),
-            threshold: 5.0, // transactions per hour
-            risk_multiplier: 1.5,
-        });
-        fraud_rules.push(FraudRule {
-            rule_id: "RULE_003".to_string(),
-            description: "Unusual transaction time".to_string(),
-            threshold: 0.0, // outside business hours
-            risk_multiplier: 1.3,
-        });
+        let fraud_rules = vec![
+            FraudRule {
+                rule_id: "RULE_001".to_string(),
+                description: "Large transaction amount".to_string(),
+                threshold: 10000.0,
+                risk_multiplier: 2.0,
+            },
+            FraudRule {
+                rule_id: "RULE_002".to_string(),
+                description: "High frequency transactions".to_string(),
+                threshold: 5.0, // transactions per hour
+                risk_multiplier: 1.5,
+            },
+            FraudRule {
+                rule_id: "RULE_003".to_string(),
+                description: "Unusual transaction time".to_string(),
+                threshold: 0.0, // outside business hours
+                risk_multiplier: 1.3,
+            }
+        ];
 
         Self {
             accounts: HashMap::new(),
@@ -363,7 +368,7 @@ impl FinancialSecuritySystem {
                 "RULE_003" => {
                     let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
                     let hour = (now / 3600) % 24;
-                    if hour < 6 || hour > 22 {
+                    if !(6..=22).contains(&hour) {
                         // Outside 6 AM - 10 PM
                         risk_score *= rule.risk_multiplier;
                     }
@@ -505,19 +510,19 @@ fn main() {
 
     // Execute secure transactions
     println!("\n💸 Executing secure financial transactions...");
-    let tx1 = system
+    let _tx1 = system
         .execute_transaction("ACC_001", "ACC_002", 5000.0, "Monthly savings transfer")
         .unwrap();
 
-    let tx2 = system
+    let _tx2 = system
         .execute_transaction("ACC_003", "ACC_001", 15000.0, "Business payment for services")
         .unwrap();
 
-    let tx3 = system
+    let _tx3 = system
         .execute_transaction("ACC_002", "ACC_004", 10000.0, "Investment contribution")
         .unwrap();
 
-    let tx4 = system
+    let _tx4 = system
         .execute_transaction("ACC_001", "ACC_003", 2500.0, "Equipment purchase")
         .unwrap();
 

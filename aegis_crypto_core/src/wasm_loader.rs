@@ -9,7 +9,7 @@ use js_sys::{ Object, Reflect, Uint8Array, WebAssembly };
 use wasm_bindgen::JsCast;
 use web_sys::{ Request, RequestInit, RequestMode, Response };
 
-use std::{ vec::Vec, string::{ String, ToString } };
+use std::vec::Vec;
 
 /// WASM module cache for storing loaded modules
 pub struct WasmModuleCache {
@@ -60,6 +60,12 @@ impl WasmModuleCache {
     }
 }
 
+impl Default for WasmModuleCache {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// WASM loader for external modules
 pub struct ExternalWasmLoader {
     cache: WasmModuleCache,
@@ -101,7 +107,7 @@ impl ExternalWasmLoader {
     /// Fetch and instantiate a WASM module
     async fn fetch_and_instantiate(&self, url: &str) -> Result<WebAssembly::Instance, JsValue> {
         // Create a fetch request
-        let mut opts = RequestInit::new();
+        let opts = RequestInit::new();
         opts.set_method("GET");
         opts.set_mode(RequestMode::Cors);
 

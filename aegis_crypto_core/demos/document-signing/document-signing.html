@@ -261,19 +261,19 @@
       </div>
 
       <div class="document-actions">
-        <div class="action-card" onclick="showSignModal()">
+        <div class="action-card">
           <h3>✍️ Sign Document</h3>
           <p>Add your digital signature</p>
         </div>
-        <div class="action-card" onclick="showVerifyModal()">
+        <div class="action-card">
           <h3>🔍 Verify Signature</h3>
           <p>Check signature validity</p>
         </div>
-        <div class="action-card" onclick="showExportModal()">
+        <div class="action-card">
           <h3>📤 Export</h3>
           <p>Download signed document</p>
         </div>
-        <div class="action-card" onclick="showAuditModal()">
+        <div class="action-card">
           <h3>📊 Audit Trail</h3>
           <p>View signing history</p>
         </div>
@@ -357,7 +357,7 @@ PQC Algorithm: Falcon-512 + Dilithium-65
     </div>
   </div>
 
-  <button class="back-button" onclick="goBack()">← Back to Portal</button>
+  <button class="back-button" onclick="window.location.href='../portal/portal.html'">← Back to Portal</button>
 
   <script src="document-signing.js"></script>
 </body>

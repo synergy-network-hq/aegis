@@ -11,12 +11,12 @@ use std::time::{ SystemTime, UNIX_EPOCH };
 /// Represents a cryptocurrency wallet with PQC security
 #[derive(Debug, Clone)]
 struct CryptoWallet {
-    wallet_id: String,
+    _wallet_id: String,
     owner_name: String,
     public_address: String,
     balance: f64,
     currency: String,
-    created_at: u64,
+    _created_at: u64,
     transaction_count: u32,
     security_level: WalletSecurityLevel,
 }
@@ -32,7 +32,7 @@ enum WalletSecurityLevel {
 /// Wallet keypair with multiple PQC algorithms
 #[derive(Debug)]
 struct WalletKeypair {
-    wallet_id: String,
+    _wallet_id: String,
     kyber_keys: (Vec<u8>, Vec<u8>), // (public_key, secret_key)
     dilithium_keys: (Vec<u8>, Vec<u8>), // (public_key, secret_key)
     falcon_keys: (Vec<u8>, Vec<u8>), // (public_key, secret_key)
@@ -55,6 +55,7 @@ struct Transaction {
 
 /// Transaction status
 #[derive(Debug, Clone, PartialEq)]
+#[allow(dead_code)]
 enum TransactionStatus {
     Pending,
     Confirmed,
@@ -131,19 +132,19 @@ impl BlockchainWalletSystem {
 
         // Create wallet
         let wallet = CryptoWallet {
-            wallet_id: wallet_id.clone(),
+            _wallet_id: wallet_id.clone(),
             owner_name: owner_name.clone(),
             public_address: self.generate_public_address(&kyber_keys.public_key()),
             balance: 0.0,
             currency,
-            created_at: now,
+            _created_at: now,
             transaction_count: 0,
             security_level,
         };
 
         // Create keypair
         let keypair = WalletKeypair {
-            wallet_id: wallet_id.clone(),
+            _wallet_id: wallet_id.clone(),
             kyber_keys: (kyber_keys.public_key(), kyber_keys.secret_key()),
             dilithium_keys: (dilithium_keys.public_key(), dilithium_keys.secret_key()),
             falcon_keys: (falcon_keys.public_key(), falcon_keys.secret_key()),
@@ -285,12 +286,9 @@ impl BlockchainWalletSystem {
             }
         };
 
-        let from_wallet = match self.wallets.get(&transaction.from_wallet) {
-            Some(wallet) => wallet,
-            None => {
-                return false;
-            }
-        };
+        if self.wallets.get(&transaction.from_wallet).is_none() {
+            return false;
+        }
 
         let keypair = match self.keypairs.get(&transaction.from_wallet) {
             Some(keys) => keys,
@@ -319,7 +317,7 @@ impl BlockchainWalletSystem {
             "Dual (Dilithium + Falcon)" => {
                 // Split combined signature (simplified)
                 let sig_len = transaction.signature.len() / 2;
-                let dilithium_sig = &transaction.signature[..sig_len];
+                let _dilithium_sig = &transaction.signature[..sig_len];
                 let falcon_sig = &transaction.signature[sig_len..];
 
                 let dilithium_valid = dilithium_verify(&keypair.dilithium_keys.0, &tx_hash);
@@ -330,7 +328,7 @@ impl BlockchainWalletSystem {
             "Triple (Dilithium + Falcon + Kyber)" => {
                 // Split combined signature (simplified)
                 let sig_len = transaction.signature.len() / 3;
-                let dilithium_sig = &transaction.signature[..sig_len];
+                let _dilithium_sig = &transaction.signature[..sig_len];
                 let falcon_sig = &transaction.signature[sig_len..2 * sig_len];
 
                 let dilithium_valid = dilithium_verify(&keypair.dilithium_keys.0, &tx_hash);

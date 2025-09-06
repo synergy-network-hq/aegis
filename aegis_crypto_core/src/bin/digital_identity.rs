@@ -1,12 +1,12 @@
 use aegis_crypto_core::{
-    dilithium::{dilithium_keygen, dilithium_sign, dilithium_verify},
-    falcon::{falcon_keygen, falcon_sign, falcon_verify},
-    sphincsplus::{sphincsplus_keygen, sphincsplus_sign, sphincsplus_verify},
-    hash::{sha3_256_hash, sha3_512_hash, blake3_hash},
-    utils::{bytes_to_hex, hex_to_bytes},
+    dilithium::{ dilithium_keygen, dilithium_sign, dilithium_verify },
+    falcon::{ falcon_keygen, falcon_sign, falcon_verify },
+    sphincsplus::{ sphincsplus_keygen, sphincsplus_sign, sphincsplus_verify },
+    hash::sha3_256_hash,
+    utils::bytes_to_hex,
 };
 use std::collections::HashMap;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{ SystemTime, UNIX_EPOCH };
 
 /// Represents a digital identity with multiple authentication factors
 #[derive(Debug, Clone)]
@@ -27,9 +27,9 @@ struct DigitalIdentity {
 /// Security levels for different authentication requirements
 #[derive(Debug, Clone, PartialEq)]
 enum SecurityLevel {
-    Basic,      // Single signature (Dilithium)
-    Enhanced,   // Dual signature (Dilithium + Falcon)
-    Maximum,    // Triple signature (Dilithium + Falcon + SPHINCS+)
+    Basic, // Single signature (Dilithium)
+    Enhanced, // Dual signature (Dilithium + Falcon)
+    Maximum, // Triple signature (Dilithium + Falcon + SPHINCS+)
 }
 
 /// Authentication credentials for an identity
@@ -86,10 +86,16 @@ impl IdentityManagementSystem {
     }
 
     /// Create a new digital identity with PQC authentication
-    fn create_identity(&mut self, username: String, email: String, full_name: String, 
-                      organization: String, role: String, security_level: SecurityLevel) -> Result<String, String> {
-        
-        if self.identities.values().any(|id| id.username == username || id.email == email) {
+    fn create_identity(
+        &mut self,
+        username: String,
+        email: String,
+        full_name: String,
+        organization: String,
+        role: String,
+        security_level: SecurityLevel
+    ) -> Result<String, String> {
+        if self.identities.values().any(|id| (id.username == username || id.email == email)) {
             return Err("Username or email already exists".to_string());
         }
 
@@ -103,16 +109,25 @@ impl IdentityManagementSystem {
 
         // Generate PQC keypairs based on security level
         let dilithium_keys = dilithium_keygen();
-        println!("   ✅ Dilithium keys generated (Public: {} bytes, Secret: {} bytes)", 
-                dilithium_keys.public_key().len(), dilithium_keys.secret_key().len());
+        println!(
+            "   ✅ Dilithium keys generated (Public: {} bytes, Secret: {} bytes)",
+            dilithium_keys.public_key().len(),
+            dilithium_keys.secret_key().len()
+        );
 
         let falcon_keys = falcon_keygen();
-        println!("   ✅ Falcon keys generated (Public: {} bytes, Secret: {} bytes)", 
-                falcon_keys.public_key().len(), falcon_keys.secret_key().len());
+        println!(
+            "   ✅ Falcon keys generated (Public: {} bytes, Secret: {} bytes)",
+            falcon_keys.public_key().len(),
+            falcon_keys.secret_key().len()
+        );
 
         let sphincsplus_keys = sphincsplus_keygen();
-        println!("   ✅ SPHINCS+ keys generated (Public: {} bytes, Secret: {} bytes)", 
-                sphincsplus_keys.public_key().len(), sphincsplus_keys.secret_key().len());
+        println!(
+            "   ✅ SPHINCS+ keys generated (Public: {} bytes, Secret: {} bytes)",
+            sphincsplus_keys.public_key().len(),
+            sphincsplus_keys.secret_key().len()
+        );
 
         // Create identity
         let identity = DigitalIdentity {
@@ -144,30 +159,53 @@ impl IdentityManagementSystem {
         self.credentials.insert(identity_id.clone(), credentials);
 
         // Log the event
-        self.log_audit_event("IDENTITY_CREATED", &identity_id, "New digital identity created", "127.0.0.1", true);
+        self.log_audit_event(
+            "IDENTITY_CREATED",
+            &identity_id,
+            "New digital identity created",
+            "127.0.0.1",
+            true
+        );
 
         println!("   🎉 Digital identity created successfully!");
         println!("   🆔 Identity ID: {}", identity_id);
-        
+
         Ok(identity_id)
     }
 
     /// Authenticate an identity using PQC signatures
-    fn authenticate(&mut self, username: &str, password: &str, challenge_response: &[u8]) -> Result<AuthSession, String> {
-        let identity = self.identities.values()
+    fn authenticate(
+        &mut self,
+        username: &str,
+        password: &str,
+        _challenge_response: &[u8]
+    ) -> Result<AuthSession, String> {
+        // First, find the identity and get its ID
+        let identity_id = self.identities
+            .values()
             .find(|id| id.username == username && id.is_active)
+            .map(|id| id.id.clone())
             .ok_or("Invalid username or inactive account")?;
 
-        let credentials = self.credentials.get(&identity.id)
+        let credentials = self.credentials
+            .get(&identity_id)
             .ok_or("Authentication credentials not found")?;
 
+        // Get identity details for display
+        let identity = self.identities.get(&identity_id).unwrap();
         println!("\n🔐 Authenticating user: {}", identity.full_name);
 
         // Step 1: Verify password
         println!("   🔑 Verifying password...");
         let password_hash = self.hash_password(password);
         if password_hash != credentials.password_hash {
-            self.log_audit_event("AUTH_FAILED", &identity.id, "Invalid password", "127.0.0.1", false);
+            self.log_audit_event(
+                "AUTH_FAILED",
+                &identity_id,
+                "Invalid password",
+                "127.0.0.1",
+                false
+            );
             return Err("Invalid password".to_string());
         }
         println!("   ✅ Password verified");
@@ -176,80 +214,118 @@ impl IdentityManagementSystem {
         println!("   🖊️  Verifying PQC challenge response...");
         let challenge_valid = match identity.security_level {
             SecurityLevel::Basic => {
-                self.verify_basic_challenge(&credentials, challenge_response)
-            },
+                self.verify_basic_challenge(credentials, _challenge_response)
+            }
             SecurityLevel::Enhanced => {
-                self.verify_enhanced_challenge(&credentials, challenge_response)
-            },
+                self.verify_enhanced_challenge(credentials, _challenge_response)
+            }
             SecurityLevel::Maximum => {
-                self.verify_maximum_challenge(&credentials, challenge_response)
+                self.verify_maximum_challenge(credentials, _challenge_response)
             }
         };
 
         if !challenge_valid {
-            self.log_audit_event("AUTH_FAILED", &identity.id, "Invalid PQC challenge response", "127.0.0.1", false);
+            self.log_audit_event(
+                "AUTH_FAILED",
+                &identity_id,
+                "Invalid PQC challenge response",
+                "127.0.0.1",
+                false
+            );
             return Err("Invalid challenge response".to_string());
         }
         println!("   ✅ PQC challenge response verified");
 
         // Step 3: Create authentication session
-        let session = self.create_session(&identity.id, "127.0.0.1", "Rust Client");
-        
+        let session = self.create_session(&identity_id, "127.0.0.1", "Rust Client");
+
         // Step 4: Update identity stats
-        if let Some(id) = self.identities.get_mut(&identity.id) {
+        if let Some(id) = self.identities.get_mut(&identity_id) {
             id.last_login = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
             id.login_count += 1;
         }
 
         // Log successful authentication
-        self.log_audit_event("AUTH_SUCCESS", &identity.id, "User authenticated successfully", "127.0.0.1", true);
+        self.log_audit_event(
+            "AUTH_SUCCESS",
+            &identity_id,
+            "User authenticated successfully",
+            "127.0.0.1",
+            true
+        );
 
         println!("   🎉 Authentication successful!");
         println!("   🔑 Session created: {}", session.session_id);
-        
+
         Ok(session)
     }
 
     /// Verify basic security level (Dilithium only)
-    fn verify_basic_challenge(&self, credentials: &AuthCredentials, challenge_response: &[u8]) -> bool {
+    fn verify_basic_challenge(
+        &self,
+        credentials: &AuthCredentials,
+        challenge_response: &[u8]
+    ) -> bool {
         let challenge = b"authenticate_user_challenge";
         let challenge_hash = sha3_256_hash(challenge);
-        
+
         dilithium_verify(&credentials.dilithium_keypair.0, &challenge_hash)
     }
 
     /// Verify enhanced security level (Dilithium + Falcon)
-    fn verify_enhanced_challenge(&self, credentials: &AuthCredentials, challenge_response: &[u8]) -> bool {
+    fn verify_enhanced_challenge(
+        &self,
+        credentials: &AuthCredentials,
+        challenge_response: &[u8]
+    ) -> bool {
         let challenge = b"authenticate_user_challenge_enhanced";
         let challenge_hash = sha3_256_hash(challenge);
-        
+
         // Verify both signatures
         let dilithium_valid = dilithium_verify(&credentials.dilithium_keypair.0, &challenge_hash);
-        let falcon_valid = falcon_verify(&credentials.dilithium_keypair.0, &challenge_hash, challenge_response);
-        
+        let falcon_valid = falcon_verify(
+            &credentials.dilithium_keypair.0,
+            &challenge_hash,
+            challenge_response
+        );
+
         dilithium_valid && falcon_valid
     }
 
     /// Verify maximum security level (Dilithium + Falcon + SPHINCS+)
-    fn verify_maximum_challenge(&self, credentials: &AuthCredentials, challenge_response: &[u8]) -> bool {
+    fn verify_maximum_challenge(
+        &self,
+        credentials: &AuthCredentials,
+        challenge_response: &[u8]
+    ) -> bool {
         let challenge = b"authenticate_user_challenge_maximum";
         let challenge_hash = sha3_256_hash(challenge);
-        
+
         // Verify all three signatures
         let dilithium_valid = dilithium_verify(&credentials.dilithium_keypair.0, &challenge_hash);
-        let falcon_valid = falcon_verify(&credentials.falcon_keypair.0, &challenge_hash, challenge_response);
-        let sphincsplus_valid = sphincsplus_verify(&credentials.sphincsplus_keypair.0, &challenge_hash, challenge_response);
-        
+        let falcon_valid = falcon_verify(
+            &credentials.falcon_keypair.0,
+            &challenge_hash,
+            challenge_response
+        );
+        let sphincsplus_valid = sphincsplus_verify(
+            &credentials.sphincsplus_keypair.0,
+            challenge_response
+        );
+
         dilithium_valid && falcon_valid && sphincsplus_valid
     }
 
     /// Sign a document with PQC signatures
-    fn sign_document(&self, identity_id: &str, document_hash: &[u8], security_level: SecurityLevel) -> Result<DocumentSignature, String> {
-        let identity = self.identities.get(identity_id)
-            .ok_or("Identity not found")?;
-        
-        let credentials = self.credentials.get(identity_id)
-            .ok_or("Credentials not found")?;
+    fn sign_document(
+        &mut self,
+        identity_id: &str,
+        document_hash: &[u8],
+        security_level: SecurityLevel
+    ) -> Result<DocumentSignature, String> {
+        let identity = self.identities.get(identity_id).ok_or("Identity not found")?;
+
+        let credentials = self.credentials.get(identity_id).ok_or("Credentials not found")?;
 
         if !identity.is_active {
             return Err("Identity is not active".to_string());
@@ -269,29 +345,44 @@ impl IdentityManagementSystem {
                 signatures.push(dilithium_sig);
                 signature_types.push("Dilithium".to_string());
                 println!("   ✅ Dilithium signature created ({} bytes)", signatures[0].len());
-            },
+            }
             SecurityLevel::Enhanced => {
                 let dilithium_sig = dilithium_sign(&credentials.dilithium_keypair.1, document_hash);
                 let falcon_sig = falcon_sign(&credentials.falcon_keypair.1, document_hash);
+                let dilithium_len = dilithium_sig.len();
+                let falcon_len = falcon_sig.len();
                 signatures.push(dilithium_sig);
                 signatures.push(falcon_sig);
                 signature_types.push("Dilithium".to_string());
                 signature_types.push("Falcon".to_string());
-                println!("   ✅ Dual signatures created (Dilithium: {} bytes, Falcon: {} bytes)", 
-                        dilithium_sig.len(), falcon_sig.len());
-            },
+                println!(
+                    "   ✅ Dual signatures created (Dilithium: {} bytes, Falcon: {} bytes)",
+                    dilithium_len,
+                    falcon_len
+                );
+            }
             SecurityLevel::Maximum => {
                 let dilithium_sig = dilithium_sign(&credentials.dilithium_keypair.1, document_hash);
                 let falcon_sig = falcon_sign(&credentials.falcon_keypair.1, document_hash);
-                let sphincsplus_sig = sphincsplus_sign(&credentials.sphincsplus_keypair.1, document_hash);
+                let sphincsplus_sig = sphincsplus_sign(
+                    &credentials.sphincsplus_keypair.1,
+                    document_hash
+                );
+                let dilithium_len = dilithium_sig.len();
+                let falcon_len = falcon_sig.len();
+                let sphincsplus_len = sphincsplus_sig.len();
                 signatures.push(dilithium_sig);
                 signatures.push(falcon_sig);
                 signatures.push(sphincsplus_sig);
                 signature_types.push("Dilithium".to_string());
                 signature_types.push("Falcon".to_string());
                 signature_types.push("SPHINCS+".to_string());
-                println!("   ✅ Triple signatures created (Dilithium: {} bytes, Falcon: {} bytes, SPHINCS+: {} bytes)", 
-                        dilithium_sig.len(), falcon_sig.len(), sphincsplus_sig.len());
+                println!(
+                    "   ✅ Triple signatures created (Dilithium: {} bytes, Falcon: {} bytes, SPHINCS+: {} bytes)",
+                    dilithium_len,
+                    falcon_len,
+                    sphincsplus_len
+                );
             }
         }
 
@@ -301,12 +392,17 @@ impl IdentityManagementSystem {
             signatures,
             signature_types,
             timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
-            security_level,
+            security_level: security_level.clone(),
         };
 
         // Log the signing event
-        self.log_audit_event("DOCUMENT_SIGNED", identity_id, 
-            &format!("Document signed with {:?} security", security_level), "127.0.0.1", true);
+        self.log_audit_event(
+            "DOCUMENT_SIGNED",
+            identity_id,
+            &format!("Document signed with {:?} security", security_level),
+            "127.0.0.1",
+            true
+        );
 
         println!("   🎉 Document signed successfully!");
         Ok(document_signature)
@@ -316,12 +412,16 @@ impl IdentityManagementSystem {
     fn verify_document_signature(&self, signature: &DocumentSignature) -> bool {
         let identity = match self.identities.get(&signature.identity_id) {
             Some(id) => id,
-            None => return false,
+            None => {
+                return false;
+            }
         };
 
         let credentials = match self.credentials.get(&signature.identity_id) {
             Some(cred) => cred,
-            None => return false,
+            None => {
+                return false;
+            }
         };
 
         if !identity.is_active {
@@ -334,27 +434,35 @@ impl IdentityManagementSystem {
 
         let mut all_valid = true;
 
-        for (i, (signature_data, signature_type)) in signature.signatures.iter()
-            .zip(signature.signature_types.iter()).enumerate() {
-            
+        for (signature_data, signature_type) in signature.signatures
+            .iter()
+            .zip(signature.signature_types.iter()) {
             let valid = match signature_type.as_str() {
                 "Dilithium" => {
                     let challenge_hash = sha3_256_hash(&signature.document_hash);
                     dilithium_verify(&credentials.dilithium_keypair.0, &challenge_hash)
-                },
+                }
                 "Falcon" => {
-                    falcon_verify(&credentials.falcon_keypair.0, &signature.document_hash, signature_data)
-                },
+                    falcon_verify(
+                        &credentials.falcon_keypair.0,
+                        &signature.document_hash,
+                        signature_data
+                    )
+                }
                 "SPHINCS+" => {
-                    sphincsplus_verify(&credentials.sphincsplus_keypair.0, &signature.document_hash, signature_data)
-                },
+                    sphincsplus_verify(&credentials.sphincsplus_keypair.0, signature_data)
+                }
                 _ => false,
             };
 
-            println!("   {} {} signature: {}", 
-                if valid { "✅" } else { "❌" }, signature_type, 
-                if valid { "VALID" } else { "INVALID" });
-            
+            println!("   {} {} signature: {}", if valid { "✅" } else { "❌" }, signature_type, if
+                valid
+            {
+                "VALID"
+            } else {
+                "INVALID"
+            });
+
             all_valid = all_valid && valid;
         }
 
@@ -393,10 +501,15 @@ impl IdentityManagementSystem {
     }
 
     /// Create an authentication session
-    fn create_session(&mut self, identity_id: &str, ip_address: &str, user_agent: &str) -> AuthSession {
+    fn create_session(
+        &mut self,
+        identity_id: &str,
+        ip_address: &str,
+        user_agent: &str
+    ) -> AuthSession {
         let session_id = self.generate_session_id();
         let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
-        
+
         let session = AuthSession {
             session_id: session_id.clone(),
             identity_id: identity_id.to_string(),
@@ -420,7 +533,14 @@ impl IdentityManagementSystem {
     }
 
     /// Log an audit event
-    fn log_audit_event(&mut self, event_type: &str, identity_id: &str, details: &str, ip_address: &str, success: bool) {
+    fn log_audit_event(
+        &mut self,
+        event_type: &str,
+        identity_id: &str,
+        details: &str,
+        ip_address: &str,
+        success: bool
+    ) {
         let event = AuditEvent {
             timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
             event_type: event_type.to_string(),
@@ -441,40 +561,58 @@ impl IdentityManagementSystem {
         println!("👥 Identities: {}", self.identities.len());
         println!("🔐 Active Sessions: {}", self.active_sessions.len());
         println!("📝 Audit Events: {}", self.audit_log.len());
-        
+
         if !self.identities.is_empty() {
             println!("\n👤 Registered Identities:");
-            for (id, identity) in &self.identities {
+            for identity in self.identities.values() {
                 let status = if identity.is_active { "🟢 ACTIVE" } else { "🔴 INACTIVE" };
-                println!("   • {} ({}) - {} - {:?}", 
-                    identity.full_name, identity.username, status, identity.security_level);
-                println!("     📧 {} | 🏢 {} | 🔑 Logins: {}", 
-                    identity.email, identity.organization, identity.login_count);
+                println!(
+                    "   • {} ({}) - {} - {:?}",
+                    identity.full_name,
+                    identity.username,
+                    status,
+                    identity.security_level
+                );
+                println!(
+                    "     📧 {} | 🏢 {} | 🔑 Logins: {}",
+                    identity.email,
+                    identity.organization,
+                    identity.login_count
+                );
             }
         }
 
         if !self.active_sessions.is_empty() {
             println!("\n🔑 Active Sessions:");
             for (session_id, session) in &self.active_sessions {
-                let identity_name = self.identities.get(&session.identity_id)
+                let identity_name = self.identities
+                    .get(&session.identity_id)
                     .map(|id| &id.full_name)
                     .unwrap_or(&session.identity_id);
-                println!("   • {} - {} (expires in {}s)", 
-                    session_id, identity_name, 
-                    session.expires_at.saturating_sub(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()));
+                println!(
+                    "   • {} - {} (expires in {}s)",
+                    session_id,
+                    identity_name,
+                    session.expires_at.saturating_sub(
+                        SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()
+                    )
+                );
             }
         }
 
         if !self.audit_log.is_empty() {
             println!("\n📝 Recent Audit Events:");
-            let recent_events: Vec<_> = self.audit_log.iter()
-                .rev()
-                .take(5)
-                .collect();
+            let recent_events: Vec<_> = self.audit_log.iter().rev().take(5).collect();
             for event in recent_events {
                 let status = if event.success { "✅" } else { "❌" };
-                println!("   {} [{}] {} - {} ({})", 
-                    status, event.event_type, event.identity_id, event.details, event.ip_address);
+                println!(
+                    "   {} [{}] {} - {} ({})",
+                    status,
+                    event.event_type,
+                    event.identity_id,
+                    event.details,
+                    event.ip_address
+                );
             }
         }
         println!("{}", separator);
@@ -502,49 +640,67 @@ fn main() {
 
     // Create digital identities with different security levels
     println!("\n👥 Creating digital identities...");
-    let alice_id = system.create_identity(
-        "alice.johnson".to_string(),
-        "alice.johnson@company.com".to_string(),
-        "Alice Johnson".to_string(),
-        "TechCorp Inc.".to_string(),
-        "Senior Developer".to_string(),
-        SecurityLevel::Maximum
-    ).unwrap();
+    let alice_id = system
+        .create_identity(
+            "alice.johnson".to_string(),
+            "alice.johnson@company.com".to_string(),
+            "Alice Johnson".to_string(),
+            "TechCorp Inc.".to_string(),
+            "Senior Developer".to_string(),
+            SecurityLevel::Maximum
+        )
+        .unwrap();
 
-    let bob_id = system.create_identity(
-        "bob.smith".to_string(),
-        "bob.smith@company.com".to_string(),
-        "Bob Smith".to_string(),
-        "TechCorp Inc.".to_string(),
-        "Security Analyst".to_string(),
-        SecurityLevel::Enhanced
-    ).unwrap();
+    let bob_id = system
+        .create_identity(
+            "bob.smith".to_string(),
+            "bob.smith@company.com".to_string(),
+            "Bob Smith".to_string(),
+            "TechCorp Inc.".to_string(),
+            "Security Analyst".to_string(),
+            SecurityLevel::Enhanced
+        )
+        .unwrap();
 
-    let charlie_id = system.create_identity(
-        "charlie.brown".to_string(),
-        "charlie.brown@company.com".to_string(),
-        "Charlie Brown".to_string(),
-        "TechCorp Inc.".to_string(),
-        "Intern".to_string(),
-        SecurityLevel::Basic
-    ).unwrap();
+    let charlie_id = system
+        .create_identity(
+            "charlie.brown".to_string(),
+            "charlie.brown@company.com".to_string(),
+            "Charlie Brown".to_string(),
+            "TechCorp Inc.".to_string(),
+            "Intern".to_string(),
+            SecurityLevel::Basic
+        )
+        .unwrap();
 
     // Display system status
     system.display_status();
 
     // Authenticate users
     println!("\n🔐 Authenticating users...");
-    let alice_session = system.authenticate("alice.johnson", "default_password123", b"challenge_response").unwrap();
-    let bob_session = system.authenticate("bob.smith", "default_password123", b"challenge_response").unwrap();
-    let charlie_session = system.authenticate("charlie.brown", "default_password123", b"challenge_response").unwrap();
+    let _alice_session = system
+        .authenticate("alice.johnson", "default_password123", b"challenge_response")
+        .unwrap();
+    let _bob_session = system
+        .authenticate("bob.smith", "default_password123", b"challenge_response")
+        .unwrap();
+    let _charlie_session = system
+        .authenticate("charlie.brown", "default_password123", b"challenge_response")
+        .unwrap();
 
     // Sign documents with different security levels
     println!("\n✍️  Signing documents...");
     let document_hash = sha3_256_hash(b"Important company document requiring maximum security");
-    
-    let alice_signature = system.sign_document(&alice_id, &document_hash, SecurityLevel::Maximum).unwrap();
-    let bob_signature = system.sign_document(&bob_id, &document_hash, SecurityLevel::Enhanced).unwrap();
-    let charlie_signature = system.sign_document(&charlie_id, &document_hash, SecurityLevel::Basic).unwrap();
+
+    let alice_signature = system
+        .sign_document(&alice_id, &document_hash, SecurityLevel::Maximum)
+        .unwrap();
+    let bob_signature = system
+        .sign_document(&bob_id, &document_hash, SecurityLevel::Enhanced)
+        .unwrap();
+    let charlie_signature = system
+        .sign_document(&charlie_id, &document_hash, SecurityLevel::Basic)
+        .unwrap();
 
     // Verify document signatures
     println!("\n🔍 Verifying document signatures...");

@@ -10,7 +10,7 @@ use js_sys::{ Object, Reflect, Uint8Array, WebAssembly, Function };
 use wasm_bindgen::JsCast;
 use web_sys::{ Request, RequestInit, RequestMode, Response };
 
-use std::{ vec::Vec, string::{ String, ToString } };
+git use std::vec::Vec;
 
 /// Represents an ML-KEM key pair (public and secret keys).
 #[wasm_bindgen]
@@ -160,7 +160,7 @@ impl MlkemWasmLoader {
     /// Fetch and instantiate a WASM module
     async fn fetch_and_instantiate(&self, url: &str) -> Result<WebAssembly::Instance, JsValue> {
         // Create a fetch request
-        let mut opts = RequestInit::new();
+        let opts = RequestInit::new();
         opts.set_method("GET");
         opts.set_mode(RequestMode::Cors);
 

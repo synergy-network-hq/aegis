@@ -193,29 +193,29 @@
     <div class="main-content">
       <div class="wallet-header">
         <div>
-          <h1>Bitcoin Wallet</h1>
-          <p style="color: #666; margin: 0;">Address: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</p>
+          <h1 id="walletTitle">Bitcoin Wallet</h1>
+          <p style="color: #666; margin: 0;" id="walletAddress">Address: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</p>
         </div>
         <div style="text-align: right;">
-          <div style="font-size: 2em; font-weight: bold; color: #28a745;">0.025 BTC</div>
-          <div style="color: #666;">≈ $1,250 USD</div>
+          <div style="font-size: 2em; font-weight: bold; color: #28a745;" id="walletBalance">0.025 BTC</div>
+          <div style="color: #666;" id="walletValue">≈ $1,250 USD</div>
         </div>
       </div>
 
       <div class="wallet-actions">
-        <div class="action-card" onclick="showSendModal()">
+        <div class="action-card">
           <h3>📤 Send</h3>
           <p>Transfer funds securely</p>
         </div>
-        <div class="action-card" onclick="showReceiveModal()">
+        <div class="action-card">
           <h3>📥 Receive</h3>
           <p>Get your address</p>
         </div>
-        <div class="action-card" onclick="showSwapModal()">
+        <div class="action-card">
           <h3>🔄 Swap</h3>
           <p>Exchange tokens</p>
         </div>
-        <div class="action-card" onclick="showStakeModal()">
+        <div class="action-card">
           <h3>🎯 Stake</h3>
           <p>Earn rewards</p>
         </div>
@@ -247,7 +247,7 @@
     </div>
   </div>
 
-  <button class="back-button" onclick="goBack()">← Back to Portal</button>
+  <button class="back-button" onclick="window.location.href='../portal/portal.html'">← Back to Portal</button>
 
   <script src="blockchain-wallet.js"></script>
 </body>

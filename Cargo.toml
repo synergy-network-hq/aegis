@@ -11,6 +11,7 @@ members = [
     "pqcrypto/pqcrypto-falcon",
     "pqcrypto/pqcrypto-sphincsplus",
 ]
+default-members = ["aegis_crypto_core"]
 resolver = "2"
 
 

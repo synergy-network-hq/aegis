@@ -269,9 +269,14 @@ pub fn kyber768_keygen_native() -> KyberKeyPair {
 
 #[cfg(not(target_arch = "wasm32"))]
 pub fn kyber768_encapsulate_native(public_key: &[u8]) -> Result<KyberEncapsulated, String> {
-    kyber768_encapsulate(public_key).map_err(|e|
-        e.as_string().unwrap_or_else(|| "Unknown error".to_string())
-    )
+    let pk = PublicKey768::from_bytes(public_key).map_err(|e|
+        format!("Invalid public key: {:?}", e)
+    )?;
+    let (ss, ct) = encapsulate768(&pk);
+    Ok(KyberEncapsulated {
+        ciphertext: ct.as_bytes().to_vec(),
+        shared_secret: ss.as_bytes().to_vec(),
+    })
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -279,9 +284,14 @@ pub fn kyber768_decapsulate_native(
     secret_key: &[u8],
     ciphertext: &[u8]
 ) -> Result<Vec<u8>, String> {
-    kyber768_decapsulate(secret_key, ciphertext).map_err(|e|
-        e.as_string().unwrap_or_else(|| "Unknown error".to_string())
-    )
+    let sk = SecretKey768::from_bytes(secret_key).map_err(|e|
+        format!("Invalid secret key: {:?}", e)
+    )?;
+    let ct = Ciphertext768::from_bytes(ciphertext).map_err(|e|
+        format!("Invalid ciphertext: {:?}", e)
+    )?;
+    let ss = decapsulate768(&ct, &sk);
+    Ok(ss.as_bytes().to_vec())
 }
 
 #[cfg(not(target_arch = "wasm32"))]

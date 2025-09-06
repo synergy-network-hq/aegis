@@ -1,7 +1,11 @@
 //! Kyber-specific trait implementations.
 
 use crate::traits::{ Kem, KemError, Algorithm };
-use crate::kyber::{ kyber_keygen, kyber_encapsulate, kyber_decapsulate };
+use crate::kyber::kyber_keygen;
+#[cfg(target_arch = "wasm32")]
+use crate::kyber::{ kyber_encapsulate, kyber_decapsulate };
+#[cfg(not(target_arch = "wasm32"))]
+use crate::kyber::{ kyber768_encapsulate_native, kyber768_decapsulate_native };
 use zeroize::Zeroize;
 use std::vec::Vec;
 
@@ -90,13 +94,27 @@ impl Kem for Kyber768 {
     fn encapsulate(
         public_key: &Self::PublicKey
     ) -> Result<(Self::Ciphertext, Self::SharedSecret), KemError> {
-        match kyber_encapsulate(&public_key.0) {
-            Ok(encapsulated) =>
-                Ok((
-                    KyberCiphertext(encapsulated.ciphertext()),
-                    KyberSharedSecret(encapsulated.shared_secret()),
-                )),
-            Err(_) => Err(KemError::EncapsulationFailed),
+        #[cfg(target_arch = "wasm32")]
+        {
+            match kyber_encapsulate(&public_key.0) {
+                Ok(encapsulated) =>
+                    Ok((
+                        KyberCiphertext(encapsulated.ciphertext()),
+                        KyberSharedSecret(encapsulated.shared_secret()),
+                    )),
+                Err(_) => Err(KemError::EncapsulationFailed),
+            }
+        }
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            match kyber768_encapsulate_native(&public_key.0) {
+                Ok(encapsulated) =>
+                    Ok((
+                        KyberCiphertext(encapsulated.ciphertext()),
+                        KyberSharedSecret(encapsulated.shared_secret()),
+                    )),
+                Err(_) => Err(KemError::EncapsulationFailed),
+            }
         }
     }
 
@@ -104,9 +122,19 @@ impl Kem for Kyber768 {
         secret_key: &Self::SecretKey,
         ciphertext: &[u8]
     ) -> Result<Self::SharedSecret, KemError> {
-        match kyber_decapsulate(&secret_key.0, ciphertext) {
-            Ok(shared_secret) => Ok(KyberSharedSecret(shared_secret)),
-            Err(_) => Err(KemError::DecapsulationFailed),
+        #[cfg(target_arch = "wasm32")]
+        {
+            match kyber_decapsulate(&secret_key.0, ciphertext) {
+                Ok(shared_secret) => Ok(KyberSharedSecret(shared_secret)),
+                Err(_) => Err(KemError::DecapsulationFailed),
+            }
+        }
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            match kyber768_decapsulate_native(&secret_key.0, ciphertext) {
+                Ok(shared_secret) => Ok(KyberSharedSecret(shared_secret)),
+                Err(_) => Err(KemError::DecapsulationFailed),
+            }
         }
     }
 }

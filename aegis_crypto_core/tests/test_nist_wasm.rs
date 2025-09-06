@@ -1,5 +1,6 @@
 //! Tests for NIST Reference WASM implementations
 
+#[allow(unused_imports)]
 use aegis_crypto_core::*;
 
 #[cfg(feature = "nist-wasm")]

@@ -18,6 +18,38 @@ name = "aegis_crypto_core"
 path = "src/lib.rs"
 crate-type = ["cdylib", "rlib"]
 
+# [[bin]]
+# name = "test_core_functionality"
+# path = "test_core_functionality.rs"
+
+[[bin]]
+name = "blockchain_wallet"
+path = "src/bin/blockchain_wallet.rs"
+
+[[bin]]
+name = "digital_identity"
+path = "src/bin/digital_identity.rs"
+
+[[bin]]
+name = "document_signing"
+path = "src/bin/document_signing.rs"
+
+[[bin]]
+name = "financial_security"
+path = "src/bin/financial_security.rs"
+
+[[bin]]
+name = "iot_security"
+path = "src/bin/iot_security.rs"
+
+[[bin]]
+name = "secure_messaging"
+path = "src/bin/secure_messaging.rs"
+
+[[bin]]
+name = "web_api_server"
+path = "src/bin/web_api_server.rs"
+
 [dependencies]
 wasm-bindgen = { version = "0.2", optional = true }
 js-sys = "0.3.61"
@@ -30,9 +62,9 @@ pqcrypto-falcon = { path = "../pqcrypto/pqcrypto-falcon", optional = true }
 pqcrypto-hqc = { path = "../pqcrypto/pqcrypto-hqc", optional = true }
 pqcrypto-classicmceliece = { path = "../pqcrypto/pqcrypto-classicmceliece", optional = true }
 pqcrypto-traits = { path = "../pqcrypto/pqcrypto-traits", optional = true }
-# Pure Rust implementations from rustpqc folder
-ml-kem = { path = "../rustpqc/ml-kem", optional = true }
-ml-dsa = { path = "../rustpqc/ml-dsa", optional = true }
+# Pure Rust implementations from rustpqc folder (archived - WASM files only)
+# ml-kem = { path = "../rustpqc/ml-kem", optional = true }
+# ml-dsa = { path = "../rustpqc/ml-dsa", optional = true }
 sha3 = "0.10"
 blake3 = "1.5"
 subtle = "2.5"
@@ -91,9 +123,9 @@ falcon = ["dep:pqcrypto-falcon", "dep:pqcrypto-traits"]
 sphincsplus = ["dep:pqcrypto-sphincsplus", "dep:pqcrypto-traits"]
 hqc = ["dep:pqcrypto-hqc", "dep:pqcrypto-traits"]
 classicmceliece = ["dep:pqcrypto-classicmceliece", "dep:pqcrypto-traits"]
-# Pure Rust implementations
-rustpqc-kyber = ["dep:ml-kem"]
-rustpqc-dilithium = ["dep:ml-dsa"]
+# Pure Rust implementations (archived - WASM files only)
+# rustpqc-kyber = ["dep:ml-kem"]
+# rustpqc-dilithium = ["dep:ml-dsa"]
 # NIST Reference WASM implementations
 nist-wasm = ["dep:web-sys", "dep:wasm-bindgen-futures"]
 # WASM-only build (excludes all PQC crates with C dependencies)

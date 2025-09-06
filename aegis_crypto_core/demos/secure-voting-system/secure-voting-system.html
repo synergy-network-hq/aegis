@@ -1,109 +1,469 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>secure voting system - Aegis PQC Demo</title>
-    <link rel="stylesheet" href="../portal/portal.css">
-    <style>
-        .demo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            padding: 40px;
-            text-align: center;
-        }
-        
-        .demo-content {
-            background: white;
-            border-radius: 20px;
-            padding: 60px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-        }
-        
-        .demo-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-        
-        .demo-title {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        
-        .demo-description {
-            font-size: 1.2em;
-            color: #666;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        
-        .demo-status {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .back-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .back-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tamper-Proof Voting Platform - Aegis PQC Demo</title>
+  <link rel="stylesheet" href="../portal/portal.css">
+  <style>
+    .voting-container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .sidebar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 15px;
+      padding: 20px;
+      color: white;
+    }
+
+    .election-list {
+      margin-bottom: 20px;
+    }
+
+    .election-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .election-item:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .election-item.active {
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid #fff;
+    }
+
+    .main-content {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .voting-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .voting-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .action-card {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .ballot-section {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .candidate-item {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 2px solid #e0e0e0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .candidate-item:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+    }
+
+    .candidate-item.selected {
+      border-color: #28a745;
+      background: #f8fff9;
+    }
+
+    .candidate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .candidate-name {
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+
+    .candidate-party {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 600;
+    }
+
+    .candidate-party.democrat {
+      background: #007bff;
+      color: white;
+    }
+
+    .candidate-party.republican {
+      background: #dc3545;
+      color: white;
+    }
+
+    .candidate-party.independent {
+      background: #6c757d;
+      color: white;
+    }
+
+    .candidate-details {
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .candidate-platform {
+      font-style: italic;
+      font-size: 0.9em;
+    }
+
+    .back-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .pqc-status {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .status-secure {
+      background: #28a745;
+    }
+
+    .status-warning {
+      background: #ffc107;
+    }
+
+    .status-danger {
+      background: #dc3545;
+    }
+
+    .crypto-info {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .crypto-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      border: 2px solid #e0e0e0;
+    }
+
+    .stat-card h4 {
+      margin: 0 0 10px 0;
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .stat-card .value {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .security-badge {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .vote-button {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .vote-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .vote-button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 15px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #000;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="demo-container">
-        <div class="demo-content">
-            <div class="demo-icon">🚧</div>
-            <h1 class="demo-title">secure voting system Demo</h1>
-            <p class="demo-description">
-                This demo application is currently under development and will showcase 
-                Aegis's post-quantum cryptography capabilities for secure voting system use cases.
-            </p>
-            
-            <div class="demo-status">
-                <h3>🔒 PQC Security Features (Coming Soon)</h3>
-                <p>This demo will implement multiple PQC algorithms including:</p>
-                <ul style="text-align: left; display: inline-block;">
-                    <li>ML-KEM (Kyber) for key exchange</li>
-                    <li>ML-DSA (Dilithium) for digital signatures</li>
-                    <li>FN-DSA (Falcon) for compact signatures</li>
-                    <li>SLH-DSA (SPHINCS+) for hash-based signatures</li>
-                    <li>HQC-KEM for additional key encapsulation</li>
-                </ul>
-            </div>
-            
-            <p style="color: #666; font-size: 0.9em;">
-                Expected completion: Q2 2024<br>
-                This demo will provide real cryptographic operations with performance metrics, 
-                security analysis, and interactive features suitable for investor presentations.
-            </p>
+  <div class="voting-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>🗳️ Secure Voting</h2>
+
+      <div class="election-list">
+        <h3>Elections</h3>
+        <div class="election-item active" data-election="presidential">
+          <div>🏛️ Presidential Election</div>
+          <div style="font-size: 0.9em; opacity: 0.8;">2024 General Election</div>
         </div>
-        
-        <button class="back-button" onclick="goBack()">← Back to Portal</button>
+        <div class="election-item" data-election="senate">
+          <div>🏛️ Senate Election</div>
+          <div style="font-size: 0.9em; opacity: 0.8;">District 12</div>
+        </div>
+        <div class="election-item" data-election="mayor">
+          <div>🏛️ Mayoral Election</div>
+          <div style="font-size: 0.9em; opacity: 0.8;">City of Springfield</div>
+        </div>
+      </div>
+
+      <div class="pqc-status">
+        <h4>🔒 Tamper-Proof Security</h4>
+        <div><span class="status-indicator status-secure"></span>ML-DSA-65: Active</div>
+        <div><span class="status-indicator status-secure"></span>SLH-DSA-256f: Active</div>
+        <div><span class="status-indicator status-secure"></span>SHA3-256: Active</div>
+        <div><span class="status-indicator status-secure"></span>Zero-Knowledge: Active</div>
+      </div>
     </div>
-    
-    <script>
-        function goBack() {
-            window.location.href = '../portal/index.html';
-        }
-    </script>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="voting-header">
+        <div>
+          <h1 id="electionName">Presidential Election</h1>
+          <p style="color: #666; margin: 0;" id="electionInfo">2024 General Election - Vote for President</p>
+          <div class="security-badge">🔒 Tamper-Proof</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 1.2em; font-weight: bold; color: #28a745;">🛡️ Secure</div>
+          <div style="color: #666;">Voting Status: Open</div>
+        </div>
+      </div>
+
+      <div class="crypto-info">
+        <h3>🔐 Quantum-Resistant Voting Security</h3>
+        <div class="crypto-stats">
+          <div class="stat-card">
+            <h4>Vote Signing</h4>
+            <div class="value">ML-DSA-65</div>
+          </div>
+          <div class="stat-card">
+            <h4>Hash Signatures</h4>
+            <div class="value">SLH-DSA-256f</div>
+          </div>
+          <div class="stat-card">
+            <h4>Integrity</h4>
+            <div class="value">SHA3-256</div>
+          </div>
+          <div class="stat-card">
+            <h4>Privacy</h4>
+            <div class="value">Zero-Knowledge</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="voting-actions">
+        <div class="action-card" id="verifyVoterBtn">
+          <h3>🆔 Verify Voter</h3>
+          <p>Authenticate voter identity</p>
+        </div>
+        <div class="action-card" id="castVoteBtn">
+          <h3>🗳️ Cast Vote</h3>
+          <p>Submit your ballot</p>
+        </div>
+        <div class="action-card" id="verifyVoteBtn">
+          <h3>🔍 Verify Vote</h3>
+          <p>Check vote was recorded</p>
+        </div>
+        <div class="action-card" id="viewResultsBtn">
+          <h3>📊 View Results</h3>
+          <p>See election results</p>
+        </div>
+      </div>
+
+      <div class="ballot-section">
+        <h3>Ballot</h3>
+        <div id="candidatesList">
+          <!-- Candidates will be populated by JavaScript -->
+        </div>
+        <button class="vote-button" id="submitVoteBtn" disabled>Submit Vote Securely</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voter Verification Modal -->
+  <div id="verifyVoterModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🆔 Voter Verification</h2>
+        <span class="close">&times;</span>
+      </div>
+      <form id="verifyVoterForm">
+        <div class="form-group">
+          <label for="voterId">Voter ID:</label>
+          <input type="text" id="voterId" placeholder="Enter your voter ID" required>
+        </div>
+        <div class="form-group">
+          <label for="voterSsn">Last 4 digits of SSN:</label>
+          <input type="text" id="voterSsn" placeholder="Enter last 4 digits" maxlength="4" required>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-warning" onclick="closeModal('verifyVoterModal')">Cancel</button>
+          <button type="submit" class="btn btn-success">Verify Identity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <button class="back-button" onclick="window.location.href='../portal/portal.html'">← Back to Portal</button>
+
+  <script src="secure-voting-system.js"></script>
+  <script>
+    // Initialize the demo when the page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      window.secureVotingDemo = new SecureVotingSystemDemo();
+    });
+  </script>
 </body>
+
 </html>

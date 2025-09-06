@@ -1,3 +1,4 @@
+#![cfg(feature = "classicmceliece")]
 //! Native tests for the Classic McEliece KEM.
 
 use aegis_crypto_core::{

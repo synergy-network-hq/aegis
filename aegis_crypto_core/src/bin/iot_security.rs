@@ -25,6 +25,7 @@ struct IoTDevice {
 
 /// IoT device status
 #[derive(Clone, Debug, PartialEq)]
+#[allow(dead_code)]
 enum DeviceStatus {
     Online,
     Offline,
@@ -45,7 +46,9 @@ struct SecureMessage {
 }
 
 /// Types of IoT messages
+#[allow(dead_code)]
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 enum MessageType {
     Heartbeat,
     SensorData,
@@ -60,6 +63,7 @@ struct IoTSecurityGateway {
     messages: Vec<SecureMessage>,
     gateway_id: String,
     gateway_kyber_keys: (Vec<u8>, Vec<u8>), // (public, secret)
+    #[allow(dead_code)]
     gateway_falcon_keys: (Vec<u8>, Vec<u8>), // (public, secret)
 }
 
@@ -158,10 +162,10 @@ impl IoTSecurityGateway {
         // Step 3: Create message hash for signing
         println!("   🖊️  Creating message hash for digital signature...");
         let message_data = format!(
-            "{}:{}:{}:{}:{}",
+            "{}:{}:{:?}:{}:{}",
             device_id,
             self.gateway_id,
-            format!("{:?}", message_type),
+            message_type,
             payload,
             SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()
         );
@@ -217,10 +221,10 @@ impl IoTSecurityGateway {
         // Step 3: Verify message hash
         println!("   🖊️  Verifying message hash...");
         let message_data = format!(
-            "{}:{}:{}:{}:{}",
+            "{}:{}:{:?}:{}:{}",
             message.sender_id,
             message.recipient_id,
-            format!("{:?}", message.message_type),
+            message.message_type,
             String::from_utf8_lossy(&decrypted_payload),
             message.timestamp
         );

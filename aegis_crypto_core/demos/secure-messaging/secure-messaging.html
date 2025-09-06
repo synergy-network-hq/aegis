@@ -231,25 +231,30 @@
 
       <div class="user-list">
         <h3>Users</h3>
-        <div class="user-item active" data-user="alice">
-          <div>👩‍💼 Alice Johnson</div>
-          <div style="font-size: 0.9em; opacity: 0.8;">Online</div>
-        </div>
-        <div class="user-item" data-user="bob">
-          <div>👨‍💼 Bob Smith</div>
-          <div style="font-size: 0.9em; opacity: 0.8;">Online</div>
-        </div>
-        <div class="user-item" data-user="carol">
-          <div>👩‍💼 Carol Davis</div>
-          <div style="font-size: 0.9em; opacity: 0.8;">Online</div>
+        <div id="userList">
+          <!-- Users will be populated by JavaScript -->
         </div>
       </div>
 
       <div class="pqc-status">
         <h4>🔒 PQC Security Status</h4>
-        <div><span class="status-indicator status-secure"></span>Kyber-768: Active</div>
-        <div><span class="status-indicator status-secure"></span>Falcon-512: Active</div>
-        <div><span class="status-indicator status-secure"></span>SHA3-256: Active</div>
+        <div id="keyStatus">
+          <div class="status-item">
+            <span class="status-icon">🔐</span>
+            <span>ML-KEM-768: Generating...</span>
+          </div>
+          <div class="status-item">
+            <span class="status-icon">✍️</span>
+            <span>ML-DSA-65: Generating...</span>
+          </div>
+          <div class="status-item">
+            <span class="status-icon">🛡️</span>
+            <span>FN-DSA-512: Generating...</span>
+          </div>
+        </div>
+        <button id="generateKeysBtn"
+          style="margin-top: 10px; padding: 8px 16px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 5px; color: white; cursor: pointer;">Generate
+          Keys</button>
       </div>
     </div>
 
@@ -257,7 +262,7 @@
     <div class="main-content">
       <div class="chat-header">
         <div>
-          <h1>Secure Chat Room</h1>
+          <h1 id="headerTitle">Secure Chat Room</h1>
           <p style="color: #666; margin: 0;">End-to-end encrypted messaging with PQC algorithms</p>
         </div>
         <div style="text-align: right;">
@@ -288,48 +293,20 @@
         </div>
       </div>
 
-      <div class="chat-messages" id="chatMessages">
-        <div class="message received">
-          <div class="message-header">
-            <span>👨‍💼 Bob Smith</span>
-            <span>2:30 PM</span>
-          </div>
-          <div class="message-content">
-            Hey Alice! How's the PQC implementation going?
-          </div>
-        </div>
-        <div class="message sent">
-          <div class="message-header">
-            <span>👩‍💼 Alice Johnson</span>
-            <span>2:31 PM</span>
-          </div>
-          <div class="message-content">
-            Great! The Kyber-768 key exchange is working perfectly. Much faster than expected!
-          </div>
-        </div>
-        <div class="message received">
-          <div class="message-header">
-            <span>👩‍💼 Carol Davis</span>
-            <span>2:32 PM</span>
-          </div>
-          <div class="message-content">
-            That's fantastic! Are you seeing the performance improvements with Falcon-512 signatures too?
-          </div>
-        </div>
+      <div class="chat-messages" id="messagesContainer">
+        <!-- Messages will be populated by JavaScript -->
       </div>
 
       <div class="chat-input">
         <input type="text" id="messageInput" placeholder="Type your secure message..." maxlength="500">
-        <button class="send-btn" onclick="sendMessage()">Send</button>
+        <button class="send-btn" id="sendBtn">Send</button>
       </div>
     </div>
   </div>
 
-  <button class="back-button" onclick="goBack()">← Back to Portal</button>
+  <button class="back-button" onclick="window.location.href='../portal/portal.html'">← Back to Portal</button>
 
   <script src="secure-messaging.js"></script>
 </body>
 
 </html>
-
-

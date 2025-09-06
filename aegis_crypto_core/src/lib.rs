@@ -1,3 +1,19 @@
+// Conditional wasm_bindgen macro
+#[cfg(feature = "wasm")]
+macro_rules! wasm_bindgen {
+    ($($tt:tt)*) => {
+        #[wasm_bindgen]
+        $($tt)*
+    };
+}
+
+#[cfg(not(feature = "wasm"))]
+macro_rules! wasm_bindgen {
+    ($($tt:tt)*) => {
+        $($tt)*
+    };
+}
+
 #[cfg(feature = "kyber")]
 pub mod kyber;
 #[cfg(feature = "dilithium")]
@@ -12,10 +28,10 @@ pub mod hqc;
 pub mod classicmceliece;
 
 // Pure Rust implementations from rustpqc folder
-#[cfg(feature = "rustpqc-kyber")]
-pub mod rustpqc_kyber;
-#[cfg(feature = "rustpqc-dilithium")]
-pub mod rustpqc_dilithium;
+// #[cfg(feature = "rustpqc-kyber")]
+// pub mod rustpqc_kyber;
+// #[cfg(feature = "rustpqc-dilithium")]
+// pub mod rustpqc_dilithium;
 
 // NIST Reference WASM implementations
 #[cfg(feature = "nist-wasm")]
@@ -59,10 +75,10 @@ pub use hqc::*;
 pub use classicmceliece::*;
 
 // Re-export pure Rust implementations
-#[cfg(feature = "rustpqc-kyber")]
-pub use rustpqc_kyber::*;
-#[cfg(feature = "rustpqc-dilithium")]
-pub use rustpqc_dilithium::*;
+// #[cfg(feature = "rustpqc-kyber")]
+// pub use rustpqc_kyber::*;
+// #[cfg(feature = "rustpqc-dilithium")]
+// pub use rustpqc_dilithium::*;
 
 // Re-export NIST Reference WASM implementations
 #[cfg(feature = "nist-wasm")]

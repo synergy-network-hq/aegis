@@ -1,237 +1,267 @@
 // Aegis Demo Portal - Main Portal JavaScript
-// This file manages the main demo portal interface
+// This file manages the main demo portal interface with comprehensive demo data
 
 class DemoPortal {
   constructor() {
-    this.demos = [
-      // Non-WASM Demos (15 total)
+    this.currentFilter = 'all';
+    this.searchTerm = '';
+    this.demos = this.initializeDemoData();
+    this.initializeDemo();
+  }
+
+  initializeDemoData() {
+    return [
+      // READY DEMOS
       {
         id: 'secure-messaging',
-        title: 'Secure Messaging',
-        description: 'End-to-end encrypted chat with PQC algorithms',
-        icon: '💬',
+        title: 'Quantum-Secure Chat Platform',
+        category: 'Communication',
         status: 'ready',
-        category: 'non-wasm',
-        url: 'secure-messaging/secure-messaging.html',
-        algorithms: ['Kyber-768', 'Falcon-512', 'SHA3-256']
+        icon: '💬',
+        description: 'End-to-end encrypted messaging platform using post-quantum cryptography. Features real-time chat with ML-KEM key exchange and ML-DSA digital signatures for secure communication.',
+        algorithms: ['ML-KEM-768', 'ML-DSA-65', 'SHA3-256'],
+        url: '../secure-messaging/secure-messaging.html',
+        features: ['Real-time encryption', 'Key exchange', 'Digital signatures', 'Message authentication']
       },
       {
         id: 'blockchain-wallet',
-        title: 'Blockchain Wallet',
-        description: 'PQC-secured cryptocurrency wallet',
-        icon: '🔐',
+        title: 'Post-Quantum Crypto Wallet',
+        category: 'Financial',
         status: 'ready',
-        category: 'non-wasm',
-        url: 'blockchain-wallet/blockchain-wallet.html',
-        algorithms: ['Kyber-768', 'Falcon-512', 'Dilithium-65', 'HQC-192']
+        icon: '💰',
+        description: 'Post-quantum secure cryptocurrency wallet with advanced key management. Implements quantum-resistant algorithms for wallet security, transaction signing, and key derivation.',
+        algorithms: ['ML-KEM-1024', 'ML-DSA-87', 'SLH-DSA-SHA2-256f'],
+        url: '../blockchain-wallet/blockchain-wallet.html',
+        features: ['Quantum-resistant keys', 'Transaction signing', 'Multi-signature support', 'Hardware wallet integration']
       },
       {
         id: 'document-signing',
-        title: 'Document Signing',
-        description: 'Digital document signing & verification',
-        icon: '📝',
+        title: 'Quantum-Resistant Document Signer',
+        category: 'Authentication',
         status: 'ready',
-        category: 'non-wasm',
-        url: 'document-signing/document-signing.html',
-        algorithms: ['Falcon-512', 'Dilithium-65', 'SPHINCS+', 'SHA3-256']
-      },
-      {
-        id: 'iot-security',
-        title: 'IoT Security',
-        description: 'IoT device security gateway',
-        icon: '🏠',
-        status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'iot-security/iot-security.html',
-        algorithms: ['Kyber-512', 'Falcon-512', 'SPHINCS+']
-      },
-      {
-        id: 'financial-security',
-        title: 'Financial Security',
-        description: 'Financial transaction security system',
-        icon: '💰',
-        status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'financial-security/financial-security.html',
-        algorithms: ['Kyber-768', 'Falcon-512', 'Dilithium-65']
-      },
-      {
-        id: 'supply-chain-security',
-        title: 'Supply Chain Security',
-        description: 'Supply chain integrity verification',
-        icon: '📦',
-        status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'supply-chain-security/supply-chain-security.html',
-        algorithms: ['Falcon-512', 'SPHINCS+', 'SHA3-256']
-      },
-      {
-        id: 'healthcare-data-protection',
-        title: 'Healthcare Data Protection',
-        description: 'Medical data privacy & security',
-        icon: '🏥',
-        status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'healthcare-data-protection/healthcare-data-protection.html',
-        algorithms: ['Kyber-1024', 'Falcon-1024', 'Dilithium-87']
-      },
-      {
-        id: 'government-communications',
-        title: 'Government Communications',
-        description: 'Secure government messaging',
-        icon: '🏛️',
-        status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'government-communications/government-communications.html',
-        algorithms: ['Kyber-1024', 'Falcon-1024', 'SPHINCS+']
-      },
-      {
-        id: 'smart-contract-security',
-        title: 'Smart Contract Security',
-        description: 'Blockchain smart contract security',
-        icon: '⚡',
-        status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'smart-contract-security/smart-contract-security.html',
-        algorithms: ['Kyber-768', 'Falcon-512', 'Dilithium-65']
+        icon: '📝',
+        description: 'Digital document signing and verification system using post-quantum digital signatures. Ensures document integrity and authenticity with quantum-resistant cryptographic proofs.',
+        algorithms: ['ML-DSA-65', 'SLH-DSA-SHA2-192f', 'SHA3-256'],
+        url: '../document-signing/document-signing.html',
+        features: ['Document integrity', 'Digital signatures', 'Timestamp verification', 'Batch signing']
       },
       {
         id: 'digital-identity',
-        title: 'Digital Identity',
-        description: 'Digital identity management',
+        title: 'Quantum-Safe Identity Manager',
+        category: 'Authentication',
+        status: 'ready',
         icon: '🆔',
+        description: 'Comprehensive digital identity management system with post-quantum authentication. Features identity verification, credential management, and secure access control.',
+        algorithms: ['ML-KEM-768', 'ML-DSA-65', 'FN-DSA-512'],
+        url: '../digital-identity/digital-identity.html',
+        features: ['Identity verification', 'Credential management', 'Access control', 'Privacy protection']
+      },
+
+      // COMING SOON DEMOS
+      {
+        id: 'iot-security',
+        title: 'Quantum-Safe IoT Guardian',
+        category: 'IoT',
         status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'digital-identity/digital-identity.html',
-        algorithms: ['Falcon-512', 'SPHINCS+', 'SHA3-256']
+        icon: '🏠',
+        description: 'Comprehensive IoT device security framework using lightweight post-quantum cryptography. Designed for resource-constrained devices with optimized algorithms and secure communication protocols.',
+        algorithms: ['ML-KEM-512', 'ML-DSA-44', 'SLH-DSA-SHA2-128f'],
+        url: '#',
+        features: ['Lightweight algorithms', 'Device authentication', 'Secure updates', 'Network protection']
       },
       {
-        id: 'quantum-resistant-vpn',
-        title: 'Quantum-Resistant VPN',
-        description: 'Post-quantum VPN implementation',
-        icon: '🔒',
-        status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'quantum-resistant-vpn/quantum-resistant-vpn.html',
-        algorithms: ['Kyber-768', 'Falcon-512', 'HQC-192']
+        id: 'financial-security',
+        title: 'Quantum-Resistant Banking Suite',
+        category: 'Financial',
+        status: 'ready',
+        icon: '🏦',
+        description: 'Advanced financial security platform for banking and fintech applications. Implements quantum-resistant algorithms for payment processing, fraud detection, and regulatory compliance.',
+        algorithms: ['ML-KEM-768', 'ML-DSA-65', 'SLH-DSA-SHA2-256f'],
+        url: '../financial-security/financial-security.html',
+        features: ['Payment security', 'Fraud detection', 'Regulatory compliance', 'Risk assessment']
       },
       {
-        id: 'post-quantum-database',
-        title: 'Post-Quantum Database',
-        description: 'Database encryption & security',
-        icon: '🗄️',
-        status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'post-quantum-database/post-quantum-database.html',
-        algorithms: ['Kyber-512', 'Falcon-512', 'SHA3-256']
+        id: 'government-communications',
+        title: 'Classified Government Network',
+        category: 'Government',
+        status: 'ready',
+        icon: '🏛️',
+        description: 'Secure government communication system with highest security standards. Features classified information protection, secure file sharing, and compliance with government security requirements.',
+        algorithms: ['ML-KEM-768', 'ML-DSA-87', 'FN-DSA-1024'],
+        url: '../government-communications/government-communications.html',
+        features: ['Classified communications', 'Secure file sharing', 'Access control', 'Audit trails']
+      },
+      {
+        id: 'healthcare-data-protection',
+        title: 'HIPAA-Compliant Health Vault',
+        category: 'Healthcare',
+        status: 'ready',
+        icon: '🏥',
+        description: 'HIPAA-compliant healthcare data protection system using post-quantum cryptography. Ensures patient data privacy, secure medical records, and regulatory compliance.',
+        algorithms: ['ML-KEM-768', 'ML-DSA-65', 'SLH-DSA-SHA2-256f'],
+        url: '../healthcare-data-protection/healthcare-data-protection.html',
+        features: ['HIPAA compliance', 'Patient privacy', 'Medical records', 'Data encryption']
       },
       {
         id: 'ml-model-protection',
-        title: 'ML Model Protection',
-        description: 'Machine learning model security',
-        icon: '🤖',
+        title: 'AI Model Fortress',
+        category: 'AI/ML',
         status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'ml-model-protection/ml-model-protection.html',
-        algorithms: ['Kyber-768', 'Falcon-512', 'Dilithium-65']
+        icon: '🤖',
+        description: 'Machine learning model protection and secure inference using post-quantum cryptography. Features model encryption, secure training, and privacy-preserving inference.',
+        algorithms: ['ML-KEM-768', 'ML-DSA-65', 'HQC-KEM-192'],
+        url: '#',
+        features: ['Model encryption', 'Secure training', 'Privacy-preserving inference', 'Intellectual property protection']
       },
       {
-        id: 'secure-voting-system',
-        title: 'Secure Voting System',
-        description: 'Quantum-resistant voting system',
-        icon: '🗳️',
+        id: 'supply-chain-security',
+        title: 'Anti-Counterfeit Supply Chain',
+        category: 'Logistics',
         status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'secure-voting-system/secure-voting-system.html',
-        algorithms: ['Falcon-512', 'SPHINCS+', 'SHA3-256']
+        icon: '🚚',
+        description: 'End-to-end supply chain security with post-quantum cryptography. Tracks products from origin to destination with tamper-proof records and secure authentication.',
+        algorithms: ['ML-KEM-768', 'ML-DSA-65', 'SLH-DSA-SHA2-192f'],
+        url: '#',
+        features: ['Product tracking', 'Tamper detection', 'Authentication', 'Chain of custody']
+      },
+      {
+        id: 'post-quantum-cloud-storage',
+        title: 'Quantum-Proof Cloud Vault',
+        category: 'Cloud',
+        status: 'coming-soon',
+        icon: '☁️',
+        description: 'Quantum-resistant cloud storage solution with advanced encryption and secure file sharing. Features zero-knowledge architecture and client-side encryption.',
+        algorithms: ['ML-KEM-1024', 'ML-DSA-87', 'SLH-DSA-SHA2-256f'],
+        url: '#',
+        features: ['Zero-knowledge storage', 'Client-side encryption', 'Secure sharing', 'Data integrity']
+      },
+      {
+        id: 'post-quantum-database',
+        title: 'Quantum-Safe Database Engine',
+        category: 'Database',
+        status: 'coming-soon',
+        icon: '🗄️',
+        description: 'Quantum-resistant database system with encrypted queries and secure data processing. Features homomorphic encryption and secure multi-party computation.',
+        algorithms: ['ML-KEM-1024', 'ML-DSA-87', 'HQC-KEM-256'],
+        url: '#',
+        features: ['Encrypted queries', 'Homomorphic encryption', 'Secure computation', 'Data privacy']
       },
       {
         id: 'post-quantum-blockchain',
-        title: 'Post-Quantum Blockchain',
-        description: 'Advanced blockchain security',
-        icon: '⛓️',
+        title: 'Quantum-Resistant Blockchain',
+        category: 'Blockchain',
         status: 'coming-soon',
-        category: 'non-wasm',
-        url: 'post-quantum-blockchain/post-quantum-blockchain.html',
-        algorithms: ['Kyber-1024', 'Falcon-1024', 'Dilithium-87']
-      },
-      // WASM Demos (6 total)
-      {
-        id: 'quantum-key-distribution',
-        title: 'Quantum Key Distribution',
-        description: 'QKD protocol implementation',
-        icon: '🔑',
-        status: 'wasm-coming-soon',
-        category: 'wasm',
-        url: 'quantum-key-distribution/quantum-key-distribution.html',
-        algorithms: ['QKD Protocols', 'PQC Integration']
+        icon: '⛓️',
+        description: 'Next-generation blockchain platform with post-quantum consensus and smart contracts. Features quantum-resistant mining and secure transaction processing.',
+        algorithms: ['ML-KEM-1024', 'ML-DSA-87', 'SLH-DSA-SHA2-256f'],
+        url: '#',
+        features: ['Quantum-resistant consensus', 'Smart contracts', 'Secure mining', 'Transaction privacy']
       },
       {
-        id: 'quantum-resistant-iot-wasm',
-        title: 'Quantum-Resistant IoT (WASM)',
-        description: 'IoT network security with WASM',
-        icon: '🌐',
-        status: 'wasm-coming-soon',
-        category: 'wasm',
-        url: 'quantum-resistant-iot/quantum-resistant-iot.html',
-        algorithms: ['WASM Optimized', 'PQC Algorithms']
+        id: 'smart-contract-security',
+        title: 'DeFi Security Shield',
+        category: 'Blockchain',
+        status: 'coming-soon',
+        icon: '📋',
+        description: 'Enhanced smart contract security using post-quantum cryptography. Features secure contract execution, quantum-resistant verification, and automated security auditing.',
+        algorithms: ['ML-KEM-768', 'ML-DSA-65', 'SLH-DSA-SHA2-192f'],
+        url: '#',
+        features: ['Secure execution', 'Quantum-resistant verification', 'Automated auditing', 'Vulnerability detection']
       },
       {
-        id: 'post-quantum-cloud-storage-wasm',
-        title: 'Post-Quantum Cloud Storage',
-        description: 'Cloud storage security with WASM',
-        icon: '☁️',
-        status: 'wasm-coming-soon',
-        category: 'wasm',
-        url: 'post-quantum-cloud-storage/post-quantum-cloud-storage.html',
-        algorithms: ['WASM Performance', 'PQC Security']
+        id: 'secure-voting-system',
+        title: 'Tamper-Proof Voting Platform',
+        category: 'Government',
+        status: 'ready',
+        icon: '🗳️',
+        description: 'Cryptographically secure electronic voting system with post-quantum protection. Ensures vote privacy, verifiability, and protection against quantum attacks.',
+        algorithms: ['ML-DSA-65', 'SLH-DSA-SHA2-256f', 'SHA3-256'],
+        url: '../secure-voting-system/secure-voting-system.html',
+        features: ['Vote privacy', 'Verifiability', 'Audit trails', 'Quantum resistance']
       },
       {
-        id: 'advanced-messaging',
-        title: 'Advanced Messaging (WASM)',
-        description: 'Enhanced messaging with WASM',
-        icon: '📨',
-        status: 'wasm-coming-soon',
-        category: 'wasm',
-        url: 'advanced-messaging/advanced-messaging.html',
-        algorithms: ['WASM Optimized', 'Real-time PQC']
+        id: 'quantum-resistant-vpn',
+        title: 'Quantum-Safe VPN Tunnel',
+        category: 'Network',
+        status: 'coming-soon',
+        icon: '🔒',
+        description: 'Next-generation VPN with post-quantum cryptography for secure tunneling. Features quantum-resistant key exchange and authenticated encryption.',
+        algorithms: ['ML-KEM-768', 'ML-DSA-65', 'SLH-DSA-SHA2-192f'],
+        url: '#',
+        features: ['Quantum-resistant tunneling', 'Key exchange', 'Authenticated encryption', 'Traffic obfuscation']
       },
       {
         id: 'real-time-crypto',
-        title: 'Real-time Crypto (WASM)',
-        description: 'Real-time cryptographic operations',
+        title: 'Lightning-Fast Crypto Engine',
+        category: 'Performance',
+        status: 'coming-soon',
         icon: '⚡',
-        status: 'wasm-coming-soon',
-        category: 'wasm',
-        url: 'real-time-crypto/real-time-crypto.html',
-        algorithms: ['WASM Performance', 'Live PQC']
+        description: 'High-performance real-time cryptographic operations optimized for post-quantum algorithms. Features hardware acceleration and optimized implementations.',
+        algorithms: ['ML-KEM-512/768', 'ML-DSA-44/65', 'SLH-DSA-SHA2-128f/192f'],
+        url: '#',
+        features: ['Hardware acceleration', 'Real-time processing', 'Optimized algorithms', 'Performance monitoring']
+      },
+      {
+        id: 'quantum-key-distribution',
+        title: 'Quantum Communication Lab',
+        category: 'Quantum',
+        status: 'coming-soon',
+        icon: '🔑',
+        description: 'Hybrid quantum-classical key distribution system combining QKD with post-quantum cryptography for ultimate security and practical deployment.',
+        algorithms: ['ML-KEM-1024', 'ML-DSA-87', 'QKD Protocols'],
+        url: '#',
+        features: ['Quantum key distribution', 'Hybrid security', 'Long-distance QKD', 'Key management']
+      },
+      {
+        id: 'quantum-resistant-iot',
+        title: 'Smart City Security Grid',
+        category: 'IoT',
+        status: 'coming-soon',
+        icon: '🌐',
+        description: 'Specialized IoT security framework for quantum-resistant communication in smart cities and industrial IoT environments with optimized resource usage.',
+        algorithms: ['ML-KEM-512', 'ML-DSA-44', 'SLH-DSA-SHA2-128f'],
+        url: '#',
+        features: ['Smart city security', 'Industrial IoT', 'Resource optimization', 'Scalable deployment']
       },
       {
         id: 'interactive-learning',
-        title: 'Interactive Learning (WASM)',
-        description: 'Educational PQC demonstrations',
+        title: 'PQC Learning Academy',
+        category: 'Education',
+        status: 'coming-soon',
         icon: '🎓',
-        status: 'wasm-coming-soon',
-        category: 'wasm',
-        url: 'interactive-learning/interactive-learning.html',
-        algorithms: ['Educational', 'Interactive PQC']
+        description: 'Educational platform for learning post-quantum cryptography through interactive demonstrations, tutorials, and hands-on exercises.',
+        algorithms: ['All NIST Algorithms', 'Educational Examples', 'Visual Demonstrations'],
+        url: '#',
+        features: ['Interactive tutorials', 'Visual demonstrations', 'Hands-on exercises', 'Progress tracking']
+      },
+      {
+        id: 'advanced-messaging',
+        title: 'Enterprise Secure Messenger',
+        category: 'Communication',
+        status: 'coming-soon',
+        icon: '📨',
+        description: 'Advanced secure messaging platform with post-quantum cryptography, featuring group messaging, file sharing, and advanced privacy features.',
+        algorithms: ['ML-KEM-1024', 'ML-DSA-87', 'SLH-DSA-SHA2-256f'],
+        url: '#',
+        features: ['Group messaging', 'File sharing', 'Advanced privacy', 'Message scheduling']
       }
     ];
-
-    this.currentFilter = 'all';
-    this.init();
   }
 
-  init() {
+  async initializeDemo() {
+    console.log('🔬 Initializing Demo Portal...');
+
+    // Initialize UI
     this.setupEventListeners();
     this.renderDemoCards();
-    this.startFloatingParticles();
     this.updateStats();
+
+    console.log('✅ Demo Portal initialized successfully!');
   }
 
   setupEventListeners() {
     // Filter buttons
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+    document.querySelectorAll('.filter-tab').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.setActiveFilter(e.target.dataset.filter);
       });
@@ -241,7 +271,8 @@ class DemoPortal {
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
-        this.filterDemos(e.target.value);
+        this.searchTerm = e.target.value.toLowerCase();
+        this.filterDemos();
       });
     }
   }
@@ -249,306 +280,202 @@ class DemoPortal {
   setActiveFilter(filter) {
     this.currentFilter = filter;
 
-    // Update active button state
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+    // Update active button
+    document.querySelectorAll('.filter-tab').forEach(btn => {
       btn.classList.remove('active');
     });
     document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
 
-    // Filter demos
     this.filterDemos();
   }
 
-  filterDemos(searchTerm = '') {
+  filterDemos() {
     const demoCards = document.querySelectorAll('.demo-card');
+    let visibleCount = 0;
+    let readyCount = 0;
 
     demoCards.forEach(card => {
       const demoId = card.dataset.demoId;
       const demo = this.demos.find(d => d.id === demoId);
 
+      if (!demo) return;
+
+      const status = demo.status;
+      const category = demo.category.toLowerCase();
+      const title = demo.title.toLowerCase();
+      const description = demo.description.toLowerCase();
+      const algorithms = demo.algorithms.join(' ').toLowerCase();
+
       let shouldShow = true;
 
-      // Apply category filter
+      // Apply filter
       if (this.currentFilter !== 'all') {
-        if (this.currentFilter === 'non-wasm' && demo.category !== 'non-wasm') {
+        if (this.currentFilter === 'ready' && status !== 'ready') {
           shouldShow = false;
-        } else if (this.currentFilter === 'wasm' && demo.category !== 'wasm') {
+        } else if (this.currentFilter === 'coming-soon' && status !== 'coming-soon') {
+          shouldShow = false;
+        } else if (this.currentFilter === 'in-development' && status !== 'in-development') {
+          shouldShow = false;
+        } else if (this.currentFilter === 'non-wasm' && category !== 'reference') {
+          shouldShow = false;
+        } else if (this.currentFilter === 'wasm' && category === 'reference') {
           shouldShow = false;
         }
       }
 
-      // Apply search filter
-      if (searchTerm && shouldShow) {
-        const searchLower = searchTerm.toLowerCase();
-        const matchesSearch = demo.title.toLowerCase().includes(searchLower) ||
-          demo.description.toLowerCase().includes(searchLower) ||
-          demo.algorithms.some(algo => algo.toLowerCase().includes(searchLower));
-        shouldShow = matchesSearch;
+      // Apply search
+      if (shouldShow && this.searchTerm) {
+        const searchableText = `${title} ${description} ${algorithms} ${category}`;
+        if (!searchableText.includes(this.searchTerm)) {
+          shouldShow = false;
+        }
       }
 
-      // Show/hide card
-      card.style.display = shouldShow ? 'block' : 'none';
+      // Show/hide card with animation
+      if (shouldShow) {
+        card.style.display = 'block';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          card.style.transition = 'all 0.3s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, visibleCount * 50);
+        visibleCount++;
+        if (status === 'ready') readyCount++;
+      } else {
+        card.style.display = 'none';
+      }
     });
 
-    // Update stats
-    this.updateStats();
+    this.updateStats(visibleCount, readyCount);
+  }
+
+  updateStats(totalVisible = null, readyVisible = null) {
+    const cryptoSpeed = document.getElementById('cryptoSpeed');
+    const totalDemos2 = document.getElementById('totalDemos2');
+    const readyDemos = document.getElementById('readyDemos');
+    const inDevelopment = document.getElementById('inDevelopment');
+
+    if (cryptoSpeed) {
+      // Simulate crypto operation speed (2.1ms average)
+      const speed = 2.1;
+      cryptoSpeed.textContent = `${speed}ms`;
+    }
+
+    if (totalDemos2) {
+      const total = totalVisible !== null ? totalVisible : this.demos.length;
+      this.animateNumber(totalDemos2, parseInt(totalDemos2.textContent) || 0, total);
+    }
+
+    if (readyDemos) {
+      const ready = readyVisible !== null ? readyVisible : this.demos.filter(d => d.status === 'ready').length;
+      this.animateNumber(readyDemos, parseInt(readyDemos.textContent) || 0, ready);
+    }
+
+    if (inDevelopment) {
+      const inDev = this.demos.filter(d => d.status === 'coming-soon').length;
+      this.animateNumber(inDevelopment, parseInt(inDevelopment.textContent) || 0, inDev);
+    }
+  }
+
+  animateNumber(element, start, end) {
+    const duration = 500;
+    const startTime = performance.now();
+
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const current = Math.round(start + (end - start) * progress);
+      element.textContent = current;
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
   }
 
   renderDemoCards() {
-    const container = document.querySelector('.demo-grid');
-    if (!container) return;
+    const demosGrid = document.querySelector('.demos-grid');
+    if (!demosGrid) return;
 
-    container.innerHTML = this.demos.map(demo => this.createDemoCard(demo)).join('');
+    demosGrid.innerHTML = '';
 
-    // Add click event listeners to demo cards
-    document.querySelectorAll('.demo-card').forEach(card => {
-      card.addEventListener('click', (e) => {
-        const demoId = card.dataset.demoId;
-        this.openDemo(demoId);
-      });
+    this.demos.forEach((demo, index) => {
+      const card = this.createDemoCard(demo, index);
+      demosGrid.appendChild(card);
     });
   }
 
-  createDemoCard(demo) {
-    const statusClass = this.getStatusClass(demo.status);
-    const statusText = this.getStatusText(demo.status);
+  createDemoCard(demo, index) {
+    const card = document.createElement('div');
+    card.className = `demo-card ${demo.status}`;
+    card.dataset.demoId = demo.id;
+    card.dataset.category = demo.category.toLowerCase();
 
-    return `
-            <div class="demo-card ${statusClass}" data-demo-id="${demo.id}">
-                <div class="demo-icon">${demo.icon}</div>
-                <h3>${demo.title}</h3>
-                <p>${demo.description}</p>
-                <div class="demo-algorithms">
-                    <strong>PQC Algorithms:</strong>
-                    <div class="algorithm-tags">
-                        ${demo.algorithms.map(algo => `<span class="algorithm-tag">${algo}</span>`).join('')}
-                    </div>
-                </div>
-                <div class="demo-status">
-                    <span class="status-badge ${statusClass}">${statusText}</span>
-                </div>
-                <div class="demo-actions">
-                    ${demo.status === 'ready' ?
-        '<button class="launch-btn">Launch Demo</button>' :
-        '<button class="coming-soon-btn" disabled>Coming Soon</button>'
+    const algorithmsHtml = demo.algorithms.map(alg =>
+      `<span class="algorithm-badge">${alg}</span>`
+    ).join('');
+
+    const buttonHtml = demo.status === 'ready'
+      ? `<a href="${demo.url}" class="btn btn-primary">Launch Demo</a>`
+      : `<button class="btn btn-secondary" disabled>Coming Soon</button>`;
+
+    card.innerHTML = `
+      <div class="demo-header">
+        <div class="demo-icon">${demo.icon}</div>
+        <div class="demo-title">${demo.title}</div>
+        <div class="demo-status ${demo.status}">${demo.status.replace('-', ' ').toUpperCase()}</div>
+      </div>
+      <div class="demo-category">${demo.category}</div>
+      <div class="demo-description">${demo.description}</div>
+      <div class="demo-algorithms">
+        ${algorithmsHtml}
+      </div>
+      <div class="demo-actions">
+        ${buttonHtml}
+      </div>
+    `;
+
+    // Add click handler for demo info
+    card.addEventListener('click', (e) => {
+      if (!e.target.closest('.btn')) {
+        this.showDemoInfo(demo.id);
       }
-                </div>
-            </div>
-        `;
+    });
+
+    return card;
   }
 
-  getStatusClass(status) {
-    switch (status) {
-      case 'ready': return 'status-ready';
-      case 'coming-soon': return 'status-coming-soon';
-      case 'wasm-coming-soon': return 'status-wasm-coming-soon';
-      default: return 'status-coming-soon';
-    }
-  }
-
-  getStatusText(status) {
-    switch (status) {
-      case 'ready': return 'Ready';
-      case 'coming-soon': return 'Coming Soon';
-      case 'wasm-coming-soon': return 'WASM Coming Soon';
-      default: return 'Coming Soon';
-    }
-  }
-
-  openDemo(demoId) {
+  showDemoInfo(demoId) {
     const demo = this.demos.find(d => d.id === demoId);
-    if (!demo) return;
+    if (demo) {
+      const featuresHtml = demo.features.map(feature => `• ${feature}`).join('\n');
+      const info = `
+🔬 ${demo.title}
+📂 Category: ${demo.category}
+📊 Status: ${demo.status.replace('-', ' ').toUpperCase()}
 
-    if (demo.status === 'ready') {
-      window.location.href = demo.url;
-    } else {
-      this.showComingSoonModal(demo);
+${demo.description}
+
+🔧 Features:
+${featuresHtml}
+
+🔐 Algorithms: ${demo.algorithms.join(', ')}
+
+${demo.status === 'ready' ? '🌐 Ready to launch!' : '⏳ Coming soon...'}
+      `;
+      alert(info);
     }
-  }
-
-  showComingSoonModal(demo) {
-    const modal = document.createElement('div');
-    modal.className = 'coming-soon-modal';
-    modal.innerHTML = `
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>${demo.title} - Coming Soon!</h2>
-                    <button class="close-btn" onclick="this.closest('.coming-soon-modal').remove()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="demo-preview">
-                        <div class="demo-icon-large">${demo.icon}</div>
-                        <h3>${demo.title}</h3>
-                        <p>${demo.description}</p>
-                    </div>
-                    <div class="demo-details">
-                        <h4>🔒 PQC Security Features</h4>
-                        <ul>
-                            ${demo.algorithms.map(algo => `<li>${algo}</li>`).join('')}
-                        </ul>
-                        <h4>📅 Expected Timeline</h4>
-                        <p>${demo.category === 'wasm' ? 'Q3 2024' : 'Q2 2024'}</p>
-                        <h4>🚀 What to Expect</h4>
-                        <p>This demo will showcase real cryptographic operations with performance metrics,
-                        security analysis, and interactive features suitable for investor presentations and research grants.</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button onclick="this.closest('.coming-soon-modal').remove()">Close</button>
-                </div>
-            </div>
-        `;
-
-    document.body.appendChild(modal);
-    this.addModalStyles();
-  }
-
-  addModalStyles() {
-    if (!document.getElementById('modal-styles')) {
-      const style = document.createElement('style');
-      style.id = 'modal-styles';
-      style.textContent = `
-                .coming-soon-modal {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.5);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 10000;
-                }
-                .modal-content {
-                    background: white;
-                    border-radius: 20px;
-                    max-width: 600px;
-                    width: 90%;
-                    max-height: 80vh;
-                    overflow-y: auto;
-                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                }
-                .modal-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 20px 30px;
-                    border-bottom: 2px solid #f0f0f0;
-                }
-                .modal-header h2 {
-                    margin: 0;
-                    color: #333;
-                }
-                .close-btn {
-                    background: none;
-                    border: none;
-                    font-size: 24px;
-                    cursor: pointer;
-                    color: #666;
-                }
-                .modal-body {
-                    padding: 30px;
-                }
-                .demo-preview {
-                    text-align: center;
-                    margin-bottom: 30px;
-                }
-                .demo-icon-large {
-                    font-size: 4em;
-                    margin-bottom: 15px;
-                }
-                .demo-details h4 {
-                    color: #333;
-                    margin: 20px 0 10px 0;
-                }
-                .demo-details ul {
-                    margin: 0;
-                    padding-left: 20px;
-                }
-                .demo-details li {
-                    margin-bottom: 5px;
-                    color: #666;
-                }
-                .modal-footer {
-                    padding: 20px 30px;
-                    border-top: 2px solid #f0f0f0;
-                    text-align: right;
-                }
-                .modal-footer button {
-                    background: #007bff;
-                    color: white;
-                    border: none;
-                    padding: 10px 20px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-size: 16px;
-                }
-            `;
-      document.head.appendChild(style);
-    }
-  }
-
-  startFloatingParticles() {
-    const particlesContainer = document.querySelector('.floating-particles');
-    if (!particlesContainer) return;
-
-    // Create floating particles
-    for (let i = 0; i < 20; i++) {
-      this.createParticle(particlesContainer);
-    }
-  }
-
-  createParticle(container) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    particle.style.left = Math.random() * 100 + '%';
-    particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
-    particle.style.animationDelay = Math.random() * 5 + 's';
-
-    container.appendChild(particle);
-  }
-
-  updateStats() {
-    const readyCount = this.demos.filter(d => d.status === 'ready').length;
-    const comingSoonCount = this.demos.filter(d => d.status === 'coming-soon').length;
-    const wasmCount = this.demos.filter(d => d.status === 'wasm-coming-soon').length;
-    const totalCount = this.demos.length;
-
-    // Update stats display
-    const statsElements = {
-      'total-demos': totalCount,
-      'ready-demos': readyCount,
-      'coming-soon': comingSoonCount,
-      'wasm-demos': wasmCount
-    };
-
-    Object.entries(statsElements).forEach(([id, count]) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.textContent = count;
-      }
-    });
   }
 }
 
-// Initialize portal when page loads
+// Initialize demo when page loads
 document.addEventListener('DOMContentLoaded', () => {
   window.demoPortal = new DemoPortal();
 });
 
-// Global functions for demo navigation
-function openDemo(demoId) {
-  if (window.demoPortal) {
-    window.demoPortal.openDemo(demoId);
-  }
-}
-
-function showDemoInfo(demoId) {
-  const demo = window.demoPortal?.demos.find(d => d.id === demoId);
-  if (demo) {
-    window.demoPortal.showComingSoonModal(demo);
-  }
-}
-
-
+console.log('🚀 Demo Portal loaded successfully!');

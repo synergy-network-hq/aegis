@@ -1,6 +1,6 @@
 use aegis_crypto_core::{
-    kyber::{kyber_keygen, kyber_encapsulate, kyber_decapsulate},
-    falcon::{falcon_keygen, falcon_sign, falcon_verify},
+    kyber::{ kyber_keygen, kyber_encapsulate, kyber_decapsulate },
+    falcon::{ falcon_keygen, falcon_sign, falcon_verify },
     hash::sha3_256_hash,
     utils::bytes_to_hex,
 };
@@ -16,12 +16,13 @@ struct SecureMessage {
     encrypted_content: Vec<u8>,
     falcon_signature: Vec<u8>,
     kem_ciphertext: Vec<u8>,
-    nonce: Vec<u8>,
-    auth_tag: Vec<u8>,
+    _nonce: Vec<u8>,
+    _auth_tag: Vec<u8>,
 }
 
 /// Represents a user in the secure messaging system
 #[derive(Debug)]
+#[allow(dead_code)]
 struct User {
     id: String,
     name: String,
@@ -135,8 +136,8 @@ impl SecureMessagingSystem {
             encrypted_content,
             falcon_signature,
             kem_ciphertext,
-            nonce: vec![0u8; 12], // Simplified nonce
-            auth_tag: vec![0u8; 16], // Simplified auth tag
+            _nonce: vec![0u8; 12], // Simplified nonce
+            _auth_tag: vec![0u8; 16], // Simplified auth tag
         };
 
         self.messages.push(secure_message.clone());

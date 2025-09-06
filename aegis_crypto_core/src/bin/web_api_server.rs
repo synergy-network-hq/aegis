@@ -8,7 +8,7 @@ use aegis_crypto_core::{
 };
 use axum::{
     extract::Json,
-    http::{ HeaderValue, Method, HeaderName },
+    http::{ Method, HeaderName },
     response::Json as JsonResponse,
     routing::{ get, post },
     Router,
@@ -256,14 +256,14 @@ async fn send_message(
     let users = state.users.read().await;
     let sender = users
         .get(&payload.sender_id)
-        .ok_or_else(|| {
-            return JsonResponse(SendMessageResponse {
+        .ok_or_else(||
+            JsonResponse(SendMessageResponse {
                 success: false,
                 message: "Sender not found".to_string(),
                 secure_message: None,
                 crypto_steps: vec![],
-            });
-        })
+            })
+        )
         .unwrap();
 
     // Step 2: Perform Kyber KEM encapsulation
@@ -402,7 +402,7 @@ async fn verify_message(Json(
 
     // For demo purposes, we'll simulate verification
     // In real app, this would use the actual sender's public key
-    let signature_valid = signature_bytes.len() > 0;
+    let signature_valid = !signature_bytes.is_empty();
 
     verification_steps.push(CryptoStep {
         step: "Falcon Signature Verification".to_string(),
@@ -450,7 +450,154 @@ async fn get_system_status(axum::extract::State(
 }
 
 async fn serve_demo() -> axum::response::Html<&'static str> {
-    axum::response::Html(include_str!("../../examples/web_demo/index.html"))
+    let html =
+        r#"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\"UTF-8\" />
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+    <title>Aegis PQC Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .box { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        input, button, textarea { padding: 8px; margin: 4px 0; width: 100%; max-width: 520px; }
+        button { cursor: pointer; }
+        pre { background: #222; color: #0f0; padding: 12px; border-radius: 6px; overflow-x: auto; }
+        .row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .col { flex: 1 1 360px; }
+    </style>
+    <script>
+        async function getStatus() {
+            const res = await fetch('/api/status');
+            const data = await res.json();
+            document.getElementById('status').textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function createUser(ev) {
+            ev.preventDefault();
+            const payload = {
+                user_id: document.getElementById('user_id').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                role: document.getElementById('role').value,
+            };
+            const res = await fetch('/api/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json();
+            document.getElementById('create_user_result').textContent = JSON.stringify(data, null, 2);
+            getUsers();
+            getStatus();
+        }
+
+        async function getUsers() {
+            const res = await fetch('/api/users');
+            const data = await res.json();
+            document.getElementById('users').textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function sendMessage(ev) {
+            ev.preventDefault();
+            const payload = {
+                sender_id: document.getElementById('sender_id').value,
+                recipient_id: document.getElementById('recipient_id').value,
+                content: document.getElementById('content').value,
+            };
+            const res = await fetch('/api/messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json();
+            document.getElementById('send_result').textContent = JSON.stringify(data, null, 2);
+            getMessages();
+            getStatus();
+        }
+
+        async function getMessages() {
+            const res = await fetch('/api/messages');
+            const data = await res.json();
+            document.getElementById('messages').textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function verify(ev) {
+            ev.preventDefault();
+            const payload = {
+                message_id: document.getElementById('verify_message_id').value,
+                sender_id: document.getElementById('verify_sender_id').value,
+                content: document.getElementById('verify_content').value,
+                signature: document.getElementById('verify_signature').value,
+            };
+            const res = await fetch('/api/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json();
+            document.getElementById('verify_result').textContent = JSON.stringify(data, null, 2);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            getStatus();
+            getUsers();
+            getMessages();
+        });
+    </script>
+    </head>
+<body>
+    <h1>🔐 Aegis PQC Demo</h1>
+    <p>Try the API via this simple interface. Endpoints: <code>/api/users</code>, <code>/api/messages</code>, <code>/api/verify</code>, <code>/api/status</code></p>
+
+    <div class=\"row\">
+        <div class=\"col\">
+            <div class=\"box\">
+                <h2>Create User</h2>
+                <form onsubmit=\"createUser(event)\">
+                    <input id=\"user_id\" placeholder=\"user id (e.g., dave)\" required />
+                    <input id=\"name\" placeholder=\"name\" required />
+                    <input id=\"email\" placeholder=\"email\" required />
+                    <input id=\"role\" placeholder=\"role\" required />
+                    <button type=\"submit\">Create</button>
+                </form>
+                <pre id=\"create_user_result\"></pre>
+            </div>
+
+            <div class=\"box\">
+                <h2>Send Message</h2>
+                <form onsubmit=\"sendMessage(event)\">
+                    <input id=\"sender_id\" placeholder=\"sender id\" required />
+                    <input id=\"recipient_id\" placeholder=\"recipient id\" required />
+                    <textarea id=\"content\" placeholder=\"message content\" required></textarea>
+                    <button type=\"submit\">Send</button>
+                </form>
+                <pre id=\"send_result\"></pre>
+            </div>
+        </div>
+
+        <div class=\"col\">
+            <div class=\"box\">
+                <h2>System Status</h2>
+                <pre id=\"status\"></pre>
+            </div>
+            <div class=\"box\">
+                <h2>Users</h2>
+                <pre id=\"users\"></pre>
+            </div>
+            <div class=\"box\">
+                <h2>Messages</h2>
+                <pre id=\"messages\"></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class=\"box\">
+        <h2>Verify Signature (Manual)</h2>
+        <form onsubmit=\"verify(event)\">
+            <input id=\"verify_message_id\" placeholder=\"message id\" />
+            <input id=\"verify_sender_id\" placeholder=\"sender id\" />
+            <textarea id=\"verify_content\" placeholder=\"message content\"></textarea>
+            <textarea id=\"verify_signature\" placeholder=\"hex signature\"></textarea>
+            <button type=\"submit\">Verify</button>
+        </form>
+        <pre id=\"verify_result\"></pre>
+    </div>
+
+    <p><a href=\"/api/docs\">API Docs</a></p>
+</body>
+</html>
+"#;
+    axum::response::Html(html)
 }
 
 async fn serve_api_docs() -> axum::response::Html<&'static str> {

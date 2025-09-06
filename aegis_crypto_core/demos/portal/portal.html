@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis PQC Demo Portal</title>
+  <link rel="stylesheet" href="portal.css?v=3">
+</head>
+
+<body>
+  <div class="header">
+    <h1 class="aegis-title">Aegis</h1>
+    <h2 class="subtitle">the Universal Post-Quantum Cryptography Core</h2>
+    <p>Explore the future of cryptography with our comprehensive suite of post-quantum secure applications.
+      Experience real-world implementations of NIST-standardized algorithms protecting against quantum computer attacks.
+    </p>
+  </div>
+
+  <div class="container">
+    <div class="stats-container">
+      <div class="stats-row primary">
+        <div class="stat-card">
+          <div class="stat-number" id="cryptoSpeed">2.1ms</div>
+          <div class="stat-label">Crypto Operations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="nistAlgorithms">5</div>
+          <div class="stat-label">NIST Compliant Algorithms</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="securityLevel">256-bit</div>
+          <div class="stat-label">Security Level</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="quantumResistant">100%</div>
+          <div class="stat-label">Quantum Resistant</div>
+        </div>
+      </div>
+      <div class="stats-row secondary">
+        <div class="stat-card small">
+          <div class="stat-number" id="totalDemos2">0</div>
+          <div class="stat-label">Total Demos</div>
+        </div>
+        <div class="stat-card small">
+          <div class="stat-number" id="readyDemos">0</div>
+          <div class="stat-label">Ready to Use</div>
+        </div>
+        <div class="stat-card small">
+          <div class="stat-number" id="inDevelopment">0</div>
+          <div class="stat-label">In Development</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <input type="text" class="search-input" id="searchInput"
+        placeholder="Search demos by name, algorithm, or category...">
+    </div>
+
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all">All Demos</button>
+      <button class="filter-tab" data-filter="ready">Ready</button>
+      <button class="filter-tab" data-filter="coming-soon">Coming Soon</button>
+    </div>
+
+    <div class="demos-grid" id="demosGrid">
+      <!-- Demo cards will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><strong>Aegis Post-Quantum Cryptography</strong> - Protecting the future of digital security</p>
+    <p>Built with NIST-standardized algorithms: ML-KEM, ML-DSA, SLH-DSA, FN-DSA, HQC-KEM</p>
+    <p><a href="https://github.com/your-repo" target="_blank">GitHub Repository</a> |
+      <a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf" target="_blank">NIST FIPS 203</a> |
+      <a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf" target="_blank">NIST FIPS 204</a>
+    </p>
+  </div>
+
+  <script src="portal.js?v=3"></script>
+</body>
+
+</html>

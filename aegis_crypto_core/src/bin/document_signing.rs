@@ -13,7 +13,7 @@ struct Document {
     title: String,
     content: String,
     author: String,
-    created_at: u64,
+    _created_at: u64,
     modified_at: u64,
     version: u32,
 }
@@ -24,12 +24,13 @@ struct DocumentSignature {
     document_id: String,
     signer_id: String,
     signature: Vec<u8>,
-    timestamp: u64,
+    _timestamp: u64,
     signature_type: String,
 }
 
 /// Represents a user who can sign documents
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 struct User {
     id: String,
     name: String,
@@ -37,7 +38,7 @@ struct User {
     role: String,
     falcon_public_key: Vec<u8>,
     falcon_secret_key: Vec<u8>,
-    created_at: u64,
+    _created_at: u64,
 }
 
 /// Document signing and verification system
@@ -81,7 +82,7 @@ impl DocumentSigningSystem {
             role,
             falcon_public_key: falcon_keys.public_key(),
             falcon_secret_key: falcon_keys.secret_key(),
-            created_at: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
+            _created_at: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
         };
 
         self.users.insert(id, user);
@@ -109,7 +110,7 @@ impl DocumentSigningSystem {
             title,
             content,
             author: author_id.to_string(),
-            created_at: now,
+            _created_at: now,
             modified_at: now,
             version: 1,
         };
@@ -149,7 +150,7 @@ impl DocumentSigningSystem {
             document_id: document_id.to_string(),
             signer_id: signer_id.to_string(),
             signature,
-            timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
+            _timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
             signature_type: "Falcon".to_string(),
         };
 

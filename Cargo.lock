@@ -31,8 +31,6 @@ dependencies = [
  "getrandom 0.3.3",
  "hex",
  "js-sys",
- "ml-dsa",
- "ml-kem",
  "pqcrypto-classicmceliece",
  "pqcrypto-falcon",
  "pqcrypto-hqc",
@@ -754,23 +752,6 @@ dependencies = [
  "libc",
  "wasi 0.11.1+wasi-snapshot-preview1",
  "windows-sys",
-]
-
-[[package]]
-name = "ml-dsa"
-version = "0.1.0"
-dependencies = [
- "getrandom 0.2.16",
- "hex",
-]
-
-[[package]]
-name = "ml-kem"
-version = "0.1.0"
-dependencies = [
- "getrandom 0.2.16",
- "hex",
- "sha3",
 ]
 
 [[package]]
