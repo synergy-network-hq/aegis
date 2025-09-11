@@ -11,6 +11,9 @@ repository = "https://github.com/rustpq/pqcrypto/"
 keywords = ["cryptography", "post-quantum", "security"]
 categories = ["cryptography", "no-std"]
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 pqcrypto-internals = { path = "../pqcrypto-internals", version = "0.2.6" }
 pqcrypto-traits = { path = "../pqcrypto-traits", version = "0.3.5", default-features = false }

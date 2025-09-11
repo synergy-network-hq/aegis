@@ -23,29 +23,30 @@ use pqcrypto_mldsa::mldsa87::{
     SignedMessage as SignedMessage87,
 };
 use pqcrypto_traits::sign::{ PublicKey as _, SecretKey as _, SignedMessage as _ };
+#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub struct DilithiumKeyPair {
     pk: Vec<u8>,
     sk: Vec<u8>,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl DilithiumKeyPair {
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn public_key(&self) -> Vec<u8> {
         self.pk.clone()
     }
 
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn secret_key(&self) -> Vec<u8> {
         self.sk.clone()
     }
 }
 
 // ML-DSA-44 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium44_keygen() -> DilithiumKeyPair {
     let (pk, sk) = keypair44();
     DilithiumKeyPair {
@@ -54,14 +55,14 @@ pub fn dilithium44_keygen() -> DilithiumKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium44_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKey44::from_bytes(secret_key).expect("Invalid secret key");
     let signed_message = sign44(message, &sk);
     signed_message.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium44_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     let pk = match PublicKey44::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -79,7 +80,7 @@ pub fn dilithium44_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
 }
 
 // ML-DSA-65 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium65_keygen() -> DilithiumKeyPair {
     let (pk, sk) = keypair65();
     DilithiumKeyPair {
@@ -88,14 +89,14 @@ pub fn dilithium65_keygen() -> DilithiumKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium65_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKey65::from_bytes(secret_key).expect("Invalid secret key");
     let signed_message = sign65(message, &sk);
     signed_message.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium65_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     let pk = match PublicKey65::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -113,7 +114,7 @@ pub fn dilithium65_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
 }
 
 // ML-DSA-87 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium87_keygen() -> DilithiumKeyPair {
     let (pk, sk) = keypair87();
     DilithiumKeyPair {
@@ -122,14 +123,14 @@ pub fn dilithium87_keygen() -> DilithiumKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium87_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKey87::from_bytes(secret_key).expect("Invalid secret key");
     let signed_message = sign87(message, &sk);
     signed_message.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium87_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     let pk = match PublicKey87::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -147,17 +148,17 @@ pub fn dilithium87_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
 }
 
 // Legacy functions (for backward compatibility - default to ML-DSA-87)
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium_keygen() -> DilithiumKeyPair {
     dilithium87_keygen()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     dilithium87_sign(secret_key, message)
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn dilithium_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     dilithium87_verify(public_key, signed_message)
 }

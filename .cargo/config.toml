@@ -14,7 +14,6 @@ test-wasm-browser = "test -p aegis_crypto_core --target wasm32-unknown-unknown -
 
 [target.wasm32-unknown-unknown]
 rustflags = [
-  "--cfg=getrandom_backend=\"wasm_js\"",
   "-C",
   "target-feature=+crt-static",
   # Force our memory settings to override wasm-pack's defaults
@@ -37,7 +36,6 @@ rustflags = [
 # Also configure for wasm32-wasip1 target
 [target.wasm32-wasip1]
 rustflags = [
-  "--cfg=getrandom_backend=\"wasm_js\"",
   "-C",
   "target-feature=+crt-static",
   "-C",

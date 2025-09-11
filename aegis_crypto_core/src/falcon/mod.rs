@@ -20,35 +20,36 @@ use pqcrypto_falcon::falcon1024::{
     keypair as keypair1024,
 };
 use pqcrypto_traits::sign::{ PublicKey as _, SecretKey as _, DetachedSignature as _ };
+#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
 /// Represents a Falcon key pair, containing both the public and secret keys.
 /// These keys are essential for signing messages and verifying signatures.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub struct FalconKeyPair {
     pk: Vec<u8>,
     sk: Vec<u8>,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl FalconKeyPair {
     /// Returns the public key component of the Falcon key pair.
     /// The public key is used to verify signatures.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn public_key(&self) -> Vec<u8> {
         self.pk.clone()
     }
 
     /// Returns the secret key component of the Falcon key pair.
     /// The secret key is used to sign messages and should be kept confidential.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn secret_key(&self) -> Vec<u8> {
         self.sk.clone()
     }
 }
 
 // Falcon-512 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn falcon512_keygen() -> FalconKeyPair {
     let (pk, sk) = keypair512();
     FalconKeyPair {
@@ -57,14 +58,14 @@ pub fn falcon512_keygen() -> FalconKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn falcon512_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKey512::from_bytes(secret_key).expect("Invalid secret key");
     let signature = detached_sign512(message, &sk);
     signature.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn falcon512_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
     let pk = match PublicKey512::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -82,7 +83,7 @@ pub fn falcon512_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> 
 }
 
 // Falcon-1024 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn falcon1024_keygen() -> FalconKeyPair {
     let (pk, sk) = keypair1024();
     FalconKeyPair {
@@ -91,14 +92,14 @@ pub fn falcon1024_keygen() -> FalconKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn falcon1024_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKey1024::from_bytes(secret_key).expect("Invalid secret key");
     let signature = detached_sign1024(message, &sk);
     signature.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn falcon1024_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
     let pk = match PublicKey1024::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -124,7 +125,7 @@ pub fn falcon1024_verify(public_key: &[u8], message: &[u8], signature: &[u8]) ->
 /// # Returns
 ///
 /// A `FalconKeyPair` containing the newly generated public and secret keys.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn falcon_keygen() -> FalconKeyPair {
     falcon512_keygen()
 }
@@ -140,7 +141,7 @@ pub fn falcon_keygen() -> FalconKeyPair {
 ///
 /// A `Vec<u8>` containing the generated signature. If the secret key is
 /// invalid, this function will panic.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn falcon_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     falcon512_sign(secret_key, message)
 }
@@ -157,7 +158,7 @@ pub fn falcon_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
 ///
 /// `true` if the signature is valid for the given message and public key,
 /// and `false` otherwise.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn falcon_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
     falcon512_verify(public_key, message, signature)
 }

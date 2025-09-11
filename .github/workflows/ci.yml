@@ -2,287 +2,277 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [ main, develop ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
+  release:
+    types: [ published ]
 
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
 
 jobs:
-  # Native Rust tests
-  test-native:
-    name: Test Native
+  # Rust Tests
+  rust-tests:
+    name: Rust Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rust: [stable, 1.70, 1.75]
-        target: [x86_64-unknown-linux-gnu, x86_64-apple-darwin]
-        include:
-          - rust: stable
-            target: x86_64-unknown-linux-gnu
-          - rust: stable
-            target: x86_64-apple-darwin
-          - rust: 1.70
-            target: x86_64-unknown-linux-gnu
-          - rust: 1.75
-            target: x86_64-unknown-linux-gnu
+        rust-version: [stable, beta, nightly]
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install Rust ${{ matrix.rust }}
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust }}
-          target: ${{ matrix.target }}
-          override: true
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust-version }}
+        components: rustfmt, clippy
+        override: true
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
+    - name: Cache cargo registry
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake pkg-config
+    - name: Cache cargo index
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Check code
-        run: cargo check --all-features
+    - name: Cache cargo build
+      uses: actions/cache@v3
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Run tests
-        run: cargo test --all-features --target ${{ matrix.target }}
+    - name: Install wasm-pack
+      run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: Run clippy
-        run: cargo clippy --all-features -- -D warnings
+    - name: Check formatting
+      run: cargo fmt --all -- --check
 
-      - name: Check formatting
-        run: cargo fmt -- --check
+    - name: Run clippy
+      run: cargo clippy --all-targets --all-features -- -D warnings
 
-  # WASM tests
-  test-wasm:
-    name: Test WASM
+    - name: Run tests
+      run: cargo test --all-features
+
+    - name: Build WASM package
+      run: |
+        cd aegis_crypto_core
+        wasm-pack build --target web --out-dir pkg --features wasm,nist-wasm
+
+    - name: Test WASM build
+      run: |
+        cd aegis_crypto_core
+        wasm-pack test --headless --firefox
+
+  # Node.js Tests
+  node-tests:
+    name: Node.js Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Run tests
+      run: npm test
+
+    - name: Build package
+      run: npm run build
+
+    - name: Test package installation
+      run: |
+        npm pack
+        npm install aegis-crypto-core-*.tgz
+        node -e "console.log('Package installed successfully')"
+
+  # WASM Implementation Tests
+  wasm-tests:
+    name: WASM Implementation Tests
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          override: true
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
 
-      - name: Install wasm-pack
-        uses: actions-rs/install@v0.1
-        with:
-          crate: wasm-pack
-          version: v0.12.1
-          use-tool-cache: true
+    - name: Install dependencies
+      run: npm ci
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-wasm-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-wasm-cargo-
+    - name: Build WASM package
+      run: |
+        cd aegis_crypto_core
+        wasm-pack build --target web --out-dir pkg --features wasm,nist-wasm
 
-      - name: Build WASM
-        run: |
-          cd aegis_crypto_core
-          wasm-pack build --target web --out-dir pkg
+    - name: Test all WASM implementations
+      run: |
+        node archive/test_wasm_implementations.js
 
-      - name: Run WASM tests
-        run: |
-          cd aegis_crypto_core
-          wasm-pack test --headless --firefox
+    - name: Run basic usage examples
+      run: |
+        node examples/basic-usage.js
 
-  # Browser tests
-  test-browser:
-    name: Test Browser
-    runs-on: ubuntu-latest
+    - name: Run performance benchmarks
+      run: |
+        node examples/performance-benchmark.js
 
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          override: true
-
-      - name: Install wasm-pack
-        uses: actions-rs/install@v0.1
-        with:
-          crate: wasm-pack
-          version: v0.12.1
-          use-tool-cache: true
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-          cache: "npm"
-
-      - name: Build WASM for browser
-        run: |
-          cd aegis_crypto_core
-          wasm-pack build --target web --out-dir pkg
-
-      - name: Run browser tests
-        run: |
-          cd aegis_crypto_core
-          npm install
-          npm test
-
-  # Security audit
+  # Security Audit
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        components: rustfmt, clippy
+        override: true
 
-      - name: Install cargo-audit
-        uses: actions-rs/install@v0.1
-        with:
-          crate: cargo-audit
-          version: v0.18.1
-          use-tool-cache: true
+    - name: Install cargo-audit
+      run: cargo install cargo-audit
 
-      - name: Run security audit
-        run: cargo audit --deny warnings
+    - name: Run security audit
+      run: cargo audit
 
-  # Performance benchmarks
-  benchmark:
-    name: Performance Benchmarks
+    - name: Check for known vulnerabilities
+      run: |
+        cd aegis_crypto_core
+        cargo audit
+
+  # Documentation
+  docs:
+    name: Documentation
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
 
-      - name: Run benchmarks
-        run: |
-          cd aegis_crypto_core
-          cargo bench --no-run
+    - name: Generate documentation
+      run: |
+        cargo doc --all-features --no-deps
+        cd aegis_crypto_core
+        cargo doc --features wasm,nist-wasm --no-deps
 
-  # Build and package
-  build-package:
-    name: Build Package
+    - name: Deploy documentation
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./target/doc
+
+  # Build and Test Package
+  package-test:
+    name: Package Test
     runs-on: ubuntu-latest
-    needs: [test-native, test-wasm, security-audit]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [rust-tests, node-tests, wasm-tests, security-audit]
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          override: true
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
 
-      - name: Install wasm-pack
-        uses: actions-rs/install@v0.1
-        with:
-          crate: wasm-pack
-          version: v0.12.1
-          use-tool-cache: true
+    - name: Install dependencies
+      run: npm ci
 
-      - name: Build WASM package
-        run: |
-          cd aegis_crypto_core
-          wasm-pack build --release --target web --out-dir pkg
+    - name: Build WASM package
+      run: |
+        cd aegis_crypto_core
+        wasm-pack build --target web --out-dir pkg --features wasm,nist-wasm
 
-      - name: Build WASM package for Node.js
-        run: |
-          cd aegis_crypto_core
-          wasm-pack build --release --target nodejs --out-dir pkg-node
+    - name: Test package structure
+      run: |
+        npm pack --dry-run
 
-      - name: Upload WASM artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: wasm-packages
-          path: |
-            aegis_crypto_core/pkg/
-            aegis_crypto_core/pkg-node/
+    - name: Test package installation
+      run: |
+        npm pack
+        npm install aegis-crypto-core-*.tgz
+        node -e "import('aegis-crypto-core').then(() => console.log('✅ Package works!'))"
 
-  # Publish to npm (on release)
+  # Publish to NPM
   publish-npm:
     name: Publish to NPM
     runs-on: ubuntu-latest
-    needs: build-package
-    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [package-test]
+    if: github.event_name == 'release' && github.event.action == 'published'
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Download WASM artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: wasm-packages
-          path: aegis_crypto_core/
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        registry-url: 'https://registry.npmjs.org'
+        cache: 'npm'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-          registry-url: "https://registry.npmjs.org"
+    - name: Install dependencies
+      run: npm ci
 
-      - name: Publish to NPM
-        run: |
-          cd aegis_crypto_core
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - name: Build WASM package
+      run: |
+        cd aegis_crypto_core
+        wasm-pack build --target web --out-dir pkg --features wasm,nist-wasm
 
-  # Publish to crates.io (on release)
+    - name: Publish to NPM
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # Publish to crates.io
   publish-crates:
-    name: Publish to Crates.io
+    name: Publish to crates.io
     runs-on: ubuntu-latest
-    needs: build-package
-    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [package-test]
+    if: github.event_name == 'release' && github.event.action == 'published'
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
 
-      - name: Publish to crates.io
-        uses: actions-rs/cargo@v1
-        with:
-          command: publish
-          args: --package aegis_crypto_core
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+    - name: Publish to crates.io
+      run: |
+        cd aegis_crypto_core
+        cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}

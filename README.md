@@ -67,16 +67,67 @@ let signature = sign(&sk, message).unwrap();
 assert!(verify(&pk, message, &signature));
 ```
 
-### JavaScript / TypeScript Example (Browser or Node)
+### JavaScript / TypeScript Examples (Browser or Node)
 
+#### ML-KEM (Key Encapsulation)
 ```js
-import init, { dilithium3_keygen, dilithium3_sign, dilithium3_verify } from "aegis-crypto-core";
+import init, { mlkem768_keygen, mlkem768_encaps, mlkem768_decaps } from "aegis-crypto-core";
 await init();
 
-const { pk, sk } = dilithium3_keygen();
-const msg = new TextEncoder().encode("hello quantum world!");
-const sig = dilithium3_sign(sk, msg);
-console.log(dilithium3_verify(pk, msg, sig)); // true
+// Generate key pair
+const { publicKey, secretKey } = mlkem768_keygen();
+
+// Encapsulate shared secret
+const { ciphertext, sharedSecret } = mlkem768_encaps(publicKey);
+
+// Decapsulate shared secret
+const decryptedSecret = mlkem768_decaps(ciphertext, secretKey);
+console.log('Shared secrets match:', Buffer.from(sharedSecret).equals(Buffer.from(decryptedSecret)));
+```
+
+#### ML-DSA (Digital Signatures)
+```js
+import init, { mldsa65_keygen, mldsa65_sign, mldsa65_verify } from "aegis-crypto-core";
+await init();
+
+const { publicKey, secretKey } = mldsa65_keygen();
+const message = new TextEncoder().encode("hello quantum world!");
+const signature = mldsa65_sign(secretKey, message);
+console.log(mldsa65_verify(publicKey, message, signature)); // true
+```
+
+#### Falcon (Compact Signatures)
+```js
+import init, { falcon512_keygen, falcon512_sign, falcon512_verify } from "aegis-crypto-core";
+await init();
+
+const { publicKey, secretKey } = falcon512_keygen();
+const message = new TextEncoder().encode("compact quantum signature");
+const signature = falcon512_sign(secretKey, message);
+console.log(falcon512_verify(publicKey, message, signature)); // true
+console.log('Signature size:', signature.length, 'bytes'); // Very compact!
+```
+
+#### SPHINCS+ (Hash-based Signatures)
+```js
+import init, { slhdsa_sha2_128f_keygen, slhdsa_sha2_128f_sign, slhdsa_sha2_128f_verify } from "aegis-crypto-core";
+await init();
+
+const { publicKey, secretKey } = slhdsa_sha2_128f_keygen();
+const message = new TextEncoder().encode("long-term quantum security");
+const signature = slhdsa_sha2_128f_sign(secretKey, message);
+console.log(slhdsa_sha2_128f_verify(publicKey, message, signature)); // true
+```
+
+#### HQC-KEM (Hamming Quasi-Cyclic)
+```js
+import init, { hqc128_keygen, hqc128_encaps, hqc128_decaps } from "aegis-crypto-core";
+await init();
+
+const { publicKey, secretKey } = hqc128_keygen();
+const { ciphertext, sharedSecret } = hqc128_encaps(publicKey);
+const decryptedSecret = hqc128_decaps(ciphertext, secretKey);
+console.log('HQC shared secrets match:', Buffer.from(sharedSecret).equals(Buffer.from(decryptedSecret)));
 ```
 
 > **TypeScript users:** All functions have full type declarations out-of-the-box.
@@ -113,6 +164,9 @@ and import the generated JS/WASM as usual.
 ## Examples
 
 See the `/examples` directory for:
+- **Basic Usage** (`basic-usage.js`) - Complete examples for all 5 algorithms
+- **Performance Benchmark** (`performance-benchmark.js`) - Comprehensive performance testing
+- **WASM Usage Guide** (`WASM_USAGE_GUIDE.md`) - Detailed WASM documentation
 - Browser SPA demo
 - Node.js CLI demo
 - Secure messaging API example

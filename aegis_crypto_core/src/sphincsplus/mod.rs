@@ -47,29 +47,30 @@ use pqcrypto_sphincsplus::sphincsshake256fsimple::{
     SignedMessage as SignedMessageShake256f,
 };
 use pqcrypto_traits::sign::{ PublicKey as _, SecretKey as _, SignedMessage as _ };
+#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub struct SphincsPlusKeyPair {
     pk: Vec<u8>,
     sk: Vec<u8>,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl SphincsPlusKeyPair {
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn public_key(&self) -> Vec<u8> {
         self.pk.clone()
     }
 
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn secret_key(&self) -> Vec<u8> {
         self.sk.clone()
     }
 }
 
 // SPHINCS+-SHA2-128f Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sha2_128f_keygen() -> SphincsPlusKeyPair {
     let (pk, sk) = keypairSha2128f();
     SphincsPlusKeyPair {
@@ -78,14 +79,14 @@ pub fn sphincsplus_sha2_128f_keygen() -> SphincsPlusKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sha2_128f_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKeySha2128f::from_bytes(secret_key).expect("Invalid secret key");
     let signed_message = signSha2128f(message, &sk);
     signed_message.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sha2_128f_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     let pk = match PublicKeySha2128f::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -103,7 +104,7 @@ pub fn sphincsplus_sha2_128f_verify(public_key: &[u8], signed_message: &[u8]) ->
 }
 
 // SPHINCS+-SHA2-192f Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sha2_192f_keygen() -> SphincsPlusKeyPair {
     let (pk, sk) = keypairSha2192f();
     SphincsPlusKeyPair {
@@ -112,14 +113,14 @@ pub fn sphincsplus_sha2_192f_keygen() -> SphincsPlusKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sha2_192f_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKeySha2192f::from_bytes(secret_key).expect("Invalid secret key");
     let signed_message = signSha2192f(message, &sk);
     signed_message.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sha2_192f_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     let pk = match PublicKeySha2192f::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -137,7 +138,7 @@ pub fn sphincsplus_sha2_192f_verify(public_key: &[u8], signed_message: &[u8]) ->
 }
 
 // SPHINCS+-SHA2-256f Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sha2_256f_keygen() -> SphincsPlusKeyPair {
     let (pk, sk) = keypairSha2256f();
     SphincsPlusKeyPair {
@@ -146,14 +147,14 @@ pub fn sphincsplus_sha2_256f_keygen() -> SphincsPlusKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sha2_256f_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKeySha2256f::from_bytes(secret_key).expect("Invalid secret key");
     let signed_message = signSha2256f(message, &sk);
     signed_message.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sha2_256f_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     let pk = match PublicKeySha2256f::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -171,7 +172,7 @@ pub fn sphincsplus_sha2_256f_verify(public_key: &[u8], signed_message: &[u8]) ->
 }
 
 // SPHINCS+-SHAKE-128f Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_shake_128f_keygen() -> SphincsPlusKeyPair {
     let (pk, sk) = keypairShake128f();
     SphincsPlusKeyPair {
@@ -180,14 +181,14 @@ pub fn sphincsplus_shake_128f_keygen() -> SphincsPlusKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_shake_128f_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKeyShake128f::from_bytes(secret_key).expect("Invalid secret key");
     let signed_message = signShake128f(message, &sk);
     signed_message.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_shake_128f_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     let pk = match PublicKeyShake128f::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -205,7 +206,7 @@ pub fn sphincsplus_shake_128f_verify(public_key: &[u8], signed_message: &[u8]) -
 }
 
 // SPHINCS+-SHAKE-192f Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_shake_192f_keygen() -> SphincsPlusKeyPair {
     let (pk, sk) = keypairShake192f();
     SphincsPlusKeyPair {
@@ -214,14 +215,14 @@ pub fn sphincsplus_shake_192f_keygen() -> SphincsPlusKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_shake_192f_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKeyShake192f::from_bytes(secret_key).expect("Invalid secret key");
     let signed_message = signShake192f(message, &sk);
     signed_message.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_shake_192f_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     let pk = match PublicKeyShake192f::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -239,7 +240,7 @@ pub fn sphincsplus_shake_192f_verify(public_key: &[u8], signed_message: &[u8]) -
 }
 
 // SPHINCS+-SHAKE-256f Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_shake_256f_keygen() -> SphincsPlusKeyPair {
     let (pk, sk) = keypairShake256f();
     SphincsPlusKeyPair {
@@ -248,14 +249,14 @@ pub fn sphincsplus_shake_256f_keygen() -> SphincsPlusKeyPair {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_shake_256f_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     let sk = SecretKeyShake256f::from_bytes(secret_key).expect("Invalid secret key");
     let signed_message = signShake256f(message, &sk);
     signed_message.as_bytes().to_vec()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_shake_256f_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     let pk = match PublicKeyShake256f::from_bytes(public_key) {
         Ok(pk) => pk,
@@ -273,17 +274,17 @@ pub fn sphincsplus_shake_256f_verify(public_key: &[u8], signed_message: &[u8]) -
 }
 
 // Legacy functions (for backward compatibility - default to SPHINCS+-SHA2-128f)
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_keygen() -> SphincsPlusKeyPair {
     sphincsplus_sha2_128f_keygen()
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_sign(secret_key: &[u8], message: &[u8]) -> Vec<u8> {
     sphincsplus_sha2_128f_sign(secret_key, message)
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sphincsplus_verify(public_key: &[u8], signed_message: &[u8]) -> bool {
     sphincsplus_sha2_128f_verify(public_key, signed_message)
 }

@@ -30,22 +30,23 @@ use pqcrypto_mlkem::mlkem1024::{
     keypair as keypair1024,
 };
 use pqcrypto_traits::kem::{ PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _ };
+#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
 /// Represents a Kyber key pair, containing both the public and secret keys.
 /// These keys are essential for performing cryptographic operations such as
 /// encapsulating and decapsulating shared secrets.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub struct KyberKeyPair {
     pk: Vec<u8>,
     sk: Vec<u8>,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl KyberKeyPair {
     /// Returns the public key component of the Kyber key pair.
     /// The public key is used by the sender to encapsulate a shared secret.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn public_key(&self) -> Vec<u8> {
         self.pk.clone()
     }
@@ -53,7 +54,7 @@ impl KyberKeyPair {
     /// Returns the secret key component of the Kyber key pair.
     /// The secret key is used by the recipient to decapsulate the shared secret.
     /// It should be kept confidential.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn secret_key(&self) -> Vec<u8> {
         self.sk.clone()
     }
@@ -61,30 +62,30 @@ impl KyberKeyPair {
 
 /// Represents the output of the Kyber encapsulation process, containing
 /// both the ciphertext and the encapsulated shared secret.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub struct KyberEncapsulated {
     ciphertext: Vec<u8>,
     shared_secret: Vec<u8>,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl KyberEncapsulated {
     /// Returns the ciphertext generated during encapsulation.
     /// This ciphertext is sent to the recipient for decapsulation.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn ciphertext(&self) -> Vec<u8> {
         self.ciphertext.clone()
     }
     /// Returns the shared secret derived during encapsulation.
     /// This secret is used for symmetric encryption.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn shared_secret(&self) -> Vec<u8> {
         self.shared_secret.clone()
     }
 }
 
 // ML-KEM-512 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn kyber512_keygen() -> KyberKeyPair {
     let (pk, sk) = keypair512();
     KyberKeyPair {
@@ -93,8 +94,8 @@ pub fn kyber512_keygen() -> KyberKeyPair {
     }
 }
 
-#[wasm_bindgen]
-pub fn kyber512_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn kyber512_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, Box<dyn std::error::Error>> {
     let pk = PublicKey512::from_bytes(public_key).map_err(|e|
         format!("Invalid public key: {:?}", e)
     )?;
@@ -105,8 +106,8 @@ pub fn kyber512_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsVa
     })
 }
 
-#[wasm_bindgen]
-pub fn kyber512_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn kyber512_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let sk = SecretKey512::from_bytes(secret_key).map_err(|e|
         format!("Invalid secret key: {:?}", e)
     )?;
@@ -118,7 +119,7 @@ pub fn kyber512_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<
 }
 
 // ML-KEM-768 Functions (existing, but renamed for consistency)
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn kyber768_keygen() -> KyberKeyPair {
     let (pk, sk) = keypair768();
     KyberKeyPair {
@@ -127,8 +128,8 @@ pub fn kyber768_keygen() -> KyberKeyPair {
     }
 }
 
-#[wasm_bindgen]
-pub fn kyber768_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn kyber768_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, Box<dyn std::error::Error>> {
     let pk = PublicKey768::from_bytes(public_key).map_err(|e|
         format!("Invalid public key: {:?}", e)
     )?;
@@ -139,8 +140,8 @@ pub fn kyber768_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsVa
     })
 }
 
-#[wasm_bindgen]
-pub fn kyber768_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn kyber768_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let sk = SecretKey768::from_bytes(secret_key).map_err(|e|
         format!("Invalid secret key: {:?}", e)
     )?;
@@ -152,7 +153,7 @@ pub fn kyber768_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<
 }
 
 // ML-KEM-1024 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn kyber1024_keygen() -> KyberKeyPair {
     let (pk, sk) = keypair1024();
     KyberKeyPair {
@@ -161,8 +162,8 @@ pub fn kyber1024_keygen() -> KyberKeyPair {
     }
 }
 
-#[wasm_bindgen]
-pub fn kyber1024_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn kyber1024_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, Box<dyn std::error::Error>> {
     let pk = PublicKey1024::from_bytes(public_key).map_err(|e|
         format!("Invalid public key: {:?}", e)
     )?;
@@ -173,8 +174,8 @@ pub fn kyber1024_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsV
     })
 }
 
-#[wasm_bindgen]
-pub fn kyber1024_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn kyber1024_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let sk = SecretKey1024::from_bytes(secret_key).map_err(|e|
         format!("Invalid secret key: {:?}", e)
     )?;
@@ -194,7 +195,7 @@ pub fn kyber1024_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec
 /// # Returns
 ///
 /// A `KyberKeyPair` containing the newly generated public and secret keys.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn kyber_keygen() -> KyberKeyPair {
     kyber768_keygen()
 }
@@ -211,11 +212,11 @@ pub fn kyber_keygen() -> KyberKeyPair {
 ///
 /// # Returns
 ///
-/// A `Result<KyberEncapsulated, JsValue>` which is:
+/// A `Result<KyberEncapsulated, Box<dyn std::error::Error>>` which is:
 /// - `Ok(KyberEncapsulated)` containing the generated ciphertext and shared secret.
 /// - `Err(JsValue)` if the public key is invalid.
-#[wasm_bindgen]
-pub fn kyber_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn kyber_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, Box<dyn std::error::Error>> {
     kyber768_encapsulate(public_key)
 }
 
@@ -231,11 +232,11 @@ pub fn kyber_encapsulate(public_key: &[u8]) -> Result<KyberEncapsulated, JsValue
 ///
 /// # Returns
 ///
-/// A `Result<Vec<u8>, JsValue>` which is:
+/// A `Result<Vec<u8>, Box<dyn std::error::Error>>` which is:
 /// - `Ok(Vec<u8>)` containing the recovered shared secret.
 /// - `Err(JsValue)` if the secret key or ciphertext is invalid.
-#[wasm_bindgen]
-pub fn kyber_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn kyber_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     kyber768_decapsulate(secret_key, ciphertext)
 }
 
@@ -248,7 +249,7 @@ pub fn kyber512_keygen_native() -> KyberKeyPair {
 #[cfg(not(target_arch = "wasm32"))]
 pub fn kyber512_encapsulate_native(public_key: &[u8]) -> Result<KyberEncapsulated, String> {
     kyber512_encapsulate(public_key).map_err(|e|
-        e.as_string().unwrap_or_else(|| "Unknown error".to_string())
+        e.to_string()
     )
 }
 
@@ -258,7 +259,7 @@ pub fn kyber512_decapsulate_native(
     ciphertext: &[u8]
 ) -> Result<Vec<u8>, String> {
     kyber512_decapsulate(secret_key, ciphertext).map_err(|e|
-        e.as_string().unwrap_or_else(|| "Unknown error".to_string())
+        e.to_string()
     )
 }
 
@@ -302,7 +303,7 @@ pub fn kyber1024_keygen_native() -> KyberKeyPair {
 #[cfg(not(target_arch = "wasm32"))]
 pub fn kyber1024_encapsulate_native(public_key: &[u8]) -> Result<KyberEncapsulated, String> {
     kyber1024_encapsulate(public_key).map_err(|e|
-        e.as_string().unwrap_or_else(|| "Unknown error".to_string())
+        e.to_string()
     )
 }
 
@@ -312,7 +313,7 @@ pub fn kyber1024_decapsulate_native(
     ciphertext: &[u8]
 ) -> Result<Vec<u8>, String> {
     kyber1024_decapsulate(secret_key, ciphertext).map_err(|e|
-        e.as_string().unwrap_or_else(|| "Unknown error".to_string())
+        e.to_string()
     )
 }
 

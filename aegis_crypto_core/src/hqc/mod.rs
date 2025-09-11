@@ -28,53 +28,54 @@ use pqcrypto_hqc::hqc256::{
     keypair as keypair256,
 };
 use pqcrypto_traits::kem::{ PublicKey as _, SecretKey as _, Ciphertext as _, SharedSecret as _ };
+#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
 /// Represents an HQC key pair, containing both the public and secret keys.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub struct HqcKeyPair {
     pk: Vec<u8>,
     sk: Vec<u8>,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl HqcKeyPair {
     /// Returns the public key component of the HQC key pair.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn public_key(&self) -> Vec<u8> {
         self.pk.clone()
     }
 
     /// Returns the secret key component of the HQC key pair.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn secret_key(&self) -> Vec<u8> {
         self.sk.clone()
     }
 }
 
 /// Represents the output of the HQC encapsulation process.
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub struct HqcEncapsulated {
     ciphertext: Vec<u8>,
     shared_secret: Vec<u8>,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl HqcEncapsulated {
     /// Returns the ciphertext generated during encapsulation.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn ciphertext(&self) -> Vec<u8> {
         self.ciphertext.clone()
     }
     /// Returns the shared secret derived during encapsulation.
-    #[wasm_bindgen(getter)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn shared_secret(&self) -> Vec<u8> {
         self.shared_secret.clone()
     }
 }
 
 // HQC-128 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn hqc128_keygen() -> HqcKeyPair {
     let (pk, sk) = keypair128();
     HqcKeyPair {
@@ -83,8 +84,8 @@ pub fn hqc128_keygen() -> HqcKeyPair {
     }
 }
 
-#[wasm_bindgen]
-pub fn hqc128_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn hqc128_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, Box<dyn std::error::Error>> {
     let pk = PublicKey128::from_bytes(public_key).map_err(|e|
         format!("Invalid public key: {:?}", e)
     )?;
@@ -95,8 +96,8 @@ pub fn hqc128_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue>
     })
 }
 
-#[wasm_bindgen]
-pub fn hqc128_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn hqc128_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let sk = SecretKey128::from_bytes(secret_key).map_err(|e|
         format!("Invalid secret key: {:?}", e)
     )?;
@@ -108,7 +109,7 @@ pub fn hqc128_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8
 }
 
 // HQC-192 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn hqc192_keygen() -> HqcKeyPair {
     let (pk, sk) = keypair192();
     HqcKeyPair {
@@ -117,8 +118,8 @@ pub fn hqc192_keygen() -> HqcKeyPair {
     }
 }
 
-#[wasm_bindgen]
-pub fn hqc192_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn hqc192_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, Box<dyn std::error::Error>> {
     let pk = PublicKey192::from_bytes(public_key).map_err(|e|
         format!("Invalid public key: {:?}", e)
     )?;
@@ -129,8 +130,8 @@ pub fn hqc192_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue>
     })
 }
 
-#[wasm_bindgen]
-pub fn hqc192_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn hqc192_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let sk = SecretKey192::from_bytes(secret_key).map_err(|e|
         format!("Invalid secret key: {:?}", e)
     )?;
@@ -142,7 +143,7 @@ pub fn hqc192_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8
 }
 
 // HQC-256 Functions
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn hqc256_keygen() -> HqcKeyPair {
     let (pk, sk) = keypair256();
     HqcKeyPair {
@@ -151,8 +152,8 @@ pub fn hqc256_keygen() -> HqcKeyPair {
     }
 }
 
-#[wasm_bindgen]
-pub fn hqc256_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn hqc256_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, Box<dyn std::error::Error>> {
     let pk = PublicKey256::from_bytes(public_key).map_err(|e|
         format!("Invalid public key: {:?}", e)
     )?;
@@ -163,8 +164,8 @@ pub fn hqc256_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue>
     })
 }
 
-#[wasm_bindgen]
-pub fn hqc256_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn hqc256_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let sk = SecretKey256::from_bytes(secret_key).map_err(|e|
         format!("Invalid secret key: {:?}", e)
     )?;
@@ -177,19 +178,19 @@ pub fn hqc256_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8
 
 // Legacy functions (for backward compatibility - default to HQC-128)
 /// Generates a new HQC key pair (HQC-128).
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn hqc_keygen() -> HqcKeyPair {
     hqc128_keygen()
 }
 
 /// Encapsulates a shared secret using the provided HQC public key (HQC-128).
-#[wasm_bindgen]
-pub fn hqc_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn hqc_encapsulate(public_key: &[u8]) -> Result<HqcEncapsulated, Box<dyn std::error::Error>> {
     hqc128_encapsulate(public_key)
 }
 
 /// Decapsulates a shared secret using the provided HQC secret key and ciphertext (HQC-128).
-#[wasm_bindgen]
-pub fn hqc_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, JsValue> {
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn hqc_decapsulate(secret_key: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     hqc128_decapsulate(secret_key, ciphertext)
 }
