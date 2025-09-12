@@ -1,0 +1,11 @@
+# Ignore git internals
+.git/**
+
+# Vendored WASI SDK toolchain
+aegis_crypto_core/tools/wasi-sdk-20.0/**
+
+# Python virtual environments
+pqcrypto/.venv/**
+
+# Generated WASM bindings (treat findings as informational)
+aegis_crypto_core/pkg/**
